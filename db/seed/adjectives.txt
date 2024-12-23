@@ -1,0 +1,4 @@
+happy
+sad
+big
+small

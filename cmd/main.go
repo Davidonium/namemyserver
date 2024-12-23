@@ -52,10 +52,12 @@ func run(args []string) error {
 		logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: l}))
 	}
 
-	_, err := sqlitestore.Connect(ctx, cfg.DatabaseURL.String())
+	db, err := sqlitestore.Connect(ctx, cfg.DatabaseURL.String())
 	if err != nil {
 		return err
 	}
+
+	defer db.Close()
 
 	dbm := dbmate.New(cfg.DatabaseURL)
 	dbm.AutoDumpSchema = false
