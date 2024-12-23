@@ -1,0 +1,10 @@
+package templates
+
+type GenerateViewModel struct {
+    Name string
+}
+
+
+templ GeneratePartial(vm GenerateViewModel) {
+    <span class="text-gray-800 font-semibold">{ vm.Name }</span>
+}

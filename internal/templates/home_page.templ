@@ -4,7 +4,22 @@ type HomeViewModel struct {
 }
 
 templ HomePage(vm HomeViewModel) {
-    @Layout() {
-        <div class="text-3xl">Home</div>
-    }
+	@Layout() {
+		<div class="flex flex-col items-center justify-center min-h-screen gap-5">
+			<h1 class="text-3xl">Generate a server name</h1>
+            <div id="generate-name-container" ><span class="text-gray-400">The name will be here</span></div>
+            <button
+                hx-post="/generate"
+                hx-target="#generate-name-container"
+                class="group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
+                type="submit"
+            >
+                <span
+                    class="block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent"
+                >
+                    Generate
+                </span>
+            </button>
+		</div>
+	}
 }
