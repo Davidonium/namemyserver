@@ -22,11 +22,10 @@ func Connect(ctx context.Context, url string) (*sqlx.DB, error) {
 
 	db, err := sqlx.ConnectContext(ctx, "sqlite3", parts[1])
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	_, err = db.Exec(perfTuneSQL)
-	if err != nil {
+	if _, err = db.Exec(perfTuneSQL); err != nil {
 		return nil, fmt.Errorf("failed to apply performance configuration to the database: %w", err)
 	}
 
