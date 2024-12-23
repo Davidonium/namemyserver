@@ -25,10 +25,13 @@ install-tools: ## installs tools required for development and building the proje
 	go install github.com/air-verse/air@latest
 	go install github.com/a-h/templ/cmd/templ@latest
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
+	# assumes ~/.local/bin is in $PATH
+	curl -fsSL -o ~/.local/bin/dbmate https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64 && chmod +x ~/.local/bin/dbmate
+
 
 $(APP_BIN): $(SOURCE_FILES)
 	@mkdir -p $(BUILD_DIR)
-	CGO_ENABLED=0 $(GO) build -ldflags $(LDFLAGS) -o $(APP_BIN) ./cmd/namemyserver
+	$(GO) build -ldflags $(LDFLAGS) -o $(APP_BIN) ./cmd/namemyserver
 
 build: templ $(APP_BIN) ## builds namemyserver's binary for production use in the current machine's architecture
 
@@ -60,16 +63,19 @@ docker: ## builds the application's docker image
 	@docker build --progress=plain -t davidonium/namemyserver:$(APP_VERSION) .
 	@docker tag davidonium/namemyserver:$(APP_VERSION) davidonium/namemyserver:latest
 
-dbmigrate: ## applies migration to the local dev database
-	migrate -path=./db/migrations/ -database "${DATABASE_URL}" up
+.PHONY: gen
+gen:
+	templ generate
 
-dbdrop: ## destroys the local dev database (data included)
-	migrate -path=./db/migrations/ -database "${DATABASE_URL}" drop -f
+.PHONY: dbmigrate
+dbmigrate:
+	dbmate up
 
-dbreset: dbdrop dbmigrate ## drops the local dev database and applies all migrations
-
-dbseed: ## seeds the database with development data
-	find ./db/seed -iname "*.sql" -exec bash -c "psql ${DATABASE_URL} < {}" \;
+.PHONY: dbreset
+dbreset:
+	dbmate drop
+	dbmate create
+	dbmate up
 
 dev: ## launches the app with support for live reload of the server on file change
 	# see https://github.com/air-verse/air

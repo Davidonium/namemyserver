@@ -8,7 +8,7 @@ export default defineConfig({
   build: {
     manifest: true,
     rollupOptions: {
-      input: "./src/js/entries/app.ts",
+      input: "./src/js/entries/app.js",
     },
   },
 });

@@ -1,0 +1,11 @@
+package templates
+
+type HomeViewModel struct {
+    Mode string
+}
+
+templ HomePage(vm HomeViewModel) {
+    @Layout() {
+        <div>Home</div>
+    }
+}
