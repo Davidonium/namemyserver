@@ -2,3 +2,5 @@ build/
 .vscode/
 .env
 __debug_bin
+var/*
+!var/.gitkeep

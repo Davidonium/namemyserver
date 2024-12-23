@@ -27,8 +27,8 @@ func New(
 	addRoutes(m, svcs)
 
 	return &http.Server{
-		Addr:    "127.0.0.1:8080", // TODO parameterize
-		Handler: m,
+		Addr:              "127.0.0.1:8080", // TODO parameterize
+		Handler:           m,
 		ReadHeaderTimeout: 3 * time.Second,
 	}
 }

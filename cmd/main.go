@@ -7,8 +7,10 @@ import (
 	"os"
 
 	"github.com/amacneil/dbmate/v2/pkg/dbmate"
+	_ "github.com/amacneil/dbmate/v2/pkg/driver/sqlite"
 	envcfg "github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
+	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/davidonium/namemyserver"
 	"github.com/davidonium/namemyserver/internal/env"
@@ -25,9 +27,7 @@ func main() {
 }
 
 func run(args []string) error {
-	level := slog.LevelInfo
-
-	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: level}))
+	ctx := context.Background()
 
 	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("failed to load .env file: %w", err)
@@ -37,8 +37,20 @@ func run(args []string) error {
 	if err := envcfg.Parse(&cfg); err != nil {
 		return fmt.Errorf("failed to parse environment variables into a config struct: %w", err)
 	}
+	level := cfg.LogLevel
 
-	ctx := context.Background()
+	var l slog.Level
+	if err := l.UnmarshalText([]byte(level)); err != nil {
+		return fmt.Errorf("failed to parse log level '%s': %w", level, err)
+	}
+
+	var logger *slog.Logger
+
+	if cfg.LogFormat == "json" {
+		logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: l}))
+	} else {
+		logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: l}))
+	}
 
 	_, err := sqlitestore.Connect(ctx, cfg.DatabaseURL.String())
 	if err != nil {
@@ -59,12 +71,20 @@ func run(args []string) error {
 		UseManifest: cfg.AssetsUseManifest,
 	})
 
+	if cfg.AssetsUseManifest {
+		logger.Info("assets manifest is enabled, loading manifest from fs")
+		if err := assets.LoadManifestFromFS(namemyserver.FrontendFS, cfg.AssetsManifestLocation); err != nil {
+			return fmt.Errorf("failed to load assets from fs at %s: %w", cfg.AssetsManifestLocation, err)
+		}
+	}
+
 	s := server.New(&server.Services{
 		Logger: logger,
 		Config: cfg,
 		Assets: assets,
 	})
 
+	logger.Info("starting http server", "addr", s.Addr)
 	if err := s.ListenAndServe(); err != nil {
 		return fmt.Errorf("failed to start the http server: %w", err)
 	}
