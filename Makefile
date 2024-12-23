@@ -57,7 +57,7 @@ lint: ## detects flaws in the code and checks for style
 
 format: ## formats the codebase using golangci-lint linters
 	@golangci-lint run --fix
-	@templ fmt ./templates
+	@templ fmt ./internal/templates
 
 docker: ## builds the application's docker image
 	@docker build --progress=plain -t davidonium/namemyserver:$(APP_VERSION) .

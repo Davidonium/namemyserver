@@ -1,15 +1,20 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"os"
 
+	"github.com/amacneil/dbmate/v2/pkg/dbmate"
 	envcfg "github.com/caarlos0/env/v11"
+	"github.com/joho/godotenv"
+
+	"github.com/davidonium/namemyserver"
 	"github.com/davidonium/namemyserver/internal/env"
 	"github.com/davidonium/namemyserver/internal/server"
+	"github.com/davidonium/namemyserver/internal/store/sqlitestore"
 	"github.com/davidonium/namemyserver/internal/vite"
-	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -18,6 +23,7 @@ func main() {
 		os.Exit(1)
 	}
 }
+
 func run(args []string) error {
 	level := slog.LevelInfo
 
@@ -32,8 +38,24 @@ func run(args []string) error {
 		return fmt.Errorf("failed to parse environment variables into a config struct: %w", err)
 	}
 
+	ctx := context.Background()
+
+	_, err := sqlitestore.Connect(ctx, cfg.DatabaseURL.String())
+	if err != nil {
+		return err
+	}
+
+	dbm := dbmate.New(cfg.DatabaseURL)
+	dbm.AutoDumpSchema = false
+	dbm.FS = namemyserver.MigrationsFS
+
+	logger.Info("applying migrations...")
+	if err := dbm.Migrate(); err != nil {
+		return fmt.Errorf("failed to apply migrations: %w", err)
+	}
+
 	assets := vite.NewAssets(vite.AssetsConfig{
-		RootURL: cfg.AssetsRootURL.String(),
+		RootURL:     cfg.AssetsRootURL.String(),
 		UseManifest: cfg.AssetsUseManifest,
 	})
 

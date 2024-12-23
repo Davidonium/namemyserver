@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/a-h/templ"
+
 	"github.com/davidonium/namemyserver/internal/env"
 	"github.com/davidonium/namemyserver/internal/vite"
 )
@@ -25,8 +27,9 @@ func New(
 	addRoutes(m, svcs)
 
 	return &http.Server{
-		Addr:    "127.0.0.1:8080",
+		Addr:    "127.0.0.1:8080", // TODO parameterize
 		Handler: m,
+		ReadHeaderTimeout: 3 * time.Second,
 	}
 }
 
@@ -55,8 +58,8 @@ func component(w http.ResponseWriter, r *http.Request, status int, c templ.Compo
 		return err
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(status)
 
 	_, err := w.Write(buf.Bytes())
 	if err != nil {

@@ -40,7 +40,7 @@ func healthHandler() http.Handler {
 type appHandlerFunc func(http.ResponseWriter, *http.Request) error
 
 // appMiddleware builds a middleware that injects the assets service for templ components and handles errors
-// it allows the user to write handlers that return an error and are handled centraly
+// it allows the user to write handlers that return an error and are handled centraly.
 func appMiddleware(logger *slog.Logger, assets *vite.Assets) func(appHandlerFunc) http.Handler {
 	return func(h appHandlerFunc) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
