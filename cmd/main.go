@@ -20,7 +20,7 @@ import (
 )
 
 func main() {
-	if err := run(os.Args[1:]); err != nil {
+	if err := run(os.Args); err != nil {
 		fmt.Fprintf(os.Stderr, "could not start namemyserver app.\nerror: %v\n", err)
 		os.Exit(1)
 	}
