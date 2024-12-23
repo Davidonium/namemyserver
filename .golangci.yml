@@ -1,0 +1,48 @@
+linters-settings:
+  goconst:
+    min-len: 2
+    min-occurrences: 3
+  goimports:
+    local-prefixes: github.com/davidonium/namemyserver
+
+linters:
+  disable-all: true
+  enable:
+    - gofmt
+    - gofumpt
+    - goimports
+    - govet
+    - bodyclose
+    - dupl
+    - errcheck
+    - goconst
+    - godot
+    - gocritic
+    - mnd
+    - gocyclo
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - ineffassign
+    - nolintlint
+    - prealloc
+    - predeclared
+    - revive
+    - staticcheck
+    - stylecheck
+    - thelper
+    - tparallel
+    - typecheck
+    - unconvert
+    - unparam
+
+issues:
+  exclude-rules:
+    - path: _test\.go # disable some linters for test files
+      linters:
+        - gocyclo
+        - gosec
+        - dupl
+
+  max-issues-per-linter: 0
+  max-same-issues: 0
