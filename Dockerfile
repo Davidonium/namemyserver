@@ -17,7 +17,7 @@ RUN go mod download
 
 COPY ./cmd ./cmd
 COPY ./internal ./internal
-COPY ./migrations ./migrations
+COPY embed.go .
 COPY Makefile ./
 
 COPY --from=frontend /app/dist /app/frontend/dist

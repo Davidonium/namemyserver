@@ -25,6 +25,7 @@ install-tools: ## installs tools required for development and building the proje
 	go install github.com/air-verse/air@latest
 	go install github.com/a-h/templ/cmd/templ@latest
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
+	go install github.com/deepmap/oapi-codegen/v2/cmd/oapi-codegen@v2.2.0
 	# assumes ~/.local/bin is in $PATH
 	curl -fsSL -o ~/.local/bin/dbmate https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64 && chmod +x ~/.local/bin/dbmate
 
