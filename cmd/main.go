@@ -74,7 +74,7 @@ func run(args []string) error {
 	})
 
 	if cfg.AssetsUseManifest {
-		logger.Info("assets manifest is enabled, loading manifest from fs")
+		logger.Info("assets manifest is enabled, loading manifest from embed fs")
 		if err := assets.LoadManifestFromFS(namemyserver.FrontendFS, cfg.AssetsManifestLocation); err != nil {
 			return fmt.Errorf("failed to load assets from fs at %s: %w", cfg.AssetsManifestLocation, err)
 		}

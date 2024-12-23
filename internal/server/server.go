@@ -19,9 +19,7 @@ type Services struct {
 	Assets *vite.Assets
 }
 
-func New(
-	svcs *Services,
-) *http.Server {
+func New(svcs *Services) *http.Server {
 	m := http.NewServeMux()
 
 	addRoutes(m, svcs)
