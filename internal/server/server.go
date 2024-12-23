@@ -61,8 +61,7 @@ func component(w http.ResponseWriter, r *http.Request, status int, c templ.Compo
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(status)
 
-	_, err := w.Write(buf.Bytes())
-	if err != nil {
+	if _, err := w.Write(buf.Bytes()); err != nil {
 		return err
 	}
 

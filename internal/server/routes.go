@@ -49,18 +49,14 @@ func appMiddleware(logger *slog.Logger, assets *vite.Assets) func(appHandlerFunc
 			ctx := vite.NewContextWithAssets(r.Context(), assets)
 			r = r.WithContext(ctx)
 
-			err := h(rw, r)
-			if err != nil {
+			if err := h(rw, r); err != nil {
 				logger.Error("error serving http request",
 					slog.Any("err", err),
 					slog.String("request_uri", r.RequestURI),
 				)
 
 				c := templates.InternalErrorPage()
-
-				rw.Header().Set("Content-Type", "text/html")
-				rw.WriteHeader(http.StatusInternalServerError)
-				if err := c.Render(r.Context(), rw); err != nil {
+				if err := component(rw, r, http.StatusInternalServerError, c); err != nil {
 					logger.Error("failure rendering error page",
 						slog.Any("err", err),
 						slog.String("request_uri", r.RequestURI),
