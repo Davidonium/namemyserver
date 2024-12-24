@@ -1,7 +1,7 @@
 import "../../css/app.css";
+import "vite/modulepreload-polyfill";
 import "htmx.org";
 import { on, onLoad, find } from "htmx.org";
-import "vite/modulepreload-polyfill";
 import { writeTextToClipboard } from "~/lib/clipboard";
 
 onLoad((elm) => {
@@ -11,10 +11,12 @@ onLoad((elm) => {
   }
 
   on(copyEl, "click", (e) => {
-    writeTextToClipboard(e.currentTarget.dataset.copyValue);
-    e.currentTarget.classList.remove("opacity-0");
+    const target = e.currentTarget;
+    writeTextToClipboard(target.dataset.copyValue);
+    const checkmark = find(target, ".js-checkmark")
+    checkmark.classList.remove("opacity-0");
     setTimeout(() => {
-      e.currentTarget.classList.add("opacity-0");
-    });
+      checkmark.classList.add("opacity-0");
+    }, 2000);
   });
 });
