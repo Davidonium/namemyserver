@@ -18,5 +18,5 @@ export default defineConfig({
       "~": path.join(import.meta.dirname!, "src"),
     },
   },
-  plugins: [deno()]
+  plugins: [deno()],
 });

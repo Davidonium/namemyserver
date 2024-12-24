@@ -1,28 +1,28 @@
 {
-    "license": "AGPL-3.0-only",
-    "version": "1.0.0",
-    "tasks": {
-        "test": "deno test",
-        "lint": "deno lint",
-        "dev": "vite",
-        "build": "vite build",
-        "preview": "vite preview"
-    },
-    "imports": {
-        "~/": "./src/",
-        "@std/path": "jsr:@std/path/",
-    },
-    "lint": {
-        "include": [
-            "src/"
-        ],
-        "rules": {
-            "tags": [
-                "recommended"
-            ],
-        }
-    },
-    "exclude": [
-        "dist/"
-    ]
+  "license": "AGPL-3.0-only",
+  "version": "1.0.0",
+  "tasks": {
+    "test": "deno test",
+    "lint": "deno lint",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "imports": {
+    "~/": "./src/",
+    "@std/path": "jsr:@std/path/"
+  },
+  "lint": {
+    "include": [
+      "src/"
+    ],
+    "rules": {
+      "tags": [
+        "recommended"
+      ]
+    }
+  },
+  "exclude": [
+    "dist/"
+  ]
 }
