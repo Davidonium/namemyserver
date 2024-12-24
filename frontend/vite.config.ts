@@ -1,6 +1,5 @@
-import * as path from "@std/path";
+import * as path from "node:path";
 import { defineConfig } from "vite";
-import deno from "@deno/vite-plugin";
 
 export default defineConfig({
   server: {
@@ -15,8 +14,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "~": path.join(import.meta.dirname!, "src", "js"),
+      "~": path.resolve(__dirname, "./src/js"),
     },
   },
-  plugins: [deno()],
 });
