@@ -1,17 +1,14 @@
 {
   "name": "namemyserver",
   "private": true,
-  "version": "0.0.0",
+  "license": "AGPL-3.0-only",
+  "version": "1.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
   "devDependencies": {
+    "@deno/vite-plugin": "^1.0.2",
     "autoprefixer": "^10.4.20",
     "htmx.org": "^1.9.12",
     "tailwindcss": "^3.4.17",
-    "vite": "^6.0.3"
+    "vite": "^6.0.5"
   }
 }
