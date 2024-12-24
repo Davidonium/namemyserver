@@ -5,12 +5,16 @@ import "vite/modulepreload-polyfill";
 import { writeTextToClipboard } from "~/lib/clipboard";
 
 onLoad((elm) => {
-  const els = find(elm, ".js-copy")
-  if (!els) {
+  const copyEl = find(elm, ".js-copy");
+  if (!copyEl) {
     return;
   }
 
-  on(els, "click", (e) => {
+  on(copyEl, "click", (e) => {
     writeTextToClipboard(e.currentTarget.dataset.copyValue);
-  })
-})
+    e.currentTarget.classList.remove("opacity-0");
+    setTimeout(() => {
+      e.currentTarget.classList.add("opacity-0");
+    });
+  });
+});

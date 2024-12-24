@@ -5,12 +5,17 @@ type GenerateViewModel struct {
 }
 
 templ GeneratePartial(vm GenerateViewModel) {
-	<div class="flex flex-row items-center gap-2">
+	<div class="flex flex-row items-center gap-1">
 		<div class="text-gray-800 font-semibold">
 			{ vm.Name }
 		</div>
-		<div class="cursor-pointer js-copy" data-copy-value={ vm.Name }>
-			@CopyIcon()
+		<div class="js-copy copy-container relative p-1 cursor-pointer hover:bg-slate-300 hover:opacity-65 rounded" data-copy-value={ vm.Name }>
+			<div>
+				@CopyIcon()
+			</div>
+			<span class="text-green-500 absolute top-0 right-0 opacity-0">
+				@CheckMarkIcon()
+			</span>
 		</div>
 	</div>
 }
