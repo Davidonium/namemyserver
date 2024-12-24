@@ -823,7 +823,8 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@std/path@*"
+      "jsr:@std/path@*",
+      "npm:vite@*"
     ],
     "packageJson": {
       "dependencies": [

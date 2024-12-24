@@ -9,8 +9,9 @@
     "preview": "vite preview"
   },
   "imports": {
-    "~/": "./src/",
-    "@std/path": "jsr:@std/path/"
+    "~/": "./src/js/",
+    "@std/path": "jsr:@std/path/",
+    "vite/modulepreload-polyfill/": "npm:vite/modulepreload-polyfill/"
   },
   "lint": {
     "include": [

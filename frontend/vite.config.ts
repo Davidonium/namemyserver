@@ -15,7 +15,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "~": path.join(import.meta.dirname!, "src"),
+      "~": path.join(import.meta.dirname!, "src", "js"),
     },
   },
   plugins: [deno()],
