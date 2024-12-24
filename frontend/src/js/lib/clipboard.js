@@ -1,4 +1,4 @@
-export async function writeClipboardText(text) {
+export async function writeTextToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
   } catch (error) {
