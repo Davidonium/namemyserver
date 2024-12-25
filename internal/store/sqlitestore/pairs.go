@@ -3,11 +3,14 @@ package sqlitestore
 import (
 	"context"
 
+	"github.com/davidonium/namemyserver/internal/namemyserver"
 	"github.com/jmoiron/sqlx"
 )
+
 const singlePairSQL = `
 SELECT
-    LOWER(adjectives.value || '-' || nouns.value) AS pair
+    adjectives.value as adjective,
+	nouns.value as noun
 FROM
     adjectives
 CROSS JOIN
@@ -24,13 +27,17 @@ func NewPairStore(db *sqlx.DB) *PairStore {
 	return &PairStore{db: db}
 }
 
-func (s *PairStore) FindSinglePair(ctx context.Context) (string, error) {
+func (s *PairStore) FindSinglePair(ctx context.Context) (namemyserver.Pair, error) {
 	var row struct {
-		Pair string `db:"pair"`
+		Adjective string `db:"adjective"`
+		Noun string `db:"noun"`
 	}
 	if err := s.db.GetContext(ctx, &row, singlePairSQL); err != nil {
-		return "", err
+		return namemyserver.Pair{}, err
 	}
 
-	return row.Pair, nil
+	return namemyserver.Pair{
+		Adjective: row.Adjective,
+		Noun: row.Noun,
+	}, nil
 }

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/davidonium/namemyserver/internal/store/sqlitestore"
@@ -14,7 +15,7 @@ func generateHandler(pairStore *sqlitestore.PairStore) appHandlerFunc {
 			return err
 		}
 
-		c := templates.GeneratePartial(templates.GenerateViewModel{Name: p})
+		c := templates.GeneratePartial(templates.GenerateViewModel{Name: fmt.Sprintf("%s-%s", p.Adjective, p.Noun)})
 		return component(w, r, http.StatusOK, c)
 	}
 }
