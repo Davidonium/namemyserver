@@ -1,7 +1,5 @@
-sad
-big
-small
 agile
+big
 brave
 calm
 chill
@@ -26,8 +24,10 @@ quick
 quiet
 rapid
 royal
+sad
 sharp
 sleek
+small
 smart
 solid
 swift

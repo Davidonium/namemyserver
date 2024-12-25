@@ -1,12 +1,12 @@
-cat
-dog
-bird
 apple
 beacon
+bird
 candle
+cat
 cloud
 comet
 crane
+dog
 dream
 ember
 falcon
