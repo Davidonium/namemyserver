@@ -3,7 +3,7 @@ tmp_dir = "build"
 
 [build]
 args_bin = []
-bin = "./build/namemyserver-dev"
+bin = "./build/namemyserver-dev server"
 cmd = "templ generate && go build -o ./build/namemyserver-dev ./cmd"
 delay = 1000
 exclude_dir = ["frontend", "build", "var"]

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -9,6 +11,8 @@ import (
 	"github.com/amacneil/dbmate/v2/pkg/dbmate"
 	_ "github.com/amacneil/dbmate/v2/pkg/driver/sqlite"
 	envcfg "github.com/caarlos0/env/v11"
+	"github.com/doug-martin/goqu/v9"
+	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 	_ "github.com/mattn/go-sqlite3"
 
@@ -27,8 +31,6 @@ func main() {
 }
 
 func run(args []string) error {
-	ctx := context.Background()
-
 	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("failed to load .env file: %w", err)
 	}
@@ -51,6 +53,23 @@ func run(args []string) error {
 	} else {
 		logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: l}))
 	}
+
+	if len(args) < 2 {
+		return errors.New("a command needs to be specified to run the app")
+	}
+
+	switch args[1] {
+	case "server":
+		return runServer(logger, cfg)
+	case "seed":
+		return runSeed(logger, cfg)
+	}
+
+	return fmt.Errorf("unknown command %q", args[1])
+}
+
+func runServer(logger *slog.Logger, cfg env.Config) error {
+	ctx := context.Background()
 
 	db, err := sqlitestore.Connect(ctx, cfg.DatabaseURL.String())
 	if err != nil {
@@ -89,6 +108,55 @@ func run(args []string) error {
 	logger.Info("starting http server", "addr", s.Addr)
 	if err := s.ListenAndServe(); err != nil {
 		return fmt.Errorf("failed to start the http server: %w", err)
+	}
+
+	return nil
+}
+
+func runSeed(logger *slog.Logger, cfg env.Config) error {
+	ctx := context.Background()
+
+	db, err := sqlitestore.Connect(ctx, cfg.DatabaseURL.String())
+	if err != nil {
+		return err
+	}
+
+	defer db.Close()
+
+	logger.Info("running seed")
+
+	tables := []string{
+		"nouns",
+		"adjectives",
+	}
+	for _, t := range tables {
+		if err := seedByTable(ctx, logger, db, t); err != nil {
+			logger.Error("failure running seed", "error", err, "table", t)
+		}
+	}
+
+	return nil
+}
+
+func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table string) error {
+	f, err := os.Open(fmt.Sprintf("./db/seed/%s.txt", table))
+	if err != nil {
+		return err
+	}
+
+	s := bufio.NewScanner(f)
+
+	inserter := sqlitestore.NewChunkInserter(logger, db, 200, table)
+	for s.Scan() {
+		inserter.AddAndFlushIfNeeded(ctx, goqu.Record{"value": s.Text(), "from_seed": 1})
+	}
+	if inserter.Err != nil {
+		return inserter.Err
+	}
+
+	// flush remaining nouns
+	if err := inserter.Flush(ctx); err != nil {
+		return err
 	}
 
 	return nil
