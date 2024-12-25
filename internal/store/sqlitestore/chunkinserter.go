@@ -29,7 +29,7 @@ func NewChunkInserter(
 		logger: logger,
 		db:     db,
 		size:   size,
-		table: table,
+		table:  table,
 	}
 }
 

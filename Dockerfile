@@ -13,13 +13,13 @@ RUN pnpm run build
 
 FROM golang:1.23 AS builder
 
-RUN useradd -u 1001 -m namemyserver
-
 WORKDIR /app
 
 COPY go.* ./
 
 RUN go mod download
+
+RUN go install github.com/a-h/templ/cmd/templ@latest
 
 COPY ./cmd ./cmd
 COPY ./internal ./internal

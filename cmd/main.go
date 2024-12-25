@@ -102,9 +102,9 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 	pairStore := sqlitestore.NewPairStore(db)
 
 	s := server.New(&server.Services{
-		Logger: logger,
-		Config: cfg,
-		Assets: assets,
+		Logger:    logger,
+		Config:    cfg,
+		Assets:    assets,
 		PairStore: pairStore,
 	})
 

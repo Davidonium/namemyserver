@@ -5,8 +5,6 @@ import (
 
 	"github.com/jmoiron/sqlx"
 )
-
-
 const singlePairSQL = `
 SELECT
     LOWER(adjectives.value || '-' || nouns.value) AS pair
