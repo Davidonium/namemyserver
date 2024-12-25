@@ -130,10 +130,13 @@ func runSeed(logger *slog.Logger, cfg env.Config) error {
 		"adjectives",
 	}
 	for _, t := range tables {
+		logger.Info("seeding table", "table", t)
 		if err := seedByTable(ctx, logger, db, t); err != nil {
 			logger.Error("failure running seed", "error", err, "table", t)
 		}
 	}
+
+	logger.Info("seed finished")
 
 	return nil
 }
