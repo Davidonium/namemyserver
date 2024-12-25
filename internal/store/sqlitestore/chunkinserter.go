@@ -56,7 +56,7 @@ func (ci *ChunkInserter) Flush(ctx context.Context) error {
 	ds := goqu.Insert(ci.table).Rows(ci.chunk...)
 	sql, args, _ := ds.ToSQL()
 
-	ci.logger.Info("executing sql", "sql", sql, "args", args)
+	ci.logger.Debug("executing sql", "sql", sql, "args", args)
 
 	if _, err := ci.db.ExecContext(ctx, sql, args...); err != nil {
 		return fmt.Errorf("failed to seed database at chunk idx %d: %w", ci.idx, err)
