@@ -15,6 +15,8 @@ CREATE TABLE adjectives (
     updated_at DATETIME DEFAULT NULL,
     archived_at DATETIME DEFAULT NULL
 );
+CREATE UNIQUE INDEX idx_unique_value_nouns ON nouns(value);
+CREATE UNIQUE INDEX idx_unique_value_adjectives ON adjectives(value);
 -- Dbmate schema migrations
 INSERT INTO "schema_migrations" (version) VALUES
   ('20240609195352');

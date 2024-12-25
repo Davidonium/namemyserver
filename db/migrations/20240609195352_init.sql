@@ -17,6 +17,10 @@ CREATE TABLE adjectives (
     archived_at DATETIME DEFAULT NULL
 );
 
+CREATE UNIQUE INDEX idx_unique_value_nouns ON nouns(value);
+
+CREATE UNIQUE INDEX idx_unique_value_adjectives ON adjectives(value);
+
 -- migrate:down
 DROP TABLE nouns;
 DROP TABLE adjectives;
