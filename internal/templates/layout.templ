@@ -10,8 +10,8 @@ templ Layout() {
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>Name my Server</title>
 			<link rel="apple-touch-icon" href={ vite.AssetURL(ctx, "apple-touch-icon.png") }/>
-			<link rel="icon" type="image/png" sizes="any" href={ vite.AssetURL(ctx, "favicon-32.png") }/>
-			<link rel="icon" href={ vite.AssetURL(ctx, "favicon.svg") } type="image/svg+xml"/>
+			<link rel="icon" type="image/png" sizes="any" href={ vite.AssetURL(ctx, "favicon-64.png") }/>
+			// <link rel="icon" href={ vite.AssetURL(ctx, "favicon.svg") } type="image/svg+xml"/>
 			@templ.Raw(vite.RenderTags(ctx, []string{"src/js/entries/app.js"}))
 		</head>
 		<body class="min-h-screen bg-base-100" hx-boost="true">
