@@ -26,7 +26,7 @@ func addRoutes(
 
 	app := appMiddleware(svcs.Logger, svcs.Assets)
 	m.Handle("GET /", app(homeHandler()))
-	m.Handle("POST /generate", app(generateHandler()))
+	m.Handle("POST /generate", app(generateHandler(svcs.PairStore)))
 	m.Handle("GET /health", healthHandler())
 }
 

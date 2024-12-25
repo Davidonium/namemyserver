@@ -1,25 +1,20 @@
 package server
 
 import (
-	"math/rand/v2"
 	"net/http"
 
+	"github.com/davidonium/namemyserver/internal/store/sqlitestore"
 	"github.com/davidonium/namemyserver/internal/templates"
 )
 
-func generateHandler() appHandlerFunc {
+func generateHandler(pairStore *sqlitestore.PairStore) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		// TODO all logic
-		names := []string{
-			"happy-dog",
-			"happy-cat",
-			"big-bird",
-			"small-cow",
+		p, err := pairStore.FindSinglePair(r.Context())
+		if err != nil {
+			return err
 		}
 
-		name := names[rand.UintN(uint(len(names)))]
-
-		c := templates.GeneratePartial(templates.GenerateViewModel{Name: name})
+		c := templates.GeneratePartial(templates.GenerateViewModel{Name: p})
 		return component(w, r, http.StatusOK, c)
 	}
 }

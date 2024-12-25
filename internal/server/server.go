@@ -10,13 +10,15 @@ import (
 	"github.com/a-h/templ"
 
 	"github.com/davidonium/namemyserver/internal/env"
+	"github.com/davidonium/namemyserver/internal/store/sqlitestore"
 	"github.com/davidonium/namemyserver/internal/vite"
 )
 
 type Services struct {
-	Logger *slog.Logger
-	Config env.Config
-	Assets *vite.Assets
+	Logger    *slog.Logger
+	Config    env.Config
+	Assets    *vite.Assets
+	PairStore *sqlitestore.PairStore
 }
 
 func New(svcs *Services) *http.Server {
