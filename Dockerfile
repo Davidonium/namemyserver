@@ -4,9 +4,10 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
 RUN corepack enable
-COPY ./frontend /app
+COPY ./frontend /app/frontend
+COPY ./internal/templates/ /app/internal/templates
 
-WORKDIR /app
+WORKDIR /app/frontend
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run build
@@ -19,22 +20,18 @@ COPY go.* ./
 
 RUN go mod download
 
-RUN go install github.com/a-h/templ/cmd/templ@latest
-
 COPY ./cmd ./cmd
 COPY ./internal ./internal
 COPY ./db/ ./db
-COPY --from=frontend /app/dist /app/frontend/dist
+COPY --from=frontend /app/frontend/dist /app/frontend/dist
 COPY embed.go .
-COPY Makefile ./
+COPY Makefile .
 
 RUN make build
 
 FROM gcr.io/distroless/static-debian12:nonroot
 
-WORKDIR /
+WORKDIR /app
 COPY --from=builder /app/build/namemyserver /namemyserver
 
-USER 1001
-
-ENTRYPOINT ["/namemyserver", "server"]
+ENTRYPOINT ["/app/namemyserver", "server"]

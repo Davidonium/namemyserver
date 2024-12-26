@@ -3,7 +3,7 @@ GO := go
 LDFLAGS := '-w -s'
 BUILD_DIR := ./build
 APP_BIN := $(BUILD_DIR)/namemyserver
-APP_VERSION := 1.0
+APP_VERSION := 0.1.0
 
 SOURCE_FILES := $(shell find . -type f -name "*.go")
 
@@ -26,20 +26,24 @@ install-tools: ## installs tools required for development and building the proje
 	go install github.com/air-verse/air@latest
 	go install github.com/a-h/templ/cmd/templ@latest
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
-	go install github.com/deepmap/oapi-codegen/v2/cmd/oapi-codegen@v2.2.0
+	go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.4.1
 	# assumes ~/.local/bin is in $PATH
 	curl -fsSL -o ~/.local/bin/dbmate https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64 && chmod +x ~/.local/bin/dbmate
 
 
 $(APP_BIN): $(SOURCE_FILES)
 	@mkdir -p $(BUILD_DIR)
-	$(GO) build -ldflags $(LDFLAGS) -o $(APP_BIN) ./cmd/namemyserver
+	$(GO) build -ldflags $(LDFLAGS) -o $(APP_BIN) ./cmd
 
-build: templ $(APP_BIN) ## builds namemyserver's binary for production use in the current machine's architecture
+build: $(APP_BIN) ## builds namemyserver's binary for production use in the current machine's architecture
 
 .PHONY: templ
 templ: ## generates templ go code based on templ templates
 	templ generate
+
+.PHONY: generate
+generate: templ ## runs all code generation targets
+
 
 .PHONY: test
 test: ## runs all namemyserver tests
@@ -68,16 +72,16 @@ format: ## formats the codebase using golangci-lint linters
 
 .PHONY: docker
 docker: ## builds the application's docker image
-	@docker build --progress=plain -t davidonium/namemyserver:$(APP_VERSION) .
+	@docker build --no-cache --progress=plain -t davidonium/namemyserver:$(APP_VERSION) .
 	@docker tag davidonium/namemyserver:$(APP_VERSION) davidonium/namemyserver:latest
 
 
 .PHONY: dbmigrate
-dbmigrate:
+dbmigrate: ## applies database migrations
 	dbmate up
 
 .PHONY: dbreset
-dbreset:
+dbreset: ## recreates the current database and applies migrations, useful for development (WARN: destroys data)
 	dbmate drop
 	dbmate create
 	dbmate up
