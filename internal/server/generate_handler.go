@@ -15,7 +15,10 @@ func generateHandler(pairStore *sqlitestore.PairStore) appHandlerFunc {
 			return err
 		}
 
-		c := templates.GeneratePartial(templates.GenerateViewModel{Name: fmt.Sprintf("%s-%s", p.Adjective, p.Noun)})
+		// forced kebab-case, parameterize in the future
+		name := fmt.Sprintf("%s-%s", p.Adjective, p.Noun)
+
+		c := templates.GeneratePartial(templates.GenerateViewModel{Name: name})
 		return component(w, r, http.StatusOK, c)
 	}
 }
