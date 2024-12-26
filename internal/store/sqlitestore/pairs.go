@@ -3,8 +3,9 @@ package sqlitestore
 import (
 	"context"
 
-	"github.com/davidonium/namemyserver/internal/namemyserver"
 	"github.com/jmoiron/sqlx"
+
+	"github.com/davidonium/namemyserver/internal/namemyserver"
 )
 
 const singlePairSQL = `
@@ -30,7 +31,7 @@ func NewPairStore(db *sqlx.DB) *PairStore {
 func (s *PairStore) FindSinglePair(ctx context.Context) (namemyserver.Pair, error) {
 	var row struct {
 		Adjective string `db:"adjective"`
-		Noun string `db:"noun"`
+		Noun      string `db:"noun"`
 	}
 	if err := s.db.GetContext(ctx, &row, singlePairSQL); err != nil {
 		return namemyserver.Pair{}, err
@@ -38,6 +39,6 @@ func (s *PairStore) FindSinglePair(ctx context.Context) (namemyserver.Pair, erro
 
 	return namemyserver.Pair{
 		Adjective: row.Adjective,
-		Noun: row.Noun,
+		Noun:      row.Noun,
 	}, nil
 }

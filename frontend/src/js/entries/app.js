@@ -13,7 +13,7 @@ onLoad((elm) => {
   on(copyEl, "click", (e) => {
     const target = e.currentTarget;
     writeTextToClipboard(target.dataset.copyValue);
-    const checkmark = find(target, ".js-checkmark")
+    const checkmark = find(target, ".js-checkmark");
     checkmark.classList.remove("opacity-0");
     setTimeout(() => {
       checkmark.classList.add("opacity-0");
