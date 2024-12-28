@@ -10,7 +10,7 @@ import (
 	"github.com/a-h/templ"
 
 	"github.com/davidonium/namemyserver/internal/env"
-	"github.com/davidonium/namemyserver/internal/store/sqlitestore"
+	"github.com/davidonium/namemyserver/internal/namemyserver"
 	"github.com/davidonium/namemyserver/internal/vite"
 )
 
@@ -18,13 +18,16 @@ type Services struct {
 	Logger    *slog.Logger
 	Config    env.Config
 	Assets    *vite.Assets
-	PairStore *sqlitestore.PairStore
+	Generator *namemyserver.Generator
 }
 
 func New(svcs *Services) *http.Server {
 	m := http.NewServeMux()
-
 	addRoutes(m, svcs)
+
+	apiMux := http.NewServeMux()
+	addAPIRoutes(apiMux, svcs)
+	m.Handle("/api/v1alpha1/", http.StripPrefix("/api/v1alpha1", apiMux))
 
 	return &http.Server{
 		Addr:              "127.0.0.1:8080", // TODO parameterize

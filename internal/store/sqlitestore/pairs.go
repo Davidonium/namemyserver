@@ -28,7 +28,7 @@ func NewPairStore(db *sqlx.DB) *PairStore {
 	return &PairStore{db: db}
 }
 
-func (s *PairStore) FindSinglePair(ctx context.Context) (namemyserver.Pair, error) {
+func (s *PairStore) GetSinglePair(ctx context.Context) (namemyserver.Pair, error) {
 	var row struct {
 		Adjective string `db:"adjective"`
 		Noun      string `db:"noun"`

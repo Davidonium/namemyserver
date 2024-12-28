@@ -16,8 +16,9 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/mattn/go-sqlite3"
 
-	"github.com/davidonium/namemyserver"
+	embed "github.com/davidonium/namemyserver"
 	"github.com/davidonium/namemyserver/internal/env"
+	"github.com/davidonium/namemyserver/internal/namemyserver"
 	"github.com/davidonium/namemyserver/internal/server"
 	"github.com/davidonium/namemyserver/internal/store/sqlitestore"
 	"github.com/davidonium/namemyserver/internal/vite"
@@ -80,7 +81,7 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 
 	dbm := dbmate.New(cfg.DatabaseURL)
 	dbm.AutoDumpSchema = false
-	dbm.FS = namemyserver.MigrationsFS
+	dbm.FS = embed.MigrationsFS
 
 	logger.Info("applying migrations...")
 	if err := dbm.Migrate(); err != nil {
@@ -94,18 +95,20 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 
 	if cfg.AssetsUseManifest {
 		logger.Info("assets manifest is enabled, loading manifest from embed fs")
-		if err := assets.LoadManifestFromFS(namemyserver.FrontendFS, cfg.AssetsManifestLocation); err != nil {
+		if err := assets.LoadManifestFromFS(embed.FrontendFS, cfg.AssetsManifestLocation); err != nil {
 			return fmt.Errorf("failed to load assets from fs at %s: %w", cfg.AssetsManifestLocation, err)
 		}
 	}
 
 	pairStore := sqlitestore.NewPairStore(db)
 
+	generator := namemyserver.NewGenerator(pairStore)
+
 	s := server.New(&server.Services{
 		Logger:    logger,
 		Config:    cfg,
 		Assets:    assets,
-		PairStore: pairStore,
+		Generator: generator,
 	})
 
 	logger.Info("starting http server", "addr", s.Addr)

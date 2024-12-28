@@ -4,19 +4,21 @@ import (
 	"net/http"
 
 	"github.com/davidonium/namemyserver/internal/namemyserver"
-	"github.com/davidonium/namemyserver/internal/templates"
 )
 
-func generateHandler(generator *namemyserver.Generator) appHandlerFunc {
+func apiGenerateHandler(generator *namemyserver.Generator) appHandlerFunc {
+	type response struct {
+		Name string `json:"name"`
+	}
+
 	return func(w http.ResponseWriter, r *http.Request) error {
 		res, err := generator.Generate(r.Context(), namemyserver.GenerateOptions{})
 		if err != nil {
 			return err
 		}
 
-		c := templates.GeneratePartial(templates.GenerateViewModel{
+		return encode(w, http.StatusOK, response{
 			Name: res.Name,
 		})
-		return component(w, r, http.StatusOK, c)
 	}
 }

@@ -7,7 +7,6 @@ import (
 
 	"github.com/davidonium/namemyserver"
 	"github.com/davidonium/namemyserver/internal/templates"
-	"github.com/davidonium/namemyserver/internal/vite"
 )
 
 func addRoutes(
@@ -24,46 +23,56 @@ func addRoutes(
 		}
 	}
 
-	app := appMiddleware(svcs.Logger, svcs.Assets)
-	m.Handle("GET /", app(homeHandler()))
-	m.Handle("POST /generate", app(generateHandler(svcs.PairStore)))
+	c := chainMiddleware([]MiddlewareFunc{
+		viteMiddleware(svcs.Assets),
+	})
+	app := appMiddleware(svcs.Logger, WebErrorHandler(svcs.Logger, svcs.Config.Debug))
+
+	m.Handle("GET /{$}", c(app(homeHandler())))
+	m.Handle("POST /generate", c(app(generateHandler(svcs.Generator))))
+
 	m.Handle("GET /health", healthHandler())
 }
 
-func healthHandler() http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "text/plain")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("OK"))
-	})
+func addAPIRoutes(m *http.ServeMux, svcs *Services) {
+	app := appMiddleware(svcs.Logger, APIErrorHandler(svcs.Logger, svcs.Config.Debug))
+
+	m.Handle("POST /generate", app(apiGenerateHandler(svcs.Generator)))
 }
 
 type appHandlerFunc func(http.ResponseWriter, *http.Request) error
 
-// appMiddleware builds a middleware that injects the assets service for templ components and handles errors
-// it allows the user to write handlers that return an error and are handled centraly.
-func appMiddleware(logger *slog.Logger, assets *vite.Assets) func(appHandlerFunc) http.Handler {
-	return func(h appHandlerFunc) http.Handler {
-		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-			// inject assets service into the context so that it's available to go-templ components
-			ctx := vite.NewContextWithAssets(r.Context(), assets)
-			r = r.WithContext(ctx)
+type ErrorHandler func(http.ResponseWriter, *http.Request, error)
 
-			if err := h(rw, r); err != nil {
-				logger.Error("error serving http request",
-					slog.Any("err", err),
-					slog.String("request_uri", r.RequestURI),
-				)
-
-				c := templates.InternalErrorPage()
-				if err := component(rw, r, http.StatusInternalServerError, c); err != nil {
-					logger.Error("failure rendering error page",
-						slog.Any("err", err),
-						slog.String("request_uri", r.RequestURI),
-					)
-				}
-				return
-			}
+func WebErrorHandler(logger *slog.Logger, debug bool) ErrorHandler {
+	return func(w http.ResponseWriter, r *http.Request, err error) {
+		c := templates.InternalErrorPage(templates.InternalErrorViewModel{
+			Err:      err,
+			PrintErr: debug,
 		})
+		if err := component(w, r, http.StatusInternalServerError, c); err != nil {
+			logger.Error("failure rendering error page",
+				slog.Any("err", err),
+				slog.String("request.uri", r.RequestURI),
+			)
+		}
+	}
+}
+
+func APIErrorHandler(logger *slog.Logger, debug bool) ErrorHandler {
+	return func(w http.ResponseWriter, _ *http.Request, err error) {
+		// TODO proper error handling and maybe use the problem detail RFC https://www.rfc-editor.org/rfc/rfc7807
+		res := map[string]any{
+			"title": "Internal Server Error",
+		}
+
+		// TODO parameterize this based on app environment
+		if debug {
+			res["internal.error"] = err.Error()
+		}
+
+		if err := encode(w, http.StatusInternalServerError, res); err != nil {
+			logger.Error("could not write error response", slog.Any("err", err))
+		}
 	}
 }

@@ -1,5 +1,15 @@
 package templates
 
-templ InternalErrorPage() {
-	<div>Internal Error happened</div>
+type InternalErrorViewModel struct {
+	Err      error
+	PrintErr bool
+}
+
+templ InternalErrorPage(vm InternalErrorViewModel) {
+	@Layout() {
+		<div>Internal Error happened</div>
+		if vm.PrintErr {
+			<pre>{ vm.Err.Error() }</pre>
+		}
+	}
 }
