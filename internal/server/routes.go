@@ -65,8 +65,6 @@ func APIErrorHandler(logger *slog.Logger, debug bool) ErrorHandler {
 		res := map[string]any{
 			"title": "Internal Server Error",
 		}
-
-		// TODO parameterize this based on app environment
 		if debug {
 			res["internal.error"] = err.Error()
 		}
