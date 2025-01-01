@@ -4,16 +4,14 @@ CREATE TABLE nouns (
     value TEXT NOT NULL,
     from_seed INT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT NULL,
-    archived_at DATETIME DEFAULT NULL
+    updated_at DATETIME DEFAULT NULL
 );
 CREATE TABLE adjectives (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     value TEXT NOT NULL,
     from_seed INT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT NULL,
-    archived_at DATETIME DEFAULT NULL
+    updated_at DATETIME DEFAULT NULL
 );
 CREATE UNIQUE INDEX idx_unique_value_nouns ON nouns(value);
 CREATE UNIQUE INDEX idx_unique_value_adjectives ON adjectives(value);
