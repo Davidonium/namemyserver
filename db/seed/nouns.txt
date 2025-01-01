@@ -5,6 +5,7 @@ aether
 altar
 amber
 anchor
+android
 ant
 apex
 apple
@@ -13,14 +14,17 @@ apron
 arc
 arcade
 armchair
+armor
 arrow
 artifact
+asteroid
 avalanche
 avocado
 banana
 bask
 bastion
 beacon
+beam
 bean
 bear
 bearer
@@ -38,6 +42,7 @@ bluff
 board
 book
 boots
+bot
 boulder
 breeze
 brink
@@ -84,6 +89,7 @@ crow
 crystal
 cup
 curtain
+cyborg
 dagger
 date
 dawn
@@ -103,6 +109,7 @@ dream
 dress
 drift
 driftwood
+droid
 duet
 dune
 eagle
@@ -116,7 +123,9 @@ elixir
 elk
 ember
 emu
+engine
 eraser
+exosuit
 expanse
 fable
 falcon
@@ -166,6 +175,7 @@ hearth
 heaven
 highlighter
 hollow
+hologram
 hood
 horizon
 hush
@@ -206,6 +216,7 @@ labyrinth
 lair
 lamp
 lantern
+laser
 leaf
 leap
 legacy
@@ -229,6 +240,7 @@ marvel
 mat
 meadow
 meander
+mech
 melon
 mirror
 mist
@@ -244,6 +256,7 @@ muse
 myst
 mystery
 mystic
+nano
 nebula
 nectar
 nest
@@ -332,6 +345,7 @@ river
 roam
 roar
 robe
+robot
 rover
 rug
 ruler
@@ -341,12 +355,14 @@ saga
 sage
 salmon
 sapphire
+satellite
 scarf
 scissors
 scout
 seahorse
 seat
 secret
+servo
 shade
 shadow
 shard
@@ -356,6 +372,7 @@ shelf
 shirt
 shoes
 shroud
+shuttle
 signal
 skyline
 snake
@@ -365,6 +382,7 @@ sofa
 soul
 spark
 sparrow
+sphere
 spinach
 spire
 spirit
@@ -390,9 +408,11 @@ swine
 table
 tape
 teacher
+tech
 temple
 terra
 throne
+thruster
 thunder
 tide
 tie
@@ -439,6 +459,7 @@ wall
 walnut
 wand
 wanderer
+weapon
 whale
 wharf
 whimsy
