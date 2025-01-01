@@ -14,10 +14,12 @@ SELECT
 	nouns.value as noun
 FROM
     adjectives
-CROSS JOIN
+JOIN
     nouns
-ORDER BY
-    RANDOM()
+WHERE
+    adjectives.id >= (SELECT ABS(RANDOM()) % (SELECT COUNT(*) FROM adjectives) + 1)
+AND
+    nouns.id >= (SELECT ABS(RANDOM()) % (SELECT COUNT(*) FROM nouns) + 1)
 LIMIT 1`
 
 type PairStore struct {
