@@ -55,14 +55,14 @@ func (s *PairStore) Stats(ctx context.Context) (namemyserver.Stats, error) {
 	var row struct {
 		PairCount      int `db:"pair_count"`
 		AdjectiveCount int `db:"adjective_count"`
-		NounCount int `db:"noun_count"`
+		NounCount      int `db:"noun_count"`
 	}
 	if err := s.db.GetContext(ctx, &row, statsSQL); err != nil {
 		return namemyserver.Stats{}, err
 	}
 	return namemyserver.Stats{
-		PairCount: row.PairCount,
+		PairCount:      row.PairCount,
 		AdjectiveCount: row.AdjectiveCount,
-		NounCount: row.NounCount,
+		NounCount:      row.NounCount,
 	}, nil
 }
