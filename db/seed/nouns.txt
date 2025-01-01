@@ -26,6 +26,7 @@ bear
 bearer
 beet
 berry
+binder
 bird
 bison
 blade
@@ -34,6 +35,8 @@ bliss
 bloom
 blouse
 bluff
+board
+book
 boots
 boulder
 breeze
@@ -52,6 +55,7 @@ cat
 cavern
 celery
 chair
+chalk
 champion
 chard
 chasm
@@ -61,6 +65,7 @@ citadel
 citrus
 clash
 clasp
+class
 cliff
 cloak
 cloud
@@ -111,6 +116,7 @@ elixir
 elk
 ember
 emu
+eraser
 expanse
 fable
 falcon
@@ -122,6 +128,7 @@ flare
 flint
 floor
 flux
+folder
 forest
 forge
 fortress
@@ -138,6 +145,7 @@ glasses
 gleam
 glimmer
 glimpse
+globe
 gloom
 glory
 glove
@@ -156,6 +164,7 @@ hawk
 haze
 hearth
 heaven
+highlighter
 hollow
 hood
 horizon
@@ -213,7 +222,9 @@ lunar
 lurk
 lynx
 mango
+map
 maple
+marker
 marvel
 mat
 meadow
@@ -242,6 +253,7 @@ nightfall
 nimbus
 noble
 nomad
+notebook
 nova
 nox
 oak
@@ -263,6 +275,7 @@ otter
 owl
 panda
 papaya
+paper
 paradise
 parrot
 path
@@ -272,6 +285,8 @@ peak
 pear
 pearl
 pegasus
+pen
+pencil
 pheasant
 phoenix
 pillar
@@ -298,6 +313,7 @@ quest
 quill
 quilt
 quiver
+quiz
 rabbit
 radiance
 radish
@@ -318,6 +334,7 @@ roar
 robe
 rover
 rug
+ruler
 rust
 saber
 saga
@@ -325,6 +342,7 @@ sage
 salmon
 sapphire
 scarf
+scissors
 scout
 seahorse
 seat
@@ -352,6 +370,7 @@ spire
 spirit
 squash
 stag
+stapler
 star
 stoat
 stone
@@ -360,6 +379,7 @@ storm
 strawberry
 stride
 strike
+student
 suit
 summit
 sunrise
@@ -368,6 +388,8 @@ sweater
 sweetcorn
 swine
 table
+tape
+teacher
 temple
 terra
 throne
@@ -421,6 +443,7 @@ whale
 wharf
 whimsy
 whisper
+whiteboard
 wildfire
 willow
 window
