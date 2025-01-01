@@ -19,6 +19,7 @@ type Services struct {
 	Config    env.Config
 	Assets    *vite.Assets
 	Generator *namemyserver.Generator
+	PairStore namemyserver.PairStore
 }
 
 func New(svcs *Services) *http.Server {

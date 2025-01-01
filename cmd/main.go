@@ -109,6 +109,7 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 		Config:    cfg,
 		Assets:    assets,
 		Generator: generator,
+		PairStore: pairStore,
 	})
 
 	logger.Info("starting http server", "addr", s.Addr)

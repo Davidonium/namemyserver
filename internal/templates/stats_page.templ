@@ -1,0 +1,43 @@
+package templates
+
+import "strconv"
+
+type StatsViewModel struct {
+	PairCount      int
+	AdjectiveCount int
+	NounCount      int
+}
+
+templ StatsPage(vm StatsViewModel) {
+	@Layout() {
+		<div class="flex flex-col items-center py-10">
+			<div class="text-4xl">Stats</div>
+			<div class="flex flex-row gap-3 mt-10 w-2/3">
+				<div class="flex-1 rounded shadow-lg p-5">
+					<div class="text-xl">
+						Pair Count
+					</div>
+					<div class="mt-5 text-right text-2xl font-bold">
+						{ strconv.Itoa(vm.PairCount) }
+					</div>
+				</div>
+				<div class="flex-1 rounded shadow-lg p-5">
+					<div class="text-xl">
+						Adjective Count
+					</div>
+					<div class="mt-5 text-right text-2xl font-bold">
+						{ strconv.Itoa(vm.AdjectiveCount) }
+					</div>
+				</div>
+				<div class="flex-1 rounded shadow-lg p-5">
+					<div class="text-xl">
+						Noun Count
+					</div>
+					<div class="mt-5 text-right text-2xl font-bold">
+						{ strconv.Itoa(vm.NounCount) }
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}

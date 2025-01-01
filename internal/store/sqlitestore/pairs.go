@@ -42,3 +42,25 @@ func (s *PairStore) GetSinglePair(ctx context.Context) (namemyserver.Pair, error
 		Noun:      row.Noun,
 	}, nil
 }
+
+const statsSQL = `
+SELECT
+    (SELECT count(*) FROM nouns) AS noun_count,
+    (SELECT count(*) FROM adjectives) AS adjective_count,
+    (SELECT count(*) FROM nouns CROSS JOIN adjectives) AS pair_count`
+
+func (s *PairStore) Stats(ctx context.Context) (namemyserver.Stats, error) {
+	var row struct {
+		PairCount      int `db:"pair_count"`
+		AdjectiveCount int `db:"adjective_count"`
+		NounCount int `db:"noun_count"`
+	}
+	if err := s.db.GetContext(ctx, &row, statsSQL); err != nil {
+		return namemyserver.Stats{}, err
+	}
+	return namemyserver.Stats{
+		PairCount: row.PairCount,
+		AdjectiveCount: row.AdjectiveCount,
+		NounCount: row.NounCount,
+	}, nil
+}

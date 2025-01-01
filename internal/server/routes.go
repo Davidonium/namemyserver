@@ -28,10 +28,10 @@ func addRoutes(
 	})
 	app := appMiddleware(svcs.Logger, WebErrorHandler(svcs.Logger, svcs.Config.Debug))
 
-	m.Handle("GET /{$}", c(app(homeHandler())))
-	m.Handle("POST /generate", c(app(generateHandler(svcs.Generator))))
-
 	m.Handle("GET /health", healthHandler())
+	m.Handle("GET /{$}", c(app(homeHandler())))
+	m.Handle("GET /stats", c(app(statsHandler(svcs.PairStore))))
+	m.Handle("POST /generate", c(app(generateHandler(svcs.Generator))))
 }
 
 func addAPIRoutes(m *http.ServeMux, svcs *Services) {
