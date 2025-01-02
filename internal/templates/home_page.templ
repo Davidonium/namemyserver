@@ -5,7 +5,12 @@ type HomeViewModel struct {
 
 templ HomePage(vm HomeViewModel) {
 	@Layout() {
-		<div class="flex flex-col items-center justify-center min-h-screen gap-5">
+		<div class="relative flex flex-col items-center justify-center min-h-screen gap-5">
+            <div class="absolute top-0 right-0">
+                <a href="/stats" class="inline-block p-4">
+                    @StatsIcon()
+                </a>
+            </div>
 			<h1 class="text-3xl">Generate a server name</h1>
 			<div id="generate-name-container" class="w-full flex justify-center"><span class="text-gray-400">The name will be here</span></div>
 			<button

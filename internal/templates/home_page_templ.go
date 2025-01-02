@@ -44,7 +44,15 @@ func HomePage(vm HomeViewModel) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col items-center justify-center min-h-screen gap-5\"><h1 class=\"text-3xl\">Generate a server name</h1><div id=\"generate-name-container\" class=\"w-full flex justify-center\"><span class=\"text-gray-400\">The name will be here</span></div><button hx-post=\"/generate\" hx-target=\"#generate-name-container\" class=\"group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75\" type=\"submit\"><span class=\"block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent\">Generate</span></button></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"relative flex flex-col items-center justify-center min-h-screen gap-5\"><div class=\"absolute top-0 right-0\"><a href=\"/stats\" class=\"inline-block p-4\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = StatsIcon().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div><h1 class=\"text-3xl\">Generate a server name</h1><div id=\"generate-name-container\" class=\"w-full flex justify-center\"><span class=\"text-gray-400\">The name will be here</span></div><button hx-post=\"/generate\" hx-target=\"#generate-name-container\" class=\"group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75\" type=\"submit\"><span class=\"block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent\">Generate</span></button></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

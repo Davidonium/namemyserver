@@ -49,14 +49,22 @@ func StatsPage(vm StatsViewModel) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col items-center py-10\"><div class=\"text-4xl\">Stats</div><div class=\"flex flex-row gap-3 mt-10 w-2/3\"><div class=\"flex-1 rounded shadow-lg p-5\"><div class=\"text-xl\">Pair Count</div><div class=\"mt-5 text-right text-2xl font-bold\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"relative flex flex-col items-center py-10\"><div class=\"absolute top-0 left-0\"><a href=\"/\" class=\"inline-block p-4\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = HomeIcon().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div><div class=\"text-4xl\">Stats</div><div class=\"flex flex-row gap-3 mt-10 w-2/3\"><div class=\"flex-1 rounded shadow-lg p-5\"><div class=\"text-xl\">Pair Count</div><div class=\"mt-5 text-right text-2xl font-bold\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(vm.PairCount))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/stats_page.templ`, Line: 21, Col: 34}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/stats_page.templ`, Line: 26, Col: 34}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -69,7 +77,7 @@ func StatsPage(vm StatsViewModel) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(vm.AdjectiveCount))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/stats_page.templ`, Line: 29, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/stats_page.templ`, Line: 34, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -82,7 +90,7 @@ func StatsPage(vm StatsViewModel) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(vm.NounCount))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/stats_page.templ`, Line: 37, Col: 34}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/stats_page.templ`, Line: 42, Col: 34}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
