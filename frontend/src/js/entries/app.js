@@ -5,6 +5,19 @@ import { on, onLoad, find } from "htmx.org";
 import { writeTextToClipboard } from "~/lib/clipboard";
 
 onLoad((elm) => {
+  registerCopyBtnCallback(elm);
+
+  safeOn(".js-drawer-open", "click", () => {
+    find("#drawer").classList.remove("translate-x-full")
+  });
+
+  safeOn(".js-drawer-close", "click", () => {
+    find("#drawer").classList.add("translate-x-full")
+  })
+});
+
+
+function registerCopyBtnCallback(elm) {
   const copyEl = find(elm, ".js-copy");
   if (!copyEl) {
     return;
@@ -19,12 +32,14 @@ onLoad((elm) => {
       checkmark.classList.add("opacity-0");
     }, 2000);
   });
-});
 
-on(".js-drawer-open", "click", () => {
-  find("#drawer").classList.remove("translate-x-full")
-});
+}
 
-on(".js-drawer-close", "click", () => {
-  find("#drawer").classList.add("translate-x-full")
-})
+function safeOn(selector, eventName, callback) {
+  const el = find(selector);
+  if (!el) {
+    return;
+  }
+
+  on(el, eventName, callback);
+}

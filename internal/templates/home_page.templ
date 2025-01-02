@@ -37,10 +37,16 @@ templ HomePage(vm HomeViewModel) {
 					</svg>
 					<span class="sr-only">Close menu</span>
 				</button>
-                <div>
-                <span class="text-xl font-semibold">Configuration</span>
-
-                </div>
+				<div class="text-xl font-semibold">Configuration</div>
+				<div class="mt-4">
+					<div class="relative mb-6">
+						<label for="default-range" class="block mb-2 text-sm font-medium text-gray-800">Max Length</label>
+						<input id="default-range" type="range" value="14" min="7" max="19" class="accent-orange-600 bg-gradient-to-r from-purple-500 to-cyan-300 w-full h-2 rounded-lg appearance-none cursor-pointer"/>
+						<span class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">7</span>
+						<span class="text-sm text-gray-500 dark:text-gray-400 absolute start-1/2 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">12</span>
+						<span class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">19</span>
+					</div>
+				</div>
 			</div>
 		</div>
 	}
