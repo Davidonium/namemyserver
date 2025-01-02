@@ -44,7 +44,7 @@ func HomePage(vm HomeViewModel) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"relative flex flex-col items-center justify-center min-h-screen gap-5\"><div class=\"absolute top-0 right-0\"><a href=\"/stats\" class=\"inline-block p-4\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"relative flex flex-col items-center justify-center min-h-screen gap-5\"><div class=\"absolute flex top-0 right-0 z-10\"><a href=\"/stats\" class=\"inline-block p-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -52,7 +52,15 @@ func HomePage(vm HomeViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div><h1 class=\"text-3xl\">Generate a server name</h1><div id=\"generate-name-container\" class=\"w-full flex justify-center\"><span class=\"text-gray-400\">The name will be here</span></div><button hx-post=\"/generate\" hx-target=\"#generate-name-container\" class=\"group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75\" type=\"submit\"><span class=\"block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent\">Generate</span></button></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a><div class=\"js-drawer-open p-4 cursor-pointer\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = ConfigIcon().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><h1 class=\"text-3xl\">Generate a server name</h1><div id=\"generate-name-container\" class=\"w-full flex justify-center\"><span class=\"text-gray-400\">The name will be here</span></div><button hx-post=\"/generate\" hx-target=\"#generate-name-container\" class=\"group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75\" type=\"submit\"><span class=\"block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent\">Generate</span></button></div><div id=\"drawer\" class=\"fixed top-0 right-0 z-20 w-60 h-screen p-4 bg-white overflow-y-auto transition-transform translate-x-full shadow-xl\" tabindex=\"-1\" aria-hiden=\"true\"><div class=\"relative flex flex-col w-full h-full\"><button type=\"button\" class=\"js-drawer-close text-gray-400 bg-transparent hover:bg-slate-300 hover:text-gray-900 rounded-lg text-sm w-6 h-6 absolute top-0 end-0 flex items-center justify-center\"><svg class=\"w-3 h-3\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 14 14\"><path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6\"></path></svg> <span class=\"sr-only\">Close menu</span></button><div><span class=\"text-xl font-semibold\">Configuration</span></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

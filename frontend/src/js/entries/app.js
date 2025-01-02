@@ -20,3 +20,11 @@ onLoad((elm) => {
     }, 2000);
   });
 });
+
+on(".js-drawer-open", "click", () => {
+  find("#drawer").classList.remove("translate-x-full")
+});
+
+on(".js-drawer-close", "click", () => {
+  find("#drawer").classList.add("translate-x-full")
+})
