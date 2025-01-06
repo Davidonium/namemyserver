@@ -23,4 +23,11 @@ u(document).on("htmx:load", (ev) => {
   el.find(".js-drawer-close").on("click", () => {
     u("#drawer").addClass("translate-x-full");
   });
+
+
 });
+
+const lengthValueEl = u(".js-length-range-value").first();
+u(".js-length-range-slider").on("input", (ev) => {
+  lengthValueEl.textContent = ev.currentTarget.value;
+})
