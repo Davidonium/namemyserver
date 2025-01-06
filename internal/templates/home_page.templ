@@ -7,6 +7,12 @@ templ HomePage(vm HomeViewModel) {
 	@Layout() {
 		<div class="relative flex flex-col items-center justify-center min-h-screen gap-5">
 			<div class="absolute flex top-0 right-0 z-10">
+				<a href="/docs" class="inline-block p-4" title="Documentation and help">
+					@DocsIcon()
+				</a>
+				<a href="/buckets" class="inline-block p-4" title="Buckets">
+					@BucketsIcon()
+				</a>
 				<a href="/stats" class="inline-block p-4" title="Stats">
 					@StatsIcon()
 				</a>
@@ -53,13 +59,13 @@ templ HomePage(vm HomeViewModel) {
 							<div class="inline-flex rounded-md shadow-sm" role="group">
 								<label>
 									<input type="radio" class="sr-only peer" name="lengthMode" checked/>
-									<div class="px-2 py-1 text-xs font-medium text-slate-800 bg-white border border-orange-200 rounded-s cursor-pointer hover:bg-orange-100 peer-checked:bg-orange-500 peer-checked:text-white">
+									<div class="px-2 py-1 text-xs font-medium text-slate-800 bg-white border border-orange-200 rounded-s cursor-pointer hover:bg-orange-100 peer-checked:bg-orange-600 peer-checked:text-white">
 										Up to
 									</div>
 								</label>
 								<label>
 									<input type="radio" class="sr-only peer" name="lengthMode" class="sr-only peer"/>
-									<div class="px-2 py-1 text-xs font-medium text-slate-800 bg-white border border-orange-200 rounded-e cursor-pointer hover:bg-orange-100 peer-focus:z-10 peer-checked:bg-orange-500 peer-checked:text-white">
+									<div class="px-2 py-1 text-xs font-medium text-slate-800 bg-white border border-orange-200 rounded-e cursor-pointer hover:bg-orange-100 peer-focus:z-10 peer-checked:bg-orange-600 peer-checked:text-white">
 										Exactly
 									</div>
 								</label>
