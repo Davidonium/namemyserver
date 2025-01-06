@@ -24,10 +24,8 @@ u(document).on("htmx:load", (ev) => {
     u("#drawer").addClass("translate-x-full");
   });
 
-
+  const lengthValueEl = el.find(".js-length-range-value").first();
+  el.find(".js-length-range-slider").on("input", (ev) => {
+    lengthValueEl.textContent = ev.currentTarget.value;
+  })
 });
-
-const lengthValueEl = u(".js-length-range-value").first();
-u(".js-length-range-slider").on("input", (ev) => {
-  lengthValueEl.textContent = ev.currentTarget.value;
-})
