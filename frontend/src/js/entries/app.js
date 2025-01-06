@@ -5,19 +5,6 @@ import u from "umbrellajs"
 import { writeTextToClipboard } from "~/lib/clipboard";
 
 u(document).on("htmx:load", (ev) => {
-  registerCopyBtnCallback(ev.currentTarget);
-
-  u(".js-drawer-open").on("click", () => {
-    u("#drawer").removeClass("translate-x-full", "opacity-0")
-  });
-
-  u(".js-drawer-close").on("click", () => {
-    u("#drawer").addClass("translate-x-full")
-  })
-});
-
-
-function registerCopyBtnCallback(el) {
   u(el).find(".js-copy").on("click", (ev) => {
     const target = ev.currentTarget;
     writeTextToClipboard(target.dataset.copyValue);
@@ -27,4 +14,12 @@ function registerCopyBtnCallback(el) {
       checkmark.addClass("opacity-0");
     }, 2000);
   });
-}
+
+  u(".js-drawer-open").on("click", () => {
+    u("#drawer").removeClass("translate-x-full", "opacity-0")
+  });
+
+  u(".js-drawer-close").on("click", () => {
+    u("#drawer").addClass("translate-x-full")
+  })
+});
