@@ -25,6 +25,7 @@ templ HomePage(vm HomeViewModel) {
 			<button
 				hx-post="/generate"
 				hx-target="#generate-name-container"
+                hx-include=".js-generation-configuration"
 				class="group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
 				type="submit"
 			>
@@ -46,25 +47,25 @@ templ HomePage(vm HomeViewModel) {
 				<div class="text-xl font-semibold">
 					Configuration
 				</div>
-				<div class="mt-4 flex flex-col gap-4">
+				<div class="js-generation-configuration mt-4 flex flex-col gap-4">
 					<div class="flex flex-col gap-2">
 						<div class="flex gap-1 items-center">
 							<span class="text-sm font-medium text-gray-800">Length</span>
 							<label class="relative inline-flex items-center cursor-pointer">
-								<input type="checkbox" value="" class="sr-only peer"/>
+								<input type="checkbox" name="lengthEnabled" class="sr-only peer"/>
 								<div class="w-7 h-4 bg-gray-200 hover:bg-gray-300 peer-focus:outline-0 peer-focus:ring-transparent rounded-full peer transition-all ease-in-out duration-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1.7px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-orange-600 hover:peer-checked:bg-orange-700"></div>
 							</label>
 						</div>
 						<div>
 							<div class="inline-flex rounded-md shadow-sm" role="group">
 								<label>
-									<input type="radio" class="sr-only peer" name="lengthMode" checked/>
+									<input type="radio" name="lengthMode" value="upto" checked class="sr-only peer" />
 									<div class="px-2 py-1 text-xs font-medium text-slate-800 bg-white border border-orange-200 rounded-s cursor-pointer hover:bg-orange-100 peer-checked:bg-orange-600 peer-checked:text-white">
 										Up to
 									</div>
 								</label>
 								<label>
-									<input type="radio" class="sr-only peer" name="lengthMode" class="sr-only peer"/>
+									<input type="radio" name="lengthMode" value="exactly" class="sr-only peer"/>
 									<div class="px-2 py-1 text-xs font-medium text-slate-800 bg-white border border-orange-200 rounded-e cursor-pointer hover:bg-orange-100 peer-focus:z-10 peer-checked:bg-orange-600 peer-checked:text-white">
 										Exactly
 									</div>
@@ -76,7 +77,7 @@ templ HomePage(vm HomeViewModel) {
 								<div class="js-length-range-value text-sm font-semibold">14</div>
 							</div>
 							<div class="relative">
-								<input type="range" value="14" min="7" max="19" class="js-length-range-slider accent-orange-600 bg-gradient-to-r from-purple-500 to-cyan-300 w-full h-2 rounded-lg appearance-none cursor-pointer"/>
+								<input name="lengthValue" type="range" value="14" min="7" max="19" class="js-length-range-slider accent-orange-600 bg-gradient-to-r from-purple-500 to-cyan-300 w-full h-2 rounded-lg appearance-none cursor-pointer"/>
 								<span class="text-sm text-gray-500 absolute start-0 -bottom-6">7</span>
 								<span class="text-sm text-gray-500 absolute start-1/2 -translate-x-1/2 rtl:translate-x-1/2 -bottom-6">12</span>
 								<span class="text-sm text-gray-500 absolute end-0 -bottom-6">19</span>
