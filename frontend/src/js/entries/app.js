@@ -1,45 +1,30 @@
 import "../../css/app.css";
 import "vite/modulepreload-polyfill";
 import "htmx.org";
-import { on, onLoad, find } from "htmx.org";
+import u from "umbrellajs"
 import { writeTextToClipboard } from "~/lib/clipboard";
 
-onLoad((elm) => {
-  registerCopyBtnCallback(elm);
+u(document).on("htmx:load", (ev) => {
+  registerCopyBtnCallback(ev.currentTarget);
 
-  safeOn(".js-drawer-open", "click", () => {
-    find("#drawer").classList.remove("translate-x-full")
+  u(".js-drawer-open").on("click", () => {
+    u("#drawer").removeClass("translate-x-full", "opacity-0")
   });
 
-  safeOn(".js-drawer-close", "click", () => {
-    find("#drawer").classList.add("translate-x-full")
+  u(".js-drawer-close").on("click", () => {
+    u("#drawer").addClass("translate-x-full")
   })
 });
 
 
-function registerCopyBtnCallback(elm) {
-  const copyEl = find(elm, ".js-copy");
-  if (!copyEl) {
-    return;
-  }
-
-  on(copyEl, "click", (e) => {
-    const target = e.currentTarget;
+function registerCopyBtnCallback(el) {
+  u(el).find(".js-copy").on("click", (ev) => {
+    const target = ev.currentTarget;
     writeTextToClipboard(target.dataset.copyValue);
-    const checkmark = find(target, ".js-checkmark");
-    checkmark.classList.remove("opacity-0");
+    const checkmark = u(target).find(".js-checkmark");
+    checkmark.removeClass("opacity-0");
     setTimeout(() => {
-      checkmark.classList.add("opacity-0");
+      checkmark.addClass("opacity-0");
     }, 2000);
   });
-
-}
-
-function safeOn(selector, eventName, callback) {
-  const el = find(selector);
-  if (!el) {
-    return;
-  }
-
-  on(el, eventName, callback);
 }

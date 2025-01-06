@@ -20,6 +20,9 @@ importers:
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.17
+      umbrellajs:
+        specifier: 3.3.3
+        version: 3.3.3
       vite:
         specifier: ^6.0.3
         version: 6.0.5(jiti@1.21.7)(yaml@2.6.1)
@@ -714,6 +717,9 @@ packages:
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
+  umbrellajs@3.3.3:
+    resolution: {integrity: sha512-VrKXEENk705mAVW5N3kxk73iuKeQifuacdmCDfOR6MZdf/AP3H/NQ46HqH32RRCAF7WfVv6t5ziFrvXA1nbHiw==}
+
   update-browserslist-db@1.1.1:
     resolution: {integrity: sha512-R8UzCaa9Az+38REPiJ1tXlImTJXlVfgHZsglwBD/k6nj76ctsH1E3q4doGrukiLQd3sGQYu56r5+lo5r94l29A==}
     hasBin: true
@@ -1381,6 +1387,8 @@ snapshots:
       is-number: 7.0.0
 
   ts-interface-checker@0.1.13: {}
+
+  umbrellajs@3.3.3: {}
 
   update-browserslist-db@1.1.1(browserslist@4.24.3):
     dependencies:
