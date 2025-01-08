@@ -3,6 +3,11 @@ package namemyserver
 import "context"
 
 type PairStore interface {
-	GetSinglePair(context.Context) (Pair, error)
+	OneRandom(context.Context, RandomPairFilters) (Pair, error)
 	Stats(context.Context) (Stats, error)
+}
+
+type RandomPairFilters struct {
+	Length int
+	LengthMode LengthMode
 }

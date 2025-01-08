@@ -2,6 +2,8 @@ package sqlitestore
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/jmoiron/sqlx"
 
@@ -17,9 +19,10 @@ FROM
 JOIN
     nouns
 WHERE
-    adjectives.id >= (SELECT ABS(RANDOM()) % (SELECT COUNT(*) FROM adjectives) + 1)
+    adjectives.id >= (SELECT ABS(RANDOM()) %% (SELECT COUNT(*) FROM adjectives) + 1)
 AND
-    nouns.id >= (SELECT ABS(RANDOM()) % (SELECT COUNT(*) FROM nouns) + 1)
+    nouns.id >= (SELECT ABS(RANDOM()) %% (SELECT COUNT(*) FROM nouns) + 1)
+%s
 LIMIT 1`
 
 type PairStore struct {
@@ -30,12 +33,34 @@ func NewPairStore(db *sqlx.DB) *PairStore {
 	return &PairStore{db: db}
 }
 
-func (s *PairStore) GetSinglePair(ctx context.Context) (namemyserver.Pair, error) {
+func (s *PairStore) OneRandom(ctx context.Context, f namemyserver.RandomPairFilters) (namemyserver.Pair, error) {
+	wheres := []string{"1=1"}
+	params := struct {
+		Length int `db:"length"`
+	}{}
+
+	if f.Length > 0 {
+		params.Length = f.Length
+		switch f.LengthMode {
+		case namemyserver.LengthModeExactly:
+			wheres = append(wheres, "(LENGTH(adjectives.value) + LENGTH(nouns.value) + 1) = :length")
+		case namemyserver.LengthModeUpto:
+			wheres = append(wheres, "(LENGTH(adjectives.value) + LENGTH(nouns.value) + 1) <= :length")
+		}
+	}
+
+	sql := fmt.Sprintf(singlePairSQL, "AND " + strings.Join(wheres, " AND "))
+
+	stmt, err := s.db.PrepareNamedContext(ctx, sql)
+	if err != nil {
+		return namemyserver.Pair{}, err
+	}
+
 	var row struct {
 		Adjective string `db:"adjective"`
 		Noun      string `db:"noun"`
 	}
-	if err := s.db.GetContext(ctx, &row, singlePairSQL); err != nil {
+	if err := stmt.GetContext(ctx, &row, params); err != nil {
 		return namemyserver.Pair{}, err
 	}
 

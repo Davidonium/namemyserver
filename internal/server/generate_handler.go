@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/davidonium/namemyserver/internal/namemyserver"
 	"github.com/davidonium/namemyserver/internal/templates"
@@ -9,7 +10,15 @@ import (
 
 func generateHandler(generator *namemyserver.Generator) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		res, err := generator.Generate(r.Context(), namemyserver.GenerateOptions{})
+		lengthEnabled := r.FormValue("lengthEnabled")
+		lengthMode := r.FormValue("lengthMode")
+		lengthValue, _ := strconv.Atoi(r.FormValue("lengthValue"))
+
+		res, err := generator.Generate(r.Context(), namemyserver.GenerateOptions{
+			LengthEnabled: lengthEnabled == "on",
+			LengthMode:    namemyserver.LengthMode(lengthMode),
+			LengthValue:   lengthValue,
+		})
 		if err != nil {
 			return err
 		}
