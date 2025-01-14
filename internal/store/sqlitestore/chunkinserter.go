@@ -2,16 +2,20 @@ package sqlitestore
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"log/slog"
 
 	"github.com/doug-martin/goqu/v9"
-	"github.com/jmoiron/sqlx"
 )
+
+type DBExecer interface {
+	ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
+}
 
 type ChunkInserter struct {
 	logger *slog.Logger
-	db     *sqlx.DB
+	db     DBExecer
 	size   int
 	table  string
 	idx    int
@@ -21,7 +25,7 @@ type ChunkInserter struct {
 
 func NewChunkInserter(
 	logger *slog.Logger,
-	db *sqlx.DB,
+	db DBExecer,
 	size int,
 	table string,
 ) *ChunkInserter {

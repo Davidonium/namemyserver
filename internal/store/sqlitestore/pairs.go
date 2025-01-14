@@ -19,9 +19,9 @@ FROM
 JOIN
     nouns
 WHERE
-    adjectives.id >= (SELECT ABS(RANDOM()) %% (SELECT COUNT(*) FROM adjectives) + 1)
+    adjectives.id >= (SELECT ABS(RANDOM() %% (MAX(id) - MIN(id) + 1)) + MIN(id) FROM adjectives)
 AND
-    nouns.id >= (SELECT ABS(RANDOM()) %% (SELECT COUNT(*) FROM nouns) + 1)
+    nouns.id >= (SELECT ABS(RANDOM() %% (MAX(id) - MIN(id) + 1)) + MIN(id) FROM nouns)
 %s
 LIMIT 1`
 

@@ -131,11 +131,11 @@ func runSeed(logger *slog.Logger, cfg env.Config) error {
 	defer db.Close()
 
 	logger.Info("running seed")
-
 	tables := []string{
 		"nouns",
 		"adjectives",
 	}
+
 	for _, t := range tables {
 		logger.Info("seeding table", "table", t)
 		if err := seedByTable(ctx, logger, db, t); err != nil {
@@ -154,20 +154,48 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 		return err
 	}
 
-	s := bufio.NewScanner(f)
+	defer f.Close()
 
-	inserter := sqlitestore.NewChunkInserter(logger, db, 200, table)
-	for s.Scan() {
-		inserter.AddAndFlushIfNeeded(ctx, goqu.Record{"value": s.Text(), "from_seed": 1})
-	}
-	if inserter.Err != nil {
-		return inserter.Err
-	}
-
-	// flush remaining nouns
-	if err := inserter.Flush(ctx); err != nil {
+	tx, err := db.Beginx()
+	if err != nil {
 		return err
 	}
+
+	err = func() error {
+		if _, err := tx.ExecContext(ctx, fmt.Sprintf("delete from %s where from_seed = 1", table)); err != nil {
+			return err
+		}
+
+		s := bufio.NewScanner(f)
+
+		inserter := sqlitestore.NewChunkInserter(logger, tx, 1000, table)
+		for s.Scan() {
+			inserter.AddAndFlushIfNeeded(ctx, goqu.Record{"value": s.Text(), "from_seed": 1})
+		}
+
+		if inserter.Err != nil {
+			return inserter.Err
+		}
+
+		// flush remaining chunk
+		if err := inserter.Flush(ctx); err != nil {
+			return err
+		}
+
+		return nil
+	}()
+
+	if err != nil {
+		if txErr := tx.Rollback(); txErr != nil {
+			return fmt.Errorf("failed to rollback on seed error: original - %w, transaction error - %v", err, txErr)
+		}
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
 
 	return nil
 }
