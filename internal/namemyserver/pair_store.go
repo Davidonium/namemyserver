@@ -8,6 +8,6 @@ type PairStore interface {
 }
 
 type RandomPairFilters struct {
-	Length int
+	Length     int
 	LengthMode LengthMode
 }

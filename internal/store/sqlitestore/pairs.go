@@ -12,16 +12,16 @@ import (
 
 const singlePairSQL = `
 SELECT
-    adjectives.value as adjective,
-	nouns.value as noun
+    a.value as adjective,
+	n.value as noun
 FROM
-    adjectives
+    adjectives a
 JOIN
-    nouns
+    nouns n
 WHERE
-    adjectives.id >= (SELECT ABS(RANDOM() %% (MAX(id) - MIN(id) + 1)) + MIN(id) FROM adjectives)
+    a.id >= (SELECT (ABS(RANDOM()) %% (MAX(id) - MIN(id) + 1)) + MIN(id) FROM adjectives)
 AND
-    nouns.id >= (SELECT ABS(RANDOM() %% (MAX(id) - MIN(id) + 1)) + MIN(id) FROM nouns)
+    n.id >= (SELECT (ABS(RANDOM()) %% (MAX(id) - MIN(id) + 1)) + MIN(id) FROM nouns)
 %s
 LIMIT 1`
 
@@ -43,13 +43,13 @@ func (s *PairStore) OneRandom(ctx context.Context, f namemyserver.RandomPairFilt
 		params.Length = f.Length
 		switch f.LengthMode {
 		case namemyserver.LengthModeExactly:
-			wheres = append(wheres, "(LENGTH(adjectives.value) + LENGTH(nouns.value) + 1) = :length")
+			wheres = append(wheres, "(LENGTH(a.value) + LENGTH(n.value) + 1) = :length")
 		case namemyserver.LengthModeUpto:
-			wheres = append(wheres, "(LENGTH(adjectives.value) + LENGTH(nouns.value) + 1) <= :length")
+			wheres = append(wheres, "(LENGTH(a.value) + LENGTH(n.value) + 1) <= :length")
 		}
 	}
 
-	sql := fmt.Sprintf(singlePairSQL, "AND " + strings.Join(wheres, " AND "))
+	sql := fmt.Sprintf(singlePairSQL, "AND "+strings.Join(wheres, " AND "))
 
 	stmt, err := s.db.PrepareNamedContext(ctx, sql)
 	if err != nil {

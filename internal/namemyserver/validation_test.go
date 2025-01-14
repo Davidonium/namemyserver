@@ -41,7 +41,7 @@ func TestValidateNameTable(t *testing.T) {
 	for i, tt := range cases {
 		t.Run(fmt.Sprintf("Test Case #%d", i), func(t *testing.T) {
 			ok := namemyserver.ValidateName(tt.Input)
-			if  ok != tt.Valid {
+			if ok != tt.Valid {
 				t.Errorf("ValidateName() = input: %q - got %v, want %v", tt.Input, ok, tt.Valid)
 			}
 		})
@@ -94,7 +94,7 @@ func TestValidateNameSegmentTable(t *testing.T) {
 	for i, tt := range cases {
 		t.Run(fmt.Sprintf("Test Case #%d", i), func(t *testing.T) {
 			ok := namemyserver.ValidateNameSegment(tt.Input)
-			if  ok != tt.Valid {
+			if ok != tt.Valid {
 				t.Errorf("ValidateNameSegment() = input: %q - got %v, want %v", tt.Input, ok, tt.Valid)
 			}
 		})

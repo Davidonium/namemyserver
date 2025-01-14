@@ -180,7 +180,6 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 
 		return nil
 	}()
-
 	if err != nil {
 		if txErr := tx.Rollback(); txErr != nil {
 			return fmt.Errorf("failed to rollback on seed error: original - %w, transaction error - %v", err, txErr)
@@ -191,7 +190,6 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("failed to commit seed transaction: %w", err)
 	}
-
 
 	return nil
 }
