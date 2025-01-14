@@ -57,7 +57,7 @@ func (ci *ChunkInserter) Flush(ctx context.Context) error {
 		return nil
 	}
 
-	ds := goqu.Insert(ci.table).Rows(ci.chunk...)
+	ds := goqu.Insert(ci.table).Rows(ci.chunk...).OnConflict(goqu.DoNothing())
 	sql, args, _ := ds.ToSQL()
 
 	ci.logger.Debug("executing sql", "sql", sql, "args", args)

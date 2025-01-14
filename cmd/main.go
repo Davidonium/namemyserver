@@ -162,10 +162,6 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 	}
 
 	err = func() error {
-		if _, err := tx.ExecContext(ctx, fmt.Sprintf("delete from %s where from_seed = 1", table)); err != nil {
-			return err
-		}
-
 		s := bufio.NewScanner(f)
 
 		inserter := sqlitestore.NewChunkInserter(logger, tx, 1000, table)
@@ -193,7 +189,7 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 	}
 
 	if err := tx.Commit(); err != nil {
-		return err
+		return fmt.Errorf("failed to commit seed transaction: %w", err)
 	}
 
 
