@@ -2,10 +2,12 @@ abyss
 acorn
 adventure
 aether
+agate
 ale
 alley
 altar
 amber
+amethyst
 anchor
 android
 ant
@@ -38,6 +40,7 @@ beer
 beet
 beetle
 berry
+beryl
 binder
 bird
 bison
@@ -82,6 +85,7 @@ chasm
 cherry
 cinder
 citadel
+citrine
 citrus
 city
 clash
@@ -119,6 +123,7 @@ den
 depth
 desert
 desk
+diamond
 doe
 dog
 door
@@ -146,6 +151,7 @@ eggplant
 elixir
 elk
 ember
+emerald
 emu
 engine
 eraser
@@ -176,6 +182,7 @@ fury
 galaxy
 gale
 garden
+garnet
 gem
 glasses
 gleam
@@ -224,6 +231,7 @@ jacket
 jade
 jagged
 jaguar
+jasper
 jeans
 jellyfish
 jewel
@@ -250,6 +258,7 @@ lair
 lake
 lamp
 lantern
+lapis
 laser
 leaf
 leap
@@ -268,6 +277,7 @@ luminous
 lunar
 lurk
 lynx
+malachite
 mango
 manta
 map
@@ -323,6 +333,7 @@ octopus
 oil
 onion
 onyx
+opal
 opals
 oracle
 orange
@@ -348,6 +359,7 @@ pearl
 pegasus
 pen
 pencil
+peridot
 pheasant
 phoenix
 pillar
@@ -400,6 +412,7 @@ roar
 robe
 robot
 rover
+ruby
 rug
 ruins
 ruler
@@ -487,9 +500,11 @@ tinker
 titan
 toad
 tomato
+topaz
 torch
 tornado
 torrent
+tourmaline
 towel
 town
 trace
@@ -503,6 +518,7 @@ trout
 tuna
 tunic
 turnip
+turquoise
 umbrella
 underdog
 undertone
@@ -561,6 +577,7 @@ zen
 zenith
 zephyr
 zest
+zircon
 zodiac
 zone
 zucchini
