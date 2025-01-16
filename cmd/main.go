@@ -161,7 +161,7 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 		return err
 	}
 
-	tempTable := "temporary_"+table
+	tempTable := "temporary_" + table
 
 	const tempTableSQLTempl = `CREATE TEMP TABLE %s (value TEXT NOT NULL)`
 	if _, err := tx.ExecContext(ctx, fmt.Sprintf(tempTableSQLTempl, tempTable)); err != nil {
@@ -198,8 +198,18 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 					     SELECT value, 1 AS from_seed FROM %s WHERE 1
 					     ON CONFLICT(value) DO NOTHING`
 	insSQL := fmt.Sprintf(insTemplSQL, table, tempTable)
-	if _, err := tx.ExecContext(ctx, insSQL); err != nil {
+	insResult, err := tx.ExecContext(ctx, insSQL)
+	if err != nil {
 		return fmt.Errorf("failed to move the values from temporary table to the real table %q: %w", table, err)
+	}
+
+	nins, err := insResult.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if nins > 0 {
+		logger.Info("seed insertions", slog.String("table", table), slog.Int64("amount", nins))
 	}
 
 	const delTemplSQL = `DELETE FROM %s
@@ -208,8 +218,17 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 							FROM %s
 						 )`
 	delSQL := fmt.Sprintf(delTemplSQL, table, tempTable)
-	if _, err := tx.ExecContext(ctx, delSQL); err != nil {
+	delResult, err := tx.ExecContext(ctx, delSQL)
+	if err != nil {
 		return fmt.Errorf("failed to remove values that ceased to exist in the seed from table %q: %w", table, err)
+	}
+	ndel, err := delResult.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if ndel > 0 {
+		logger.Info("seed removals", slog.String("table", table), slog.Int64("amount", ndel))
 	}
 
 	if err := tx.Commit(); err != nil {
