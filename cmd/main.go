@@ -185,6 +185,43 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 			return err
 		}
 
+		const insTemplSQL = `INSERT INTO %s (value, from_seed)
+							 SELECT value, 1 AS from_seed FROM %s WHERE 1
+							 ON CONFLICT(value) DO NOTHING`
+		insSQL := fmt.Sprintf(insTemplSQL, table, tempTable)
+		insResult, err := tx.ExecContext(ctx, insSQL)
+		if err != nil {
+			return fmt.Errorf("failed to move the values from temporary table to the real table %q: %w", table, err)
+		}
+
+		nins, err := insResult.RowsAffected()
+		if err != nil {
+			return err
+		}
+
+		if nins > 0 {
+			logger.Info("seed insertions", slog.String("table", table), slog.Int64("amount", nins))
+		}
+
+		const delTemplSQL = `DELETE FROM %s
+				             WHERE from_seed = 1 AND value NOT IN (
+						 		SELECT value
+								FROM %s
+						 	 )`
+		delSQL := fmt.Sprintf(delTemplSQL, table, tempTable)
+		delResult, err := tx.ExecContext(ctx, delSQL)
+		if err != nil {
+			return fmt.Errorf("failed to remove values that ceased to exist in the seed from table %q: %w", table, err)
+		}
+		ndel, err := delResult.RowsAffected()
+		if err != nil {
+			return err
+		}
+
+		if ndel > 0 {
+			logger.Info("seed removals", slog.String("table", table), slog.Int64("amount", ndel))
+		}
+
 		return nil
 	}()
 	if err != nil {
@@ -192,43 +229,6 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 			return fmt.Errorf("failed to rollback on seed error: original - %w, transaction error - %v", err, txErr)
 		}
 		return err
-	}
-
-	const insTemplSQL = `INSERT INTO %s (value, from_seed)
-					     SELECT value, 1 AS from_seed FROM %s WHERE 1
-					     ON CONFLICT(value) DO NOTHING`
-	insSQL := fmt.Sprintf(insTemplSQL, table, tempTable)
-	insResult, err := tx.ExecContext(ctx, insSQL)
-	if err != nil {
-		return fmt.Errorf("failed to move the values from temporary table to the real table %q: %w", table, err)
-	}
-
-	nins, err := insResult.RowsAffected()
-	if err != nil {
-		return err
-	}
-
-	if nins > 0 {
-		logger.Info("seed insertions", slog.String("table", table), slog.Int64("amount", nins))
-	}
-
-	const delTemplSQL = `DELETE FROM %s
-				         WHERE from_seed = 1 AND value NOT IN (
-						 	SELECT value
-							FROM %s
-						 )`
-	delSQL := fmt.Sprintf(delTemplSQL, table, tempTable)
-	delResult, err := tx.ExecContext(ctx, delSQL)
-	if err != nil {
-		return fmt.Errorf("failed to remove values that ceased to exist in the seed from table %q: %w", table, err)
-	}
-	ndel, err := delResult.RowsAffected()
-	if err != nil {
-		return err
-	}
-
-	if ndel > 0 {
-		logger.Info("seed removals", slog.String("table", table), slog.Int64("amount", ndel))
 	}
 
 	if err := tx.Commit(); err != nil {
