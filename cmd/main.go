@@ -161,15 +161,17 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 		return err
 	}
 
-	const tempTableSQLTempl = `CREATE TEMP TABLE temporary_%s (value TEXT NOT NULL)`
-	if _, err := tx.ExecContext(ctx, fmt.Sprintf(tempTableSQLTempl, table)); err != nil {
+	tempTable := "temporary_"+table
+
+	const tempTableSQLTempl = `CREATE TEMP TABLE %s (value TEXT NOT NULL)`
+	if _, err := tx.ExecContext(ctx, fmt.Sprintf(tempTableSQLTempl, tempTable)); err != nil {
 		return fmt.Errorf("failed to create temporary table for %s: %w", table, err)
 	}
 
 	err = func() error {
 		s := bufio.NewScanner(f)
 
-		inserter := sqlitestore.NewChunkInserter(logger, tx, 1000, "temporary_"+table)
+		inserter := sqlitestore.NewChunkInserter(logger, tx, 1000, tempTable)
 		for s.Scan() {
 			inserter.AddAndFlushIfNeeded(ctx, goqu.Record{"value": s.Text()})
 		}
@@ -193,9 +195,9 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 	}
 
 	const insTemplSQL = `INSERT INTO %s (value, from_seed)
-					     SELECT value, 1 AS from_seed FROM temporary_%s WHERE 1
+					     SELECT value, 1 AS from_seed FROM %s WHERE 1
 					     ON CONFLICT(value) DO NOTHING`
-	insSQL := fmt.Sprintf(insTemplSQL, table, table)
+	insSQL := fmt.Sprintf(insTemplSQL, table, tempTable)
 	if _, err := tx.ExecContext(ctx, insSQL); err != nil {
 		return fmt.Errorf("failed to move the values from temporary table to the real table %q: %w", table, err)
 	}
@@ -203,9 +205,9 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 	const delTemplSQL = `DELETE FROM %s
 				         WHERE from_seed = 1 AND value NOT IN (
 						 	SELECT value
-							FROM temporary_%s
+							FROM %s
 						 )`
-	delSQL := fmt.Sprintf(delTemplSQL, table, table)
+	delSQL := fmt.Sprintf(delTemplSQL, table, tempTable)
 	if _, err := tx.ExecContext(ctx, delSQL); err != nil {
 		return fmt.Errorf("failed to remove values that ceased to exist in the seed from table %q: %w", table, err)
 	}
