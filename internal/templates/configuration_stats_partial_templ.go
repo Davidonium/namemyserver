@@ -33,20 +33,20 @@ func ConfigurationStatsPartial(vm ConfigurationStatsPartialViewModel) templ.Comp
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"text-sm\"><span class=\"font-semibold\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"text-sm text-right w-full\"><div role=\"status\" class=\"js-name-count-loading hidden space-y-2.5 animate-pulse mr-1\"><div class=\"inline-block h-2.5 bg-gray-200 rounded-full w-16\"></div><span class=\"sr-only\">Loading...</span></div><span class=\"font-semibold\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(humanInt(vm.PossiblePairCount))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/configuration_stats_partial.templ`, Line: 8, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/configuration_stats_partial.templ`, Line: 13, Col: 62}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> possible names</div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span>possible names</span></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -5,5 +5,12 @@ type ConfigurationStatsPartialViewModel struct {
 }
 
 templ ConfigurationStatsPartial(vm ConfigurationStatsPartialViewModel) {
-	<div class="text-sm"><span class="font-semibold">{ humanInt(vm.PossiblePairCount) }</span> possible names</div>
+	<div class="text-sm text-right w-full">
+		<div role="status" class="js-name-count-loading hidden space-y-2.5 animate-pulse mr-1">
+			<div class="inline-block h-2.5 bg-gray-200 rounded-full w-16"></div>
+			<span class="sr-only">Loading...</span>
+		</div>
+		<span class="font-semibold">{ humanInt(vm.PossiblePairCount) }</span>
+		<span>possible names</span>
+	</div>
 }
