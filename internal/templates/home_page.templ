@@ -1,6 +1,7 @@
 package templates
 
 type HomeViewModel struct {
+	PossiblePairCount int
 }
 
 templ HomePage(vm HomeViewModel) {
@@ -83,6 +84,9 @@ templ HomePage(vm HomeViewModel) {
 								<span class="text-sm text-gray-500 absolute end-0 -bottom-6">19</span>
 							</div>
 						</div>
+					</div>
+					<div class="js-config-stats pt-4">
+						@ConfigurationStatsPartial(ConfigurationStatsPartialViewModel{PossiblePairCount: vm.PossiblePairCount})
 					</div>
 				</div>
 			</div>

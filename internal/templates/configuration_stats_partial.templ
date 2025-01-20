@@ -1,0 +1,9 @@
+package templates
+
+type ConfigurationStatsPartialViewModel struct {
+	PossiblePairCount int
+}
+
+templ ConfigurationStatsPartial(vm ConfigurationStatsPartialViewModel) {
+	<div class="text-sm"><span class="font-semibold">{ humanInt(vm.PossiblePairCount) }</span> possible names</div>
+}

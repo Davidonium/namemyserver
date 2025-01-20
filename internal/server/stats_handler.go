@@ -10,7 +10,7 @@ import (
 func statsHandler(pairStore namemyserver.PairStore) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
-		stats, err := pairStore.Stats(ctx)
+		stats, err := pairStore.Stats(ctx, namemyserver.RandomPairFilters{})
 		if err != nil {
 			return err
 		}

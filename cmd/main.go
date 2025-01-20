@@ -163,7 +163,7 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 
 	tempTable := "temporary_" + table
 
-	const tempTableSQLTempl = `CREATE TEMP TABLE %s (value TEXT NOT NULL)`
+	const tempTableSQLTempl = `CREATE TEMP TABLE %s (value TEXT NOT NULL UNIQUE)`
 	if _, err := tx.ExecContext(ctx, fmt.Sprintf(tempTableSQLTempl, tempTable)); err != nil {
 		return fmt.Errorf("failed to create temporary table for %s: %w", table, err)
 	}

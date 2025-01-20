@@ -12,4 +12,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.24
 )
 
-require github.com/lib/pq v1.10.9 // indirect
+require (
+	github.com/lib/pq v1.10.9 // indirect
+	golang.org/x/text v0.21.0 // indirect
+)
