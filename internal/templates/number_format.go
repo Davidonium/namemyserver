@@ -10,7 +10,7 @@ import (
 // configuration. Not aiming to support internationalization for now.
 var p = message.NewPrinter(language.English)
 
-// humanInt returns v as a formatted number in the english language
+// humanInt returns v as a formatted number in the english language.
 func humanInt(v int) string {
 	return p.Sprint(v)
 }
