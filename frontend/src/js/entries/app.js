@@ -28,4 +28,19 @@ u(document).on("htmx:load", (ev) => {
   el.find(".js-length-range-slider").on("input", (ev) => {
     lengthValueEl.textContent = ev.currentTarget.value;
   })
+
+
+  el.find(".js-config-length-toggle").on("change", (ev) => {
+    if (ev.currentTarget.checked) {
+      el.find(".js-config-length-opacity").removeClass("opacity-40")
+      el.find(".js-length-linked").each((el) => {
+        el.disabled = false;
+      })
+    } else {
+      el.find(".js-config-length-opacity").addClass("opacity-40")
+      el.find(".js-length-linked").each((el) => {
+        el.disabled = true;
+      })
+    }
+  })
 });
