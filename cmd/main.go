@@ -101,15 +101,17 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 	}
 
 	pairStore := sqlitestore.NewPairStore(db)
+	bucketStore := sqlitestore.NewBucketStore(db)
 
 	generator := namemyserver.NewGenerator(pairStore)
 
 	s := server.New(&server.Services{
-		Logger:    logger,
-		Config:    cfg,
-		Assets:    assets,
-		Generator: generator,
-		PairStore: pairStore,
+		Logger:      logger,
+		Config:      cfg,
+		Assets:      assets,
+		Generator:   generator,
+		PairStore:   pairStore,
+		BucketStore: bucketStore,
 	})
 
 	logger.Info("starting http server", "addr", s.Addr)

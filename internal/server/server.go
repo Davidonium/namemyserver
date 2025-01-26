@@ -15,11 +15,12 @@ import (
 )
 
 type Services struct {
-	Logger    *slog.Logger
-	Config    env.Config
-	Assets    *vite.Assets
-	Generator *namemyserver.Generator
-	PairStore namemyserver.PairStore
+	Logger      *slog.Logger
+	Config      env.Config
+	Assets      *vite.Assets
+	Generator   *namemyserver.Generator
+	PairStore   namemyserver.PairStore
+	BucketStore namemyserver.BucketStore
 }
 
 func New(svcs *Services) *http.Server {

@@ -39,6 +39,7 @@ func addAPIRoutes(m *http.ServeMux, svcs *Services) {
 	app := appMiddleware(svcs.Logger, APIErrorHandler(svcs.Logger, svcs.Config.Debug))
 
 	m.Handle("POST /generate", app(apiGenerateHandler(svcs.Generator)))
+	m.Handle("POST /buckets", app(apiCreateBucketHandler(svcs.BucketStore)))
 }
 
 type appHandlerFunc func(http.ResponseWriter, *http.Request) error
