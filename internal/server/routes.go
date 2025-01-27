@@ -40,6 +40,7 @@ func addAPIRoutes(m *http.ServeMux, svcs *Services) {
 
 	m.Handle("POST /generate", app(apiGenerateHandler(svcs.Generator)))
 	m.Handle("POST /buckets", app(apiCreateBucketHandler(svcs.BucketStore)))
+	m.Handle("POST /buckets/{name}/pop", app(apiPopBucketNameHandler(svcs.BucketStore)))
 }
 
 type appHandlerFunc func(http.ResponseWriter, *http.Request) error
