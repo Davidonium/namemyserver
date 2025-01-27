@@ -8,8 +8,14 @@ import (
 )
 
 func apiCreateBucketHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
+	type filters struct {
+		Length     int    `json:"length"`
+		LengthMode string `json:"lengthMode"`
+	}
+
 	type request struct {
-		Name string `json:"name"`
+		Name    string  `json:"name"`
+		Filters filters `json:"filters"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) error {
@@ -27,7 +33,11 @@ func apiCreateBucketHandler(bucketStore namemyserver.BucketStore) appHandlerFunc
 			return err
 		}
 
-		if err := bucketStore.FillBucketValues(ctx, b, namemyserver.RandomPairFilters{}); err != nil {
+		f := namemyserver.RandomPairFilters{
+			Length: req.Filters.Length,
+			LengthMode: namemyserver.LengthMode(req.Filters.LengthMode),
+		}
+		if err := bucketStore.FillBucketValues(ctx, b, f); err != nil {
 			return err
 		}
 
