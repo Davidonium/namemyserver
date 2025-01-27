@@ -25,9 +25,9 @@ COPY ./internal ./internal
 COPY ./db/ ./db
 COPY --from=frontend /app/frontend/dist /app/frontend/dist
 COPY embed.go .
-COPY Makefile .
+COPY tsk.sh .
 
-RUN make build
+RUN ./tsk.sh build
 
 FROM gcr.io/distroless/static-debian12:nonroot
 
