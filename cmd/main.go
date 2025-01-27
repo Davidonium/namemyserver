@@ -79,6 +79,14 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 
 	defer db.Close()
 
+
+	immediateDB, err := sqlitestore.ConnectWithImmediate(ctx, cfg.DatabaseURL.String())
+	if err != nil {
+		return fmt.Errorf("failed to create immediate connection: %w", err)
+	}
+
+	defer immediateDB.Close()
+
 	dbm := dbmate.New(cfg.DatabaseURL)
 	dbm.AutoDumpSchema = false
 	dbm.FS = embed.MigrationsFS
@@ -101,7 +109,7 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 	}
 
 	pairStore := sqlitestore.NewPairStore(db)
-	bucketStore := sqlitestore.NewBucketStore(db)
+	bucketStore := sqlitestore.NewBucketStore(db, immediateDB)
 
 	generator := namemyserver.NewGenerator(pairStore)
 

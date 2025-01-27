@@ -12,10 +12,11 @@ import (
 
 type BucketStore struct {
 	db *sqlx.DB
+	imDB *sqlx.DB
 }
 
-func NewBucketStore(db *sqlx.DB) *BucketStore {
-	return &BucketStore{db: db}
+func NewBucketStore(db *sqlx.DB, imDB *sqlx.DB) *BucketStore {
+	return &BucketStore{db: db, imDB: imDB}
 }
 
 const createBucketSQL = `
@@ -123,15 +124,7 @@ WHERE
 	id = :bucket_id`
 
 func (s *BucketStore) PopName(ctx context.Context, b namemyserver.Bucket) (string, error) {
-	// TODO this transacion is not immediate and can lead to concurrency problems, as this method
-	// needs to be atomic. github.com/mattn/go-sqlite3 requires a new connection to be openned with
-	// _txlock set to 'immediate' as a query string parameter and right now a regular connection is being used.
-	// Main Logic:
-	// 	1. Retrieve current cursor value, this will be returned
-	//  2. Update the cursor to the next entry in bucket_values
-	// This must be done using BEGIN IMMEDIATE so that concurrent reads do not get the same value
-	// See: https://sqlite.org/lang_transaction.html
-	tx, err := s.db.BeginTxx(ctx, &sql.TxOptions{})
+	tx, err := s.imDB.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return "", err
 	}
