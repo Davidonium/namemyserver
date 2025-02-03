@@ -1,5 +1,7 @@
-import * as path from "node:path";
+import path from "node:path";
 import { defineConfig } from "vite";
+import tailwindcss from "@tailwindcss/vite";
+
 
 export default defineConfig({
   server: {
@@ -19,6 +21,7 @@ export default defineConfig({
       }
     },
   },
+  plugins: [tailwindcss()],
   resolve: {
     alias: {
       "~": path.resolve(__dirname, "./src/js"),

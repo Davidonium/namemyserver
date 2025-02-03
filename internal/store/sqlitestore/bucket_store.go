@@ -11,7 +11,7 @@ import (
 )
 
 type BucketStore struct {
-	db *sqlx.DB
+	db   *sqlx.DB
 	imDB *sqlx.DB
 }
 
@@ -37,7 +37,7 @@ func (s *BucketStore) Create(ctx context.Context, b *namemyserver.Bucket) error 
 		return err
 	}
 
-	b.ID = int(id)
+	b.ID = int32(id)
 	return nil
 }
 
@@ -80,7 +80,7 @@ SET
 WHERE
 	id = :bucket_id`
 
-func (s *BucketStore) SetCursor(ctx context.Context, bucketID int, cursor int) error {
+func (s *BucketStore) SetCursor(ctx context.Context, bucketID int32, cursor int32) error {
 	args := map[string]any{
 		"bucket_id": bucketID,
 		"cursor":    cursor,
@@ -171,9 +171,9 @@ func (s *BucketStore) OneByName(ctx context.Context, name string) (namemyserver.
 	}
 
 	var row struct {
-		ID     int    `db:"id"`
-		Name   string `db:"name"`
-		Cursor int    `db:"cursor"`
+		ID     int32           `db:"id"`
+		Name   string        `db:"name"`
+		Cursor sql.NullInt32 `db:"cursor"`
 	}
 	if err := stmt.GetContext(ctx, &row, map[string]any{"name": name}); err != nil {
 		return namemyserver.Bucket{}, err
@@ -182,6 +182,6 @@ func (s *BucketStore) OneByName(ctx context.Context, name string) (namemyserver.
 	return namemyserver.Bucket{
 		ID:     row.ID,
 		Name:   row.Name,
-		Cursor: row.Cursor,
+		Cursor: row.Cursor.Int32,
 	}, nil
 }

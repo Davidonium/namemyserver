@@ -34,7 +34,7 @@ func apiCreateBucketHandler(bucketStore namemyserver.BucketStore) appHandlerFunc
 		}
 
 		f := namemyserver.RandomPairFilters{
-			Length: req.Filters.Length,
+			Length:     req.Filters.Length,
 			LengthMode: namemyserver.LengthMode(req.Filters.LengthMode),
 		}
 		if err := bucketStore.FillBucketValues(ctx, b, f); err != nil {

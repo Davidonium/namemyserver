@@ -1,3 +1,37 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss" source("../../../internal/templates/");
+
+@custom-variant htmx-request {
+  &.htmx-request {
+    @slot;
+  }
+  .htmx-request & {
+    @slot;
+  }
+}
+
+@custom-variant htmx-settling {
+  &.htmx-settling {
+    @slot;
+  }
+  .htmx-settling & {
+    @slot;
+  }
+}
+
+@custom-variant htmx-swapping {
+  &.htmx-swapping {
+    @slot;
+  }
+  .htmx-swapping & {
+    @slot;
+  }
+}
+
+@custom-variant htmx-added {
+  &.htmx-added {
+    @slot;
+  }
+  .htmx-added & {
+    @slot;
+  }
+}

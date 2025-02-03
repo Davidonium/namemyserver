@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "moduleResolution": "bundler",
+    "module": "ESNext",
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/js/*"]

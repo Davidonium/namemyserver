@@ -79,10 +79,9 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 
 	defer db.Close()
 
-
 	immediateDB, err := sqlitestore.ConnectWithImmediate(ctx, cfg.DatabaseURL.String())
 	if err != nil {
-		return fmt.Errorf("failed to create immediate connection: %w", err)
+		return fmt.Errorf("failed to create connection with immediate lock: %w", err)
 	}
 
 	defer immediateDB.Close()
