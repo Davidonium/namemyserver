@@ -9,6 +9,12 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+type bucketRow struct {
+	ID     int32         `db:"id"`
+	Name   string        `db:"name"`
+	Cursor sql.NullInt32 `db:"cursor"`
+}
+
 type BucketStore struct {
 	db *DB
 }
@@ -167,18 +173,36 @@ func (s *BucketStore) OneByName(ctx context.Context, name string) (namemyserver.
 		return namemyserver.Bucket{}, err
 	}
 
-	var row struct {
-		ID     int32         `db:"id"`
-		Name   string        `db:"name"`
-		Cursor sql.NullInt32 `db:"cursor"`
-	}
+	var row bucketRow
 	if err := stmt.GetContext(ctx, &row, map[string]any{"name": name}); err != nil {
 		return namemyserver.Bucket{}, err
 	}
 
+	return rowToBucket(row), nil
+}
+
+const allBucketsSQL = `
+SELECT id, name, cursor
+FROM buckets`
+
+func (s *BucketStore) All(ctx context.Context) ([]namemyserver.Bucket, error) {
+	var rows []bucketRow
+	if err := s.db.SelectContext(ctx, &rows, allBucketsSQL); err != nil {
+		return nil, err
+	}
+
+	var buckets []namemyserver.Bucket
+	for _, r := range rows {
+		buckets = append(buckets, rowToBucket(r))
+	}
+
+	return buckets, nil
+}
+
+func rowToBucket(row bucketRow) namemyserver.Bucket {
 	return namemyserver.Bucket{
 		ID:     row.ID,
 		Name:   row.Name,
 		Cursor: row.Cursor.Int32,
-	}, nil
+	}
 }

@@ -70,3 +70,33 @@ func apiPopBucketNameHandler(bucketStore namemyserver.BucketStore) appHandlerFun
 		})
 	}
 }
+
+func apiListBucketsHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
+	type bucketItem struct {
+		ID   int32  `json:"id"`
+		Name string `json:"name"`
+	}
+	type response struct {
+		Buckets []bucketItem `json:"buckets"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) error {
+		ctx := r.Context()
+		buckets, err := bucketStore.All(ctx)
+		if err != nil {
+			return err
+		}
+
+		var items []bucketItem
+		for _, b := range buckets {
+			items = append(items, bucketItem{
+				ID:   b.ID,
+				Name: b.Name,
+			})
+		}
+
+		return encode(w, http.StatusOK, response{
+			Buckets: items,
+		})
+	}
+}

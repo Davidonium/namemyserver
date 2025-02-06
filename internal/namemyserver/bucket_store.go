@@ -5,6 +5,7 @@ import (
 )
 
 type BucketStore interface {
+	All(ctx context.Context) ([]Bucket, error)
 	Create(ctx context.Context, b *Bucket) error
 	SetCursor(ctx context.Context, bucketID int32, cursor int32) error
 	OneByName(ctx context.Context, name string) (Bucket, error)
