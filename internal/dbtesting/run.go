@@ -9,20 +9,19 @@ import (
 	"github.com/amacneil/dbmate/v2/pkg/dbmate"
 	// import sqlite specific driver for running migrations in integration testing.
 	_ "github.com/amacneil/dbmate/v2/pkg/driver/sqlite"
-	"github.com/jmoiron/sqlx"
 
 	embed "github.com/davidonium/namemyserver"
 
 	"github.com/davidonium/namemyserver/internal/store/sqlitestore"
 )
 
-func Run(t *testing.T, f func(*testing.T, *sqlx.DB, *sqlx.DB)) {
+func Run(t *testing.T, f func(*testing.T, *sqlitestore.DB)) {
 	t.Helper()
 	if testing.Short() {
 		t.Skip("database tests are skipped for short testing")
 	}
 
-	fd, err := os.CreateTemp("", "namemyserver-*.db")
+	fd, err := os.CreateTemp(t.TempDir(), "namemyserver-*.db")
 	if err != nil {
 		t.Fatalf("failed to create temp file for the sqlite database, cause: %v", err)
 	}
@@ -31,9 +30,6 @@ func Run(t *testing.T, f func(*testing.T, *sqlx.DB, *sqlx.DB)) {
 	// the sqlite driver will open the file again
 	fd.Close()
 
-	t.Cleanup(func() {
-		os.Remove(dbFile)
-	})
 
 	dbURL := "sqlite:" + dbFile
 
@@ -46,15 +42,6 @@ func Run(t *testing.T, f func(*testing.T, *sqlx.DB, *sqlx.DB)) {
 
 	t.Cleanup(func() {
 		db.Close()
-	})
-
-	imDB, err := sqlitestore.ConnectWithImmediate(ctx, dbURL)
-	if err != nil {
-		t.Fatalf("failed to startup a database with immediate transactions for the test: %v", err)
-	}
-
-	t.Cleanup(func() {
-		imDB.Close()
 	})
 
 	u, err := url.Parse(dbURL)
@@ -70,5 +57,5 @@ func Run(t *testing.T, f func(*testing.T, *sqlx.DB, *sqlx.DB)) {
 		t.Fatalf("failed to apply migrations: %v", err)
 	}
 
-	f(t, db, imDB)
+	f(t, db)
 }

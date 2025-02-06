@@ -79,12 +79,6 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 
 	defer db.Close()
 
-	immediateDB, err := sqlitestore.ConnectWithImmediate(ctx, cfg.DatabaseURL.String())
-	if err != nil {
-		return fmt.Errorf("failed to create connection with immediate lock: %w", err)
-	}
-
-	defer immediateDB.Close()
 
 	dbm := dbmate.New(cfg.DatabaseURL)
 	dbm.AutoDumpSchema = false
@@ -108,7 +102,7 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 	}
 
 	pairStore := sqlitestore.NewPairStore(db)
-	bucketStore := sqlitestore.NewBucketStore(db, immediateDB)
+	bucketStore := sqlitestore.NewBucketStore(db)
 
 	generator := namemyserver.NewGenerator(pairStore)
 
@@ -147,7 +141,7 @@ func runSeed(logger *slog.Logger, cfg env.Config) error {
 
 	for _, t := range tables {
 		logger.Info("seeding table", "table", t)
-		if err := seedByTable(ctx, logger, db, t); err != nil {
+		if err := seedByTable(ctx, logger, db.DB, t); err != nil {
 			logger.Error("failure running seed", "error", err, "table", t)
 		}
 	}

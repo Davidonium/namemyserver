@@ -5,16 +5,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/davidonium/namemyserver/internal/namemyserver"
 )
 
 type PairStore struct {
-	db *sqlx.DB
+	db *DB
 }
 
-func NewPairStore(db *sqlx.DB) *PairStore {
+func NewPairStore(db *DB) *PairStore {
 	return &PairStore{db: db}
 }
 

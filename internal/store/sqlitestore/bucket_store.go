@@ -5,18 +5,16 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/davidonium/namemyserver/internal/namemyserver"
+	"github.com/jmoiron/sqlx"
 )
 
 type BucketStore struct {
-	db   *sqlx.DB
-	imDB *sqlx.DB
+	db *DB
 }
 
-func NewBucketStore(db *sqlx.DB, imDB *sqlx.DB) *BucketStore {
-	return &BucketStore{db: db, imDB: imDB}
+func NewBucketStore(db *DB) *BucketStore {
+	return &BucketStore{db: db}
 }
 
 const createBucketSQL = `
@@ -124,36 +122,35 @@ WHERE
 	id = :bucket_id`
 
 func (s *BucketStore) PopName(ctx context.Context, b namemyserver.Bucket) (string, error) {
-	tx, err := s.imDB.BeginTxx(ctx, &sql.TxOptions{})
-	if err != nil {
-		return "", err
-	}
-
-	stmt, err := tx.PrepareNamedContext(ctx, currentBucketNameValueSQL)
-	if err != nil {
-		return "", fmt.Errorf("failed to prepare query to retrieve cursor name: %w", err)
-	}
-
-	args := map[string]any{
-		"bucket_id": b.ID,
-		"cursor":    b.Cursor,
-	}
 	var row struct {
 		Name string `db:"value"`
 	}
-	if err := stmt.GetContext(ctx, &row, args); err != nil {
-		return "", fmt.Errorf("failed to retrieve name from the cursor: %w", err)
-	}
 
-	args = map[string]any{
-		"bucket_id": b.ID,
-	}
-	if _, err := tx.NamedExecContext(ctx, advanceCursorSQL, args); err != nil {
-		return "", fmt.Errorf("failed to advance the cursor to the next position: %w", err)
-	}
+	err := s.db.WithImmediateTx(ctx, &sql.TxOptions{}, func(ctx context.Context, tx *sqlx.Tx) error {
+		stmt, err := tx.PrepareNamedContext(ctx, currentBucketNameValueSQL)
+		if err != nil {
+			return fmt.Errorf("failed to prepare query to retrieve cursor name: %w", err)
+		}
 
-	if err := tx.Commit(); err != nil {
-		return "", fmt.Errorf("failed to commit advance cursor update: %w", err)
+		args := map[string]any{
+			"bucket_id": b.ID,
+			"cursor":    b.Cursor,
+		}
+		if err := stmt.GetContext(ctx, &row, args); err != nil {
+			return fmt.Errorf("failed to retrieve name from the cursor: %w", err)
+		}
+
+		args = map[string]any{
+			"bucket_id": b.ID,
+		}
+		if _, err := tx.NamedExecContext(ctx, advanceCursorSQL, args); err != nil {
+			return fmt.Errorf("failed to advance the cursor to the next position: %w", err)
+		}
+
+		return nil
+	})
+	if err != nil {
+		return "", err
 	}
 
 	return row.Name, nil
@@ -171,7 +168,7 @@ func (s *BucketStore) OneByName(ctx context.Context, name string) (namemyserver.
 	}
 
 	var row struct {
-		ID     int32           `db:"id"`
+		ID     int32         `db:"id"`
 		Name   string        `db:"name"`
 		Cursor sql.NullInt32 `db:"cursor"`
 	}

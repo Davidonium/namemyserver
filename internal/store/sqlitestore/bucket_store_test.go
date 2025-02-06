@@ -4,17 +4,15 @@ import (
 	"context"
 	"testing"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/davidonium/namemyserver/internal/dbtesting"
 	"github.com/davidonium/namemyserver/internal/namemyserver"
 	"github.com/davidonium/namemyserver/internal/store/sqlitestore"
 )
 
 func TestBucketStore(t *testing.T) {
-	dbtesting.Run(t, func(t *testing.T, db *sqlx.DB, imDB *sqlx.DB) {
+	dbtesting.Run(t, func(t *testing.T, db *sqlitestore.DB) {
 		ctx := context.Background()
-		store := sqlitestore.NewBucketStore(db, imDB)
+		store := sqlitestore.NewBucketStore(db)
 
 		b := &namemyserver.Bucket{
 			Name: "test-bucket",
