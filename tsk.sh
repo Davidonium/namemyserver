@@ -32,7 +32,6 @@ install_tools() { ## installs tools required for development and building the pr
     go install github.com/air-verse/air@latest
     go install github.com/a-h/templ/cmd/templ@latest
     go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
-    go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.4.1
     curl -fsSL -o ~/.local/bin/dbmate https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64 && chmod +x ~/.local/bin/dbmate
 }
 
