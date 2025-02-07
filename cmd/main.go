@@ -79,7 +79,6 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 
 	defer db.Close()
 
-
 	dbm := dbmate.New(cfg.DatabaseURL)
 	dbm.AutoDumpSchema = false
 	dbm.FS = embed.MigrationsFS

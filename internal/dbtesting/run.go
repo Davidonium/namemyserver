@@ -30,7 +30,6 @@ func Run(t *testing.T, f func(*testing.T, *sqlitestore.DB)) {
 	// the sqlite driver will open the file again
 	fd.Close()
 
-
 	dbURL := "sqlite:" + dbFile
 
 	ctx := context.Background()
