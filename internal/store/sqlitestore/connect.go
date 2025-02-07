@@ -81,11 +81,15 @@ func (db *DB) WithImmediateTx(ctx context.Context, opts *sql.TxOptions, f func(c
 
 	defer func() {
 		if err != nil {
-			err = tx.Rollback()
+			if txErr := tx.Rollback(); txErr != nil {
+				err = fmt.Errorf("failed to rollback on immediate tx error: %v - source: %w", txErr, err)
+			}
 			return
 		}
 
-		err = tx.Commit()
+		if txErr := tx.Commit(); txErr != nil {
+			err = fmt.Errorf("failed to commit immediate tx: %w", txErr)
+		}
 	}()
 
 	err = f(ctx, tx)
