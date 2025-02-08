@@ -74,7 +74,7 @@ func NewDB(db *sqlx.DB, imDB *sqlx.DB) *DB {
 }
 
 func (db *DB) WithImmediateTx(ctx context.Context, opts *sql.TxOptions, f func(context.Context, *sqlx.Tx) error) (err error) {
-	tx, err := db.imDB.BeginTxx(ctx, &sql.TxOptions{})
+	tx, err := db.imDB.BeginTxx(ctx, opts)
 	if err != nil {
 		return
 	}
