@@ -29,10 +29,46 @@ default() {
 }
 
 install_tools() { ## installs tools required for development and building the project
-    go install github.com/air-verse/air@v1.61.7
-    go install github.com/a-h/templ/cmd/templ@v0.3.833
-    go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
-    curl -fsSL -o ~/.local/bin/dbmate https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64 && chmod +x ~/.local/bin/dbmate
+    require:air
+    require:templ
+    require:golangci-lint
+    require:dbmate
+}
+
+require:air() {
+    install_if_missing "air" "github.com/air-verse/air@v1.61.7"
+}
+
+require:templ() {
+    install_if_missing "templ" "github.com/a-h/templ/cmd/templ@v0.3.833"
+}
+
+require:golangci-lint() {
+    install_if_missing "golangci-lint" "github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2"
+}
+
+require:dbmate() {
+    local cmd="dbmate"
+    local install_pkg="$2"
+    if ! command -v "$cmd" &>/dev/null; then
+        echo "Installing $cmd..."
+        curl -fsSL -o ~/.local/bin/dbmate https://github.com/amacneil/dbmate/releases/download/v2.26.0/dbmate-linux-amd64 && chmod +x ~/.local/bin/dbmate
+    else
+        echo "$cmd is already installed, skipping."
+    fi
+}
+
+## Function to check if a command exists before installing
+install_if_missing() {
+    local cmd="$1"
+    local install_pkg="$2"
+
+    if ! command -v "$cmd" &>/dev/null; then
+        echo "Installing $cmd..."
+        go install $install_pkg
+    else
+        echo "$cmd is already installed, skipping."
+    fi
 }
 
 build() { ## builds namemyserver's binary for production use in the current machine's architecture
