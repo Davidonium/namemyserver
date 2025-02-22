@@ -21,7 +21,7 @@ fi
 help() {
     echo "$0 <task> <args>"
     echo "Tasks:"
-    compgen -A function | cat -n
+    compgen -A function | sed 's/^/\t/'
 }
 
 default() {
