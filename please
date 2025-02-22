@@ -49,7 +49,6 @@ require:golangci-lint() {
 
 require:dbmate() {
     local cmd="dbmate"
-    local install_pkg="$2"
     if ! command -v "$cmd" &>/dev/null; then
         echo "Installing $cmd..."
         curl -fsSL -o ~/.local/bin/dbmate https://github.com/amacneil/dbmate/releases/download/v2.26.0/dbmate-linux-amd64 && chmod +x ~/.local/bin/dbmate
