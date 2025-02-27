@@ -1,7 +1,5 @@
 package templates
 
-import "strconv"
-
 type StatsViewModel struct {
 	PairCount      int
 	AdjectiveCount int
@@ -23,7 +21,7 @@ templ StatsPage(vm StatsViewModel) {
 						Pair Count
 					</div>
 					<div class="mt-5 text-right text-2xl font-bold">
-						{ strconv.Itoa(vm.PairCount) }
+						{ humanInt(vm.PairCount) }
 					</div>
 				</div>
 				<div class="flex-1 rounded shadow-lg p-5">
@@ -31,7 +29,7 @@ templ StatsPage(vm StatsViewModel) {
 						Adjective Count
 					</div>
 					<div class="mt-5 text-right text-2xl font-bold">
-						{ strconv.Itoa(vm.AdjectiveCount) }
+						{ humanInt(vm.AdjectiveCount) }
 					</div>
 				</div>
 				<div class="flex-1 rounded shadow-lg p-5">
@@ -39,7 +37,7 @@ templ StatsPage(vm StatsViewModel) {
 						Noun Count
 					</div>
 					<div class="mt-5 text-right text-2xl font-bold">
-						{ strconv.Itoa(vm.NounCount) }
+						{ humanInt(vm.NounCount) }
 					</div>
 				</div>
 			</div>
