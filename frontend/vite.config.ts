@@ -2,6 +2,8 @@ import path from "node:path";
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 
+const __dirname = import.meta.dirname;
+
 
 export default defineConfig({
   server: {

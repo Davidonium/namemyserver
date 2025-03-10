@@ -1,0 +1,24 @@
+package templates
+
+import (
+	"encoding/json"
+	"github.com/davidonium/namemyserver/internal/namemyserver"
+)
+
+type BucketDetailsPageViewModel struct {
+	Bucket namemyserver.Bucket
+}
+
+templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
+	@Layout() {
+		<div>
+			<div>
+				Bucket Details
+			</div>
+			<pre>
+				{{ j, _ := json.MarshalIndent(vm.Bucket, "", "  ") }}
+				{ string(j) }
+			</pre>
+		</div>
+	}
+}

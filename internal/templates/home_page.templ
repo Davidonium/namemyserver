@@ -27,8 +27,8 @@ templ HomePage(vm HomeViewModel) {
 				hx-post="/generate"
 				hx-target="#generate-name-container"
 				hx-include=".js-generate-configuration"
-				class="group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
-				type="submit"
+				class="cursor-pointer group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
+				type="button"
 			>
 				<span
 					class="block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent"
@@ -68,13 +68,13 @@ templ HomePage(vm HomeViewModel) {
 								<div class="inline-flex rounded-md shadow-sm" role="group">
 									<label>
 										<input type="radio" name="lengthMode" value="upto" checked="checked" disabled="disabled" class="sr-only peer js-length-linked"/>
-										<div class="px-2 py-1 text-xs font-medium text-slate-800 bg-white border border-orange-200 rounded-s cursor-pointer hover:bg-orange-100 peer-checked:bg-orange-600 peer-checked:text-white">
+										<div class="px-2 py-1 text-xs font-medium text-slate-800 bg-white border border-orange-200 rounded-s cursor-pointer hover:bg-orange-100 peer-checked:bg-orange-600 peer-checked:text-white peer-checked:hover:bg-orange-600 peer-checked:hover:text-white">
 											Up to
 										</div>
 									</label>
 									<label>
 										<input type="radio" name="lengthMode" value="exactly" disabled="disabled" class="sr-only peer js-length-linked"/>
-										<div class="px-2 py-1 text-xs font-medium text-slate-800 bg-white border border-orange-200 rounded-e cursor-pointer hover:bg-orange-100 peer-focus:z-10 peer-checked:bg-orange-600 peer-checked:text-white">
+										<div class="px-2 py-1 text-xs font-medium text-slate-800 bg-white border border-orange-200 rounded-e cursor-pointer hover:bg-orange-100 peer-focus:z-10 peer-checked:bg-orange-600 peer-checked:text-white peer-checked:hover:bg-orange-600 peer-checked:hover:text-white">
 											Exactly
 										</div>
 									</label>

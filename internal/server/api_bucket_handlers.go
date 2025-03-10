@@ -71,7 +71,7 @@ func apiPopBucketNameHandler(bucketStore namemyserver.BucketStore) appHandlerFun
 	}
 }
 
-func apiListBucketsHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
+func apiBucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 	type bucketItem struct {
 		ID   int32  `json:"id"`
 		Name string `json:"name"`

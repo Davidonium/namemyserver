@@ -33,6 +33,11 @@ func addRoutes(
 	m.Handle("GET /stats", c(app(statsHandler(svcs.PairStore))))
 	m.Handle("POST /generate", c(app(generateHandler(svcs.Generator))))
 	m.Handle("GET /config/stats", c(app(configStatsHandler(svcs.PairStore))))
+
+	m.Handle("GET /buckets", c(app(bucketListHandler(svcs.BucketStore))))
+	m.Handle("GET /buckets/{id}", c(app(bucketDetailsHandler(svcs.BucketStore))))
+	m.Handle("GET /buckets/create", c(app(bucketCreateHandler(svcs.BucketStore))))
+	m.Handle("POST /buckets", c(app(bucketCreateSubmitHandler(svcs.BucketStore))))
 }
 
 func addAPIRoutes(m *http.ServeMux, svcs *Services) {
@@ -40,7 +45,7 @@ func addAPIRoutes(m *http.ServeMux, svcs *Services) {
 
 	m.Handle("POST /generate", app(apiGenerateHandler(svcs.Generator)))
 	m.Handle("POST /buckets", app(apiCreateBucketHandler(svcs.BucketStore)))
-	m.Handle("GET /buckets", app(apiListBucketsHandler(svcs.BucketStore)))
+	m.Handle("GET /buckets", app(apiBucketListHandler(svcs.BucketStore)))
 	m.Handle("POST /buckets/{name}/pop", app(apiPopBucketNameHandler(svcs.BucketStore)))
 }
 

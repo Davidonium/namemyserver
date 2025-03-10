@@ -181,6 +181,26 @@ func (s *BucketStore) OneByName(ctx context.Context, name string) (namemyserver.
 	return rowToBucket(row), nil
 }
 
+const oneByIDSQL = `
+SELECT id, name, cursor
+FROM buckets
+WHERE id = :id`
+
+func (s *BucketStore) OneByID(ctx context.Context, id int32) (namemyserver.Bucket, error) {
+	stmt, err := s.db.PrepareNamedContext(ctx, oneByIDSQL)
+	if err != nil {
+		return namemyserver.Bucket{}, err
+	}
+
+	var row bucketRow
+	if err := stmt.GetContext(ctx, &row, map[string]any{"id": id}); err != nil {
+		return namemyserver.Bucket{}, err
+	}
+
+	return rowToBucket(row), nil
+}
+
+
 const allBucketsSQL = `
 SELECT id, name, cursor
 FROM buckets`
