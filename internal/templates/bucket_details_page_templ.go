@@ -96,7 +96,7 @@ func BucketDetailsPage(vm BucketDetailsPageViewModel) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div></div></div><div class=\"mt-30\"><div class=\"text-xl font-medium\">Danger zone</div><div class=\"rounded-lg border-2 border-red-700 p-3 mt-1\"><div class=\"flex items-center\"><div class=\"flex-1 \"><div class=\"text-sm font-medium\">Archive this bucket</div><div class=\"text-xs\">Mark this bucket as archived and it will be automatically removed in 3 days.</div></div><div><button class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\" type=\"button\">Archive</button></div></div></div></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div></div></div><div class=\"mt-30\"><div class=\"text-xl font-medium\">Danger zone</div><div class=\"rounded-lg border border-red-700 p-3 mt-1\"><div class=\"flex items-center\"><div class=\"flex-1 \"><div class=\"text-sm font-medium\">Archive this bucket</div><div class=\"text-xs\">Mark this bucket as archived and it will be automatically removed in 3 days.</div></div><div><button class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\" type=\"button\">Archive</button></div></div></div></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
