@@ -25,7 +25,8 @@ CREATE TABLE buckets (
     description TEXT,
     cursor INTEGER,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT NULL
+    updated_at DATETIME DEFAULT NULL,
+    archived_at DATETIME
 );
 
 CREATE UNIQUE INDEX idx_unique_name_buckets ON buckets(name);

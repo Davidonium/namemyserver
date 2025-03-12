@@ -1,9 +1,6 @@
 package templates
 
-import (
-	"encoding/json"
-	"github.com/davidonium/namemyserver/internal/namemyserver"
-)
+import "github.com/davidonium/namemyserver/internal/namemyserver"
 
 type BucketDetailsPageViewModel struct {
 	Bucket namemyserver.Bucket
@@ -21,10 +18,35 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 				</a>
 			</div>
 			<div class="text-4xl">Bucket Details</div>
-			<pre>
-				{{ j, _ := json.MarshalIndent(vm.Bucket, "", "  ") }}
-				{ string(j) }
-			</pre>
+			<div class="w-lg flex flex-col gap-3">
+				<div>
+					<div class="text-2xl font-semibold">{ vm.Bucket.Name }</div>
+					<div class="mt-4">
+						<div class="font-bold">Description</div>
+						<div>
+                        if len(vm.Bucket.Description) > 0 {
+                            { vm.Bucket.Description }
+                        } else {
+                            [none]
+                        }
+                        </div>
+					</div>
+				</div>
+				<div class="mt-30">
+					<div class="text-xl font-medium">Danger zone</div>
+					<div class="rounded-lg border-2 border-red-700 p-3 mt-1">
+						<div class="flex items-center">
+							<div class="flex-1 ">
+                                <div class="text-sm font-medium">Archive this bucket</div>
+                                <div class="text-xs">Mark this bucket as archived and it will be automatically removed in 3 days.</div>
+                            </div>
+							<div>
+								<button class="rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer" type="button">Archive</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	}
 }

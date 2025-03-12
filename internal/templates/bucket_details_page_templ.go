@@ -8,10 +8,7 @@ package templates
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	"encoding/json"
-	"github.com/davidonium/namemyserver/internal/namemyserver"
-)
+import "github.com/davidonium/namemyserver/internal/namemyserver"
 
 type BucketDetailsPageViewModel struct {
 	Bucket namemyserver.Bucket
@@ -66,21 +63,40 @@ func BucketDetailsPage(vm BucketDetailsPageViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</a></div><div class=\"text-4xl\">Bucket Details</div><pre>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</a></div><div class=\"text-4xl\">Bucket Details</div><div class=\"w-lg flex flex-col gap-3\"><div><div class=\"text-2xl font-semibold\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			j, _ := json.MarshalIndent(vm.Bucket, "", "  ")
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(string(j))
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(vm.Bucket.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 26, Col: 15}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 23, Col: 57}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</pre></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><div class=\"mt-4\"><div class=\"font-bold\">Description</div><div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if len(vm.Bucket.Description) > 0 {
+				var templ_7745c5c3_Var4 string
+				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(vm.Bucket.Description)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 28, Col: 51}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			} else {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "[none]")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div></div></div><div class=\"mt-30\"><div class=\"text-xl font-medium\">Danger zone</div><div class=\"rounded-lg border-2 border-red-700 p-3 mt-1\"><div class=\"flex items-center\"><div class=\"flex-1 \"><div class=\"text-sm font-medium\">Archive this bucket</div><div class=\"text-xs\">Mark this bucket as archived and it will be automatically removed in 3 days.</div></div><div><button class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\" type=\"button\">Archive</button></div></div></div></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
