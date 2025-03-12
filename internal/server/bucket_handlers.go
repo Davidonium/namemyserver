@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -23,9 +25,19 @@ func bucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 	}
 }
 
-func bucketCreateHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
+func bucketCreateHandler(logger *slog.Logger, generator *namemyserver.Generator, bucketStore namemyserver.BucketStore) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		c := templates.BucketCreatePage()
+		ctx := r.Context()
+
+		result, err := generator.Generate(ctx, namemyserver.GenerateOptions{})
+		if err != nil {
+			logger.Error("failed to automatically generate a name for a new bucket", slog.Any("err", err))
+		}
+
+		vm := templates.BucketCreatePageViewModel{
+			GeneratedName: result.Name,
+		}
+		c := templates.BucketCreatePage(vm)
 		return component(w, r, http.StatusOK, c)
 	}
 }
@@ -34,9 +46,11 @@ func bucketCreateSubmitHandler(bucketStore namemyserver.BucketStore) appHandlerF
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 		name := r.FormValue("name")
+		description := r.FormValue("description")
 
 		b := namemyserver.Bucket{
 			Name: name,
+			Description: description,
 		}
 		if err := bucketStore.Create(ctx, &b); err != nil {
 			return err
@@ -47,7 +61,7 @@ func bucketCreateSubmitHandler(bucketStore namemyserver.BucketStore) appHandlerF
 		if err := bucketStore.FillBucketValues(ctx, b, f); err != nil {
 			return err
 		}
-		http.Redirect(w, r, "/buckets/"+b.Name, http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("/buckets/%d", b.ID), http.StatusFound)
 		return nil
 	}
 }

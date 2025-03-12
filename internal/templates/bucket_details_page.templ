@@ -11,10 +11,16 @@ type BucketDetailsPageViewModel struct {
 
 templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 	@Layout() {
-		<div>
-			<div>
-				Bucket Details
+		<div class="relative flex flex-col items-center min-h-screen gap-5 pt-20">
+			<div class="absolute top-0 left-0">
+				<a href="/" class="inline-block p-4">
+					@HomeIcon()
+				</a>
+				<a href="/buckets" class="inline-block p-4">
+					@BucketsIcon()
+				</a>
 			</div>
+			<div class="text-4xl">Bucket Details</div>
 			<pre>
 				{{ j, _ := json.MarshalIndent(vm.Bucket, "", "  ") }}
 				{ string(j) }

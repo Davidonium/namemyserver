@@ -10,9 +10,10 @@ import (
 )
 
 type bucketRow struct {
-	ID     int32         `db:"id"`
-	Name   string        `db:"name"`
-	Cursor sql.NullInt32 `db:"cursor"`
+	ID          int32          `db:"id"`
+	Name        string         `db:"name"`
+	Description sql.NullString `db:"description"`
+	Cursor      sql.NullInt32  `db:"cursor"`
 }
 
 type BucketStore struct {
@@ -25,12 +26,15 @@ func NewBucketStore(db *DB) *BucketStore {
 
 const createBucketSQL = `
 INSERT INTO buckets
-	(name)
+	(name, description)
 VALUES
-	(:name)`
+	(:name, :description)`
 
 func (s *BucketStore) Create(ctx context.Context, b *namemyserver.Bucket) error {
-	args := map[string]any{"name": b.Name}
+	args := map[string]any{
+		"name":        b.Name,
+		"description": b.Description,
+	}
 	r, err := s.db.NamedExecContext(ctx, createBucketSQL, args)
 	if err != nil {
 		return err
@@ -163,7 +167,7 @@ func (s *BucketStore) PopName(ctx context.Context, b namemyserver.Bucket) (strin
 }
 
 const oneByNameSQL = `
-SELECT id, name, cursor
+SELECT id, name, description, cursor
 FROM buckets
 WHERE name = :name`
 
@@ -182,7 +186,7 @@ func (s *BucketStore) OneByName(ctx context.Context, name string) (namemyserver.
 }
 
 const oneByIDSQL = `
-SELECT id, name, cursor
+SELECT id, name, description, cursor
 FROM buckets
 WHERE id = :id`
 
@@ -200,9 +204,8 @@ func (s *BucketStore) OneByID(ctx context.Context, id int32) (namemyserver.Bucke
 	return rowToBucket(row), nil
 }
 
-
 const allBucketsSQL = `
-SELECT id, name, cursor
+SELECT id, name, description, cursor
 FROM buckets`
 
 func (s *BucketStore) All(ctx context.Context) ([]namemyserver.Bucket, error) {
@@ -221,8 +224,9 @@ func (s *BucketStore) All(ctx context.Context) ([]namemyserver.Bucket, error) {
 
 func rowToBucket(row bucketRow) namemyserver.Bucket {
 	return namemyserver.Bucket{
-		ID:     row.ID,
-		Name:   row.Name,
-		Cursor: row.Cursor.Int32,
+		ID:          row.ID,
+		Name:        row.Name,
+		Description: row.Description.String,
+		Cursor:      row.Cursor.Int32,
 	}
 }

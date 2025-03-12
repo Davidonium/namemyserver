@@ -1,7 +1,8 @@
 package namemyserver
 
 type Bucket struct {
-	ID     int32
-	Name   string
-	Cursor int32
+	ID          int32
+	Name        string
+	Description string
+	Cursor      int32
 }

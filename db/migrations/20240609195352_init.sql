@@ -22,6 +22,7 @@ CREATE UNIQUE INDEX idx_unique_value_adjectives ON adjectives(value);
 CREATE TABLE buckets (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
+    description TEXT,
     cursor INTEGER,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT NULL

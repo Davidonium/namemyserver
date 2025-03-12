@@ -8,7 +8,11 @@ package templates
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func BucketCreatePage() templ.Component {
+type BucketCreatePageViewModel struct {
+	GeneratedName string
+}
+
+func BucketCreatePage(vm BucketCreatePageViewModel) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -41,7 +45,7 @@ func BucketCreatePage() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"relative flex flex-col items-center justify-center min-h-screen gap-5\"><div class=\"absolute top-0 left-0\"><a href=\"/\" class=\"inline-block p-4\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"relative flex flex-col items-center min-h-screen gap-5 pt-20\"><div class=\"absolute top-0 left-0\"><a href=\"/\" class=\"inline-block p-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -49,7 +53,28 @@ func BucketCreatePage() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</a></div><div class=\"text-4xl\">Create a Bucket</div><div class=\"flex flex-col gap-4 items-center\"><form method=\"post\" action=\"/buckets\"><div><input class=\"border rounded\" type=\"text\" name=\"name\"></div><div><button class=\"cursor-pointer group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75\" type=\"submit\"><span class=\"block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent\">Create</span></button></div></form></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</a> <a href=\"/buckets\" class=\"inline-block p-4\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = BucketsIcon().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</a></div><div class=\"text-4xl\">Create a Bucket</div><div class=\"flex flex-col gap-4 items-center\"><form method=\"post\" action=\"/buckets\"><div class=\"flex flex-col gap-2\"><div class=\"bg-gradient-to-r from-purple-600 to-cyan-400 rounded-full p-[2px]\"><input id=\"name\" class=\"rounded-full px-3 py-2 bg-white text-sm font-medium\" type=\"text\" name=\"name\" value=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var3 string
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(vm.GeneratedName)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_create_page.templ`, Line: 23, Col: 132}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" placeholder=\"Name\"></div><div class=\"bg-gradient-to-r from-purple-600 to-cyan-400 rounded-lg p-[2px]\"><textarea id=\"description\" class=\"block w-full rounded-lg p-2 bg-white text-sm font-medium\" name=\"description\" placeholder=\"What will the bucket be used for?\" rows=\"5\"></textarea></div><div><button class=\"cursor-pointer group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] text-white focus:outline-none focus:ring active:text-opacity-75 hover:shadow-lg\" type=\"submit\"><span class=\"block rounded-full bg-transparent px-8 py-3 text-sm font-medium\">Create</span></button></div></div></form></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
