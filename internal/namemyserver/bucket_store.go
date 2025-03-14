@@ -12,4 +12,5 @@ type BucketStore interface {
 	OneByID(ctx context.Context, id int32) (Bucket, error)
 	FillBucketValues(ctx context.Context, b Bucket, f RandomPairFilters) error
 	PopName(ctx context.Context, b Bucket) (string, error)
+	Archive(ctx context.Context, b *Bucket) error
 }

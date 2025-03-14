@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/davidonium/namemyserver/internal/namemyserver"
 	"github.com/jmoiron/sqlx"
@@ -220,6 +221,28 @@ func (s *BucketStore) All(ctx context.Context) ([]namemyserver.Bucket, error) {
 	}
 
 	return buckets, nil
+}
+
+const archiveBucketSQL = `
+UPDATE
+	buckets
+SET
+	archived_at = :archived_at,
+	updated_at = CURRENT_TIMESTAMP
+WHERE
+	id = :id`
+
+func (s *BucketStore) Archive(ctx context.Context, b *namemyserver.Bucket) error {
+	b.ArchivedAt = time.Now()
+	params := map[string]any{
+		"archived_at": b.ArchivedAt,
+		"id": b.ID,
+	}
+	if _, err := s.db.NamedExecContext(ctx, archiveBucketSQL, params); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func rowToBucket(row bucketRow) namemyserver.Bucket {

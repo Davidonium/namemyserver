@@ -25,7 +25,7 @@ func bucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 	}
 }
 
-func bucketCreateHandler(logger *slog.Logger, generator *namemyserver.Generator, bucketStore namemyserver.BucketStore) appHandlerFunc {
+func bucketCreateHandler(logger *slog.Logger, generator *namemyserver.Generator) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 
@@ -78,5 +78,23 @@ func bucketDetailsHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 
 		c := templates.BucketDetailsPage(templates.BucketDetailsPageViewModel{Bucket: b})
 		return component(w, r, http.StatusOK, c)
+	}
+}
+
+func bucketArchiveHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) error {
+		ctx := r.Context()
+		rawID := r.PathValue("id")
+		id, _ := strconv.Atoi(rawID)
+		b, err := bucketStore.OneByID(ctx, int32(id))
+		if err != nil {
+			return err
+		}
+
+		if err := bucketStore.Archive(ctx, &b); err != nil {
+			return err
+		}
+
+		return nil
 	}
 }
