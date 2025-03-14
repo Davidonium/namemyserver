@@ -100,20 +100,41 @@ func BucketDetailsPage(vm BucketDetailsPageViewModel) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div></div></div><div class=\"mt-30\"><div class=\"text-xl font-medium\">Danger zone</div><div class=\"rounded-lg border border-red-700 p-3 mt-1\"><div class=\"flex items-center\"><div class=\"flex-1 \"><div class=\"text-sm font-medium\">Archive this bucket</div><div class=\"text-xs\">Mark this bucket as archived, it will be automatically removed in 3 days.</div></div><div><button class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\" type=\"button\" hx-post=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div></div></div><div class=\"mt-30\"><div class=\"text-xl font-medium\">Danger zone</div><div class=\"rounded-lg border border-red-700 p-3 mt-1\"><div class=\"flex items-center\"><div class=\"flex-1 \"><div class=\"text-sm font-medium\">Archive this bucket</div><div class=\"text-xs\">Mark this bucket as archived, it will be automatically removed in 3 days.</div></div><div><button id=\"archiveButton\" class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\" type=\"button\">Archive</button></div></div></div></div></div></div><dialog id=\"archiveDialog\" class=\"relative m-auto p-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm\"><button type=\"button\" id=\"closeDialog\" class=\"absolute top-0 right-0 p-2 m-1 hover:bg-gray-100 rounded-lg cursor-pointer\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = CloseIcon().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</button><div class=\"flex flex-col w-full\"><div class=\"text-sm\">Are you sure you want to archive the <strong>\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var5 string
-			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(string(templ.URL(fmt.Sprintf("/buckets/%d/archive", vm.Bucket.ID))))
+			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(vm.Bucket.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 51, Col: 86}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 68, Col: 67}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "\">Archive</button></div></div></div></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\"</strong> bucket? It will be completely removed in 3 days.</div><form hx-post=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var6 string
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(string(templ.URL(fmt.Sprintf("/buckets/%d/archive", vm.Bucket.ID))))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 71, Col: 82}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\"><div class=\"flex justify-center gap-2 mt-3\"><button type=\"submit\" class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\">I understand, proceed</button></div></form></div></dialog>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

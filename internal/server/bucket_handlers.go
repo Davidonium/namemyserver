@@ -95,6 +95,7 @@ func bucketArchiveHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 			return err
 		}
 
+		http.Redirect(w, r, fmt.Sprintf("/buckets/%d", id), http.StatusFound)
 		return nil
 	}
 }

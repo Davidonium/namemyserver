@@ -15,6 +15,7 @@ type bucketRow struct {
 	Name        string         `db:"name"`
 	Description sql.NullString `db:"description"`
 	Cursor      sql.NullInt32  `db:"cursor"`
+	ArchivedAt  sql.NullTime   `db:"archived_at"`
 }
 
 type BucketStore struct {
@@ -168,7 +169,7 @@ func (s *BucketStore) PopName(ctx context.Context, b namemyserver.Bucket) (strin
 }
 
 const oneByNameSQL = `
-SELECT id, name, description, cursor
+SELECT id, name, description, cursor, archived_at
 FROM buckets
 WHERE name = :name`
 
@@ -187,7 +188,7 @@ func (s *BucketStore) OneByName(ctx context.Context, name string) (namemyserver.
 }
 
 const oneByIDSQL = `
-SELECT id, name, description, cursor
+SELECT id, name, description, cursor, archived_at
 FROM buckets
 WHERE id = :id`
 
@@ -206,7 +207,7 @@ func (s *BucketStore) OneByID(ctx context.Context, id int32) (namemyserver.Bucke
 }
 
 const allBucketsSQL = `
-SELECT id, name, description, cursor
+SELECT id, name, description, cursor, archived_at
 FROM buckets`
 
 func (s *BucketStore) All(ctx context.Context) ([]namemyserver.Bucket, error) {
@@ -236,7 +237,7 @@ func (s *BucketStore) Archive(ctx context.Context, b *namemyserver.Bucket) error
 	b.ArchivedAt = time.Now()
 	params := map[string]any{
 		"archived_at": b.ArchivedAt,
-		"id": b.ID,
+		"id":          b.ID,
 	}
 	if _, err := s.db.NamedExecContext(ctx, archiveBucketSQL, params); err != nil {
 		return err
@@ -251,5 +252,6 @@ func rowToBucket(row bucketRow) namemyserver.Bucket {
 		Name:        row.Name,
 		Description: row.Description.String,
 		Cursor:      row.Cursor.Int32,
+		ArchivedAt:  row.ArchivedAt.Time,
 	}
 }
