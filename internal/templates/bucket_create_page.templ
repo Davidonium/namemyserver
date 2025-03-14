@@ -18,9 +18,9 @@ templ BucketCreatePage(vm BucketCreatePageViewModel) {
 			<div class="text-4xl">Create a Bucket</div>
 			<div class="flex flex-col gap-4 items-center">
 				<form method="post" action="/buckets">
-					<div class="flex flex-col gap-2">
-						<div class="bg-gradient-to-r from-purple-600 to-cyan-400 rounded-full p-[2px]">
-							<input id="name" class="rounded-full px-3 py-2 bg-white text-sm font-medium" type="text" name="name" value={ vm.GeneratedName } placeholder="Name"/>
+					<div class="flex flex-col gap-2 w-lg">
+						<div class="bg-gradient-to-r from-purple-600 to-cyan-400 rounded-full p-[2px] w-48">
+							<input id="name" class="w-full rounded-full px-3 py-2 bg-white text-sm font-medium" type="text" name="name" value={ vm.GeneratedName } placeholder="Name"/>
 						</div>
 						<div class="bg-gradient-to-r from-purple-600 to-cyan-400 rounded-lg p-[2px]">
 							<textarea

@@ -61,14 +61,14 @@ func BucketCreatePage(vm BucketCreatePageViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</a></div><div class=\"text-4xl\">Create a Bucket</div><div class=\"flex flex-col gap-4 items-center\"><form method=\"post\" action=\"/buckets\"><div class=\"flex flex-col gap-2\"><div class=\"bg-gradient-to-r from-purple-600 to-cyan-400 rounded-full p-[2px]\"><input id=\"name\" class=\"rounded-full px-3 py-2 bg-white text-sm font-medium\" type=\"text\" name=\"name\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</a></div><div class=\"text-4xl\">Create a Bucket</div><div class=\"flex flex-col gap-4 items-center\"><form method=\"post\" action=\"/buckets\"><div class=\"flex flex-col gap-2 w-lg\"><div class=\"bg-gradient-to-r from-purple-600 to-cyan-400 rounded-full p-[2px] w-48\"><input id=\"name\" class=\"w-full rounded-full px-3 py-2 bg-white text-sm font-medium\" type=\"text\" name=\"name\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(vm.GeneratedName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_create_page.templ`, Line: 23, Col: 132}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_create_page.templ`, Line: 23, Col: 139}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {

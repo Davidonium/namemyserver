@@ -68,7 +68,8 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 					Are you sure you want to archive the <strong>"{ vm.Bucket.Name }"</strong> bucket? It will be completely removed in 3 days.
 				</div>
 				<form
-					hx-post={ string(templ.URL(fmt.Sprintf("/buckets/%d/archive", vm.Bucket.ID))) }
+                    method="post"
+					action={ templ.URL(fmt.Sprintf("/buckets/%d/archive", vm.Bucket.ID)) }
 				>
 					<div class="flex justify-center gap-2 mt-3">
 						<button
