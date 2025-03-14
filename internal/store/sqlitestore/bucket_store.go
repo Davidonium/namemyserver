@@ -217,7 +217,7 @@ func (s *BucketStore) All(ctx context.Context) ([]namemyserver.Bucket, error) {
 		return nil, err
 	}
 
-	var buckets []namemyserver.Bucket
+	buckets := make([]namemyserver.Bucket, 0, len(rows))
 	for _, r := range rows {
 		buckets = append(buckets, rowToBucket(r))
 	}

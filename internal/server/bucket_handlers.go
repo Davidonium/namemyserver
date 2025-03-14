@@ -70,7 +70,7 @@ func bucketDetailsHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 		rawID := r.PathValue("id")
-		id, _ := strconv.Atoi(rawID)
+		id, _ := strconv.ParseInt(rawID, 10, 32)
 		b, err := bucketStore.OneByID(ctx, int32(id))
 		if err != nil {
 			return err
@@ -85,7 +85,7 @@ func bucketArchiveHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 		rawID := r.PathValue("id")
-		id, _ := strconv.Atoi(rawID)
+		id, _ := strconv.ParseInt(rawID, 10, 32)
 		b, err := bucketStore.OneByID(ctx, int32(id))
 		if err != nil {
 			return err

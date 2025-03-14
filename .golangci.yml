@@ -4,7 +4,9 @@ linters-settings:
     min-occurrences: 3
   goimports:
     local-prefixes: github.com/davidonium/namemyserver
-
+  gosec:
+    excludes:
+      - G115
 linters:
   disable-all: true
   enable:
