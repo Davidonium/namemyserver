@@ -10,6 +10,10 @@ type Bucket struct {
 	ArchivedAt  time.Time
 }
 
+func (b *Bucket) MarkArchived() {
+	b.ArchivedAt = time.Now()
+}
+
 func (b Bucket) Archived() bool {
 	return !b.ArchivedAt.IsZero()
 }

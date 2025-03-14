@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"time"
 
 	"github.com/jmoiron/sqlx"
 
@@ -229,16 +228,17 @@ const archiveBucketSQL = `
 UPDATE
 	buckets
 SET
+	description = :description,
 	archived_at = :archived_at,
 	updated_at = CURRENT_TIMESTAMP
 WHERE
 	id = :id`
 
-func (s *BucketStore) Archive(ctx context.Context, b *namemyserver.Bucket) error {
-	b.ArchivedAt = time.Now()
+func (s *BucketStore) Save(ctx context.Context, b *namemyserver.Bucket) error {
 	params := map[string]any{
-		"archived_at": b.ArchivedAt,
 		"id":          b.ID,
+		"archived_at": b.ArchivedAt,
+		"description": b.Description,
 	}
 	if _, err := s.db.NamedExecContext(ctx, archiveBucketSQL, params); err != nil {
 		return err

@@ -91,7 +91,9 @@ func bucketArchiveHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 			return err
 		}
 
-		if err := bucketStore.Archive(ctx, &b); err != nil {
+		b.MarkArchived()
+
+		if err := bucketStore.Save(ctx, &b); err != nil {
 			return err
 		}
 
