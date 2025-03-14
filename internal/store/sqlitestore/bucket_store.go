@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/davidonium/namemyserver/internal/namemyserver"
 	"github.com/jmoiron/sqlx"
+
+	"github.com/davidonium/namemyserver/internal/namemyserver"
 )
 
 type bucketRow struct {

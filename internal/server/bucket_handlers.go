@@ -49,7 +49,7 @@ func bucketCreateSubmitHandler(bucketStore namemyserver.BucketStore) appHandlerF
 		description := r.FormValue("description")
 
 		b := namemyserver.Bucket{
-			Name: name,
+			Name:        name,
 			Description: description,
 		}
 		if err := bucketStore.Create(ctx, &b); err != nil {

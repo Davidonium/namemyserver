@@ -44,7 +44,14 @@ require:templ() {
 }
 
 require:golangci-lint() {
-    install_if_missing "golangci-lint" "github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2"
+    local cmd="golangci-lint"
+    local version="v1.64.7"
+    local dest="$HOME/.local/bin"
+
+    if ! command -v "$cmd" &>/dev/null; then
+        echo "Installing $cmd..."
+        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b ${dest} v1.64.7
+    fi
 }
 
 require:dbmate() {
