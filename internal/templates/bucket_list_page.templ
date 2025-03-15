@@ -35,22 +35,33 @@ templ BucketListPage(vm BucketListPageViewModel) {
 					</a>
 				</div>
 			} else {
-				<div>
-					<a
-						href="/buckets/create"
-						class="cursor-pointer group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
-					>
-						<span
-							class="block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent"
+				<div class="w-lg">
+					<div class="flex justify-end">
+						<a
+							href="/buckets/create"
+							class="cursor-pointer group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
 						>
-							Create a new Bucket
-						</span>
-					</a>
-					<ul class="flex flex-col mt-4 divide-gray-200">
+							<span
+								class="block rounded-full bg-white px-4 py-2 text-sm font-medium group-hover:bg-transparent"
+							>
+								Create a new Bucket
+							</span>
+						</a>
+					</div>
+					<ul class="flex flex-col gap-1 mt-4 divide-gray-200">
 						for _, b := range vm.Buckets {
-							<li class="rounded-lg hover:bg-gray-100">
-								<a class="block w-full px-4 py-2" href={ templ.URL(fmt.Sprintf("/buckets/%d", b.ID)) }>
-									{ b.Name }
+							<li>
+								<a class="block w-full rounded-lg hover:bg-gray-100 flex-col justify-center p-2" href={ templ.URL(fmt.Sprintf("/buckets/%d", b.ID)) }>
+									<div class="font-semibold text-sm">
+										{ b.Name }
+									</div>
+									<div class="text-gray-500 text-xs">
+										if b.Description != "" {
+											{ b.Description }
+										} else {
+											[no description]
+										}
+									</div>
 								</a>
 							</li>
 						}
