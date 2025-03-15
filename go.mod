@@ -14,6 +14,7 @@ require (
 )
 
 require (
+	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
 )

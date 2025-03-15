@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 
@@ -16,6 +17,8 @@ type bucketRow struct {
 	Description sql.NullString `db:"description"`
 	Cursor      sql.NullInt32  `db:"cursor"`
 	ArchivedAt  sql.NullTime   `db:"archived_at"`
+	CreatedAt   time.Time      `db:"created_at"`
+	UpdatedAt   sql.NullTime   `db:"updated_at"`
 }
 
 type BucketStore struct {
@@ -169,9 +172,18 @@ func (s *BucketStore) PopName(ctx context.Context, b namemyserver.Bucket) (strin
 }
 
 const oneByNameSQL = `
-SELECT id, name, description, cursor, archived_at
-FROM buckets
-WHERE name = :name`
+SELECT
+	id,
+	name,
+	description,
+	cursor,
+	archived_at,
+	created_at,
+	updated_at
+FROM
+	buckets
+WHERE
+	name = :name`
 
 func (s *BucketStore) OneByName(ctx context.Context, name string) (namemyserver.Bucket, error) {
 	stmt, err := s.db.PrepareNamedContext(ctx, oneByNameSQL)
@@ -188,9 +200,18 @@ func (s *BucketStore) OneByName(ctx context.Context, name string) (namemyserver.
 }
 
 const oneByIDSQL = `
-SELECT id, name, description, cursor, archived_at
-FROM buckets
-WHERE id = :id`
+SELECT
+	id,
+	name,
+	description,
+	cursor,
+	archived_at,
+	created_at,
+	updated_at
+FROM
+	buckets
+WHERE
+	id = :id`
 
 func (s *BucketStore) OneByID(ctx context.Context, id int32) (namemyserver.Bucket, error) {
 	stmt, err := s.db.PrepareNamedContext(ctx, oneByIDSQL)
@@ -207,8 +228,16 @@ func (s *BucketStore) OneByID(ctx context.Context, id int32) (namemyserver.Bucke
 }
 
 const allBucketsSQL = `
-SELECT id, name, description, cursor, archived_at
-FROM buckets`
+SELECT
+	id,
+	name,
+	description,
+	cursor,
+	archived_at,
+	created_at,
+	updated_at
+FROM
+	buckets`
 
 func (s *BucketStore) All(ctx context.Context) ([]namemyserver.Bucket, error) {
 	var rows []bucketRow
@@ -254,5 +283,7 @@ func rowToBucket(row bucketRow) namemyserver.Bucket {
 		Description: row.Description.String,
 		Cursor:      row.Cursor.Int32,
 		ArchivedAt:  row.ArchivedAt.Time,
+		CreatedAt:   row.CreatedAt,
+		UpdatedAt:   row.UpdatedAt.Time,
 	}
 }

@@ -9,6 +9,7 @@
     "dev": "vite",
     "build": "vite build",
     "format": "prettier ./src/**/* --write",
+    "lint": "prettier ./src/**/* --check",
     "preview": "vite preview"
   },
   "devDependencies": {

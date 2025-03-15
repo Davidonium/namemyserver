@@ -1,4 +1,4 @@
-FROM node:20-slim AS frontend
+FROM node:22-slim AS frontend
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -12,7 +12,7 @@ WORKDIR /app/frontend
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run build
 
-FROM golang:1.23 AS builder
+FROM golang:1.24 AS builder
 
 WORKDIR /app
 
@@ -32,6 +32,6 @@ RUN ./please build
 FROM gcr.io/distroless/static-debian12:nonroot
 
 WORKDIR /app
-COPY --from=builder /app/build/namemyserver /namemyserver
+COPY --from=builder /app/build/namemyserver /app/namemyserver
 
 ENTRYPOINT ["/app/namemyserver", "server"]

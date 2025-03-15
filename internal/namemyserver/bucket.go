@@ -8,6 +8,8 @@ type Bucket struct {
 	Description string
 	Cursor      int32
 	ArchivedAt  time.Time
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (b *Bucket) MarkArchived() {
