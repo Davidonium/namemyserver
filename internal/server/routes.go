@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"io/fs"
 	"log/slog"
 	"net/http"
@@ -73,10 +74,11 @@ func APIErrorHandler(logger *slog.Logger, debug bool) ErrorHandler {
 	return func(w http.ResponseWriter, _ *http.Request, err error) {
 		// TODO proper error handling and maybe use the problem detail RFC https://www.rfc-editor.org/rfc/rfc7807
 		res := map[string]any{
-			"title": "Internal Server Error",
+			"message": "Internal Server Error",
 		}
 		if debug {
-			res["internal.error"] = err.Error()
+			res["internal.error.type"] = fmt.Sprintf("%T", err)
+			res["internal.error.message"] = err.Error()
 		}
 
 		if err := encode(w, http.StatusInternalServerError, res); err != nil {
