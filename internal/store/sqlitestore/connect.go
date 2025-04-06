@@ -48,7 +48,7 @@ func connectWithImmediate(ctx context.Context, connURL *url.URL) (*sqlx.DB, erro
 func connectURL(ctx context.Context, connURL *url.URL) (*sqlx.DB, error) {
 	q := connURL.Query()
 	q.Set("_journal_mode", "WAL")
-	q.Set("_syncronous", "normal")
+	q.Set("_synchronous", "normal")
 	q.Set("_temp_store", "memory")
 	q.Set("_mmap_size", "30000000000")
 	connURL.RawQuery = q.Encode()
