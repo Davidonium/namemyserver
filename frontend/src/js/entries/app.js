@@ -43,15 +43,15 @@ u(document).on("htmx:load", (ev) => {
     }
   });
 
-  el.find("#archiveButton").on("click", (ev) => {
+  el.find("#archiveButton").on("click", () => {
     u("#archiveDialog").first().showModal();
   });
 
-  el.find("#recoverButton").on("click", (ev) => {
+  el.find("#recoverButton").on("click", () => {
     u("#recoverDialog").first().showModal();
   });
 
-  el.find("#closeDialog").on("click", (ev) => {
-    u(".js-dialog").first().close();
+  el.find(".js-close-dialog").on("click", (ev) => {
+    u(ev.currentTarget).closest("dialog").first().close();
   });
 });

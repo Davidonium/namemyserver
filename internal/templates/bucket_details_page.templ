@@ -59,6 +59,14 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 									}
 								</div>
 							</div>
+							if !vm.Bucket.ArchivedAt.IsZero() {
+								<div>
+									<div class="font-bold">Archived</div>
+									<div class="text-sm">
+										<span title={ vm.Bucket.ArchivedAt.String() }>{ humanize.Time(vm.Bucket.ArchivedAt) }</span>
+									</div>
+								</div>
+							}
 						</div>
 					</div>
 				</div>
@@ -102,7 +110,7 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 			id="archiveDialog"
 			class="js-dialog relative m-auto pt-8 pb-4 px-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm"
 		>
-			<button type="button" id="closeDialog" class="absolute top-0 right-0 p-2 m-1 hover:bg-gray-100 rounded-lg cursor-pointer">
+			<button type="button" class="js-close-dialog absolute top-0 right-0 p-2 m-1 hover:bg-gray-100 rounded-lg cursor-pointer">
 				@CloseIcon()
 			</button>
 			<div class="flex flex-col w-full">
@@ -127,7 +135,7 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 			id="recoverDialog"
 			class="js-dialog relative m-auto pt-8 pb-4 px-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm"
 		>
-			<button type="button" id="closeDialog" class="absolute top-0 right-0 p-2 m-1 hover:bg-gray-100 rounded-lg cursor-pointer">
+			<button type="button" class="js-close-dialog absolute top-0 right-0 p-2 m-1 hover:bg-gray-100 rounded-lg cursor-pointer">
 				@CloseIcon()
 			</button>
 			<div class="flex flex-col w-full">

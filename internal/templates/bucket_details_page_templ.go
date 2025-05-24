@@ -178,22 +178,58 @@ func BucketDetailsPage(vm BucketDetailsPageViewModel) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</div></div></div></div></div><div class=\"mt-30\"><div class=\"text-xl font-medium\">Danger zone</div><div class=\"rounded-lg border border-red-700 p-3 mt-1\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if !vm.Bucket.ArchivedAt.IsZero() {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<div><div class=\"font-bold\">Archived</div><div class=\"text-sm\"><span title=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var9 string
+				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(vm.Bucket.ArchivedAt.String())
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 66, Col: 53}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var10 string
+				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(humanize.Time(vm.Bucket.ArchivedAt))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 66, Col: 93}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "</span></div></div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</div></div></div><div class=\"mt-30\"><div class=\"text-xl font-medium\">Danger zone</div><div class=\"rounded-lg border border-red-700 p-3 mt-1\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			if vm.Bucket.ArchivedAt.IsZero() {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<div class=\"flex items-center\"><div class=\"flex-1 \"><div class=\"text-sm font-medium\">Archive this bucket</div><div class=\"text-xs\">Mark this bucket as archived, it will be automatically removed in 3 days.</div></div><div><button id=\"archiveButton\" class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\" type=\"button\">Archive</button></div></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<div class=\"flex items-center\"><div class=\"flex-1 \"><div class=\"text-sm font-medium\">Archive this bucket</div><div class=\"text-xs\">Mark this bucket as archived, it will be automatically removed in 3 days.</div></div><div><button id=\"archiveButton\" class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\" type=\"button\">Archive</button></div></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<div class=\"flex items-center\"><div class=\"flex-1 \"><div class=\"text-sm font-medium\">Recover</div><div class=\"text-xs\">Bring back the bucket from being archived.</div></div><div><button id=\"recoverButton\" class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\" type=\"button\">Recover</button></div></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div class=\"flex items-center\"><div class=\"flex-1 \"><div class=\"text-sm font-medium\">Recover</div><div class=\"text-xs\">Bring back the bucket from being archived.</div></div><div><button id=\"recoverButton\" class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\" type=\"button\">Recover</button></div></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "</div></div></div></div><dialog id=\"archiveDialog\" class=\"js-dialog relative m-auto pt-8 pb-4 px-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm\"><button type=\"button\" id=\"closeDialog\" class=\"absolute top-0 right-0 p-2 m-1 hover:bg-gray-100 rounded-lg cursor-pointer\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</div></div></div></div><dialog id=\"archiveDialog\" class=\"js-dialog relative m-auto pt-8 pb-4 px-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm\"><button type=\"button\" class=\"js-close-dialog absolute top-0 right-0 p-2 m-1 hover:bg-gray-100 rounded-lg cursor-pointer\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -201,59 +237,59 @@ func BucketDetailsPage(vm BucketDetailsPageViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</button><div class=\"flex flex-col w-full\"><div class=\"text-sm\"><p>Are you sure you want to archive the <strong>\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var9 string
-			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(vm.Bucket.Name)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 110, Col: 70}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\"</strong> bucket?</p><p>It will be completely removed in 3 days.</p></div><form method=\"post\" action=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var10 templ.SafeURL = templ.URL(fmt.Sprintf("/buckets/%d/archive", vm.Bucket.ID))
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var10)))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\"><div class=\"flex justify-center gap-2 mt-3\"><button type=\"submit\" class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\">I understand, proceed</button></div></form></div></dialog> <dialog id=\"recoverDialog\" class=\"js-dialog relative m-auto pt-8 pb-4 px-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm\"><button type=\"button\" id=\"closeDialog\" class=\"absolute top-0 right-0 p-2 m-1 hover:bg-gray-100 rounded-lg cursor-pointer\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = CloseIcon().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</button><div class=\"flex flex-col w-full\"><div class=\"text-sm\"><p>Are you sure you want to bring back the <strong>\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "</button><div class=\"flex flex-col w-full\"><div class=\"text-sm\"><p>Are you sure you want to archive the <strong>\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(vm.Bucket.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 135, Col: 73}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 118, Col: 70}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\"</strong> bucket?</p><p>It will no longer be archived.</p></div><form method=\"post\" action=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\"</strong> bucket?</p><p>It will be completely removed in 3 days.</p></div><form method=\"post\" action=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var12 templ.SafeURL = templ.URL(fmt.Sprintf("/buckets/%d/recover", vm.Bucket.ID))
+			var templ_7745c5c3_Var12 templ.SafeURL = templ.URL(fmt.Sprintf("/buckets/%d/archive", vm.Bucket.ID))
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var12)))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\"><div class=\"flex justify-center gap-2 mt-3\"><button type=\"submit\" class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\">I understand, proceed</button></div></form></div></dialog>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\"><div class=\"flex justify-center gap-2 mt-3\"><button type=\"submit\" class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\">I understand, proceed</button></div></form></div></dialog> <dialog id=\"recoverDialog\" class=\"js-dialog relative m-auto pt-8 pb-4 px-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm\"><button type=\"button\" class=\"js-close-dialog absolute top-0 right-0 p-2 m-1 hover:bg-gray-100 rounded-lg cursor-pointer\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = CloseIcon().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</button><div class=\"flex flex-col w-full\"><div class=\"text-sm\"><p>Are you sure you want to bring back the <strong>\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var13 string
+			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(vm.Bucket.Name)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 143, Col: 73}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "\"</strong> bucket?</p><p>It will no longer be archived.</p></div><form method=\"post\" action=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var14 templ.SafeURL = templ.URL(fmt.Sprintf("/buckets/%d/recover", vm.Bucket.ID))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var14)))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\"><div class=\"flex justify-center gap-2 mt-3\"><button type=\"submit\" class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\">I understand, proceed</button></div></form></div></dialog>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
