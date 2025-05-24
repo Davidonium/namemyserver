@@ -40,6 +40,7 @@ func addRoutes(
 	m.Handle("GET /buckets/create", c(app(bucketCreateHandler(svcs.Logger, svcs.Generator))))
 	m.Handle("POST /buckets", c(app(bucketCreateSubmitHandler(svcs.BucketStore))))
 	m.Handle("POST /buckets/{id}/archive", c(app(bucketArchiveHandler(svcs.BucketStore))))
+	m.Handle("POST /buckets/{id}/recover", c(app(bucketRecoverHandler(svcs.BucketStore))))
 }
 
 func addAPIRoutes(m *http.ServeMux, svcs *Services) {

@@ -47,7 +47,11 @@ u(document).on("htmx:load", (ev) => {
     u("#archiveDialog").first().showModal();
   });
 
+  el.find("#recoverButton").on("click", (ev) => {
+    u("#recoverDialog").first().showModal();
+  });
+
   el.find("#closeDialog").on("click", (ev) => {
-    u("#archiveDialog").first().close();
+    u(".js-dialog").first().close();
   });
 });

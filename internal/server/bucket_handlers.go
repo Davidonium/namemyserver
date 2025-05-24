@@ -101,3 +101,25 @@ func bucketArchiveHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 		return nil
 	}
 }
+
+
+func bucketRecoverHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) error {
+		ctx := r.Context()
+		rawID := r.PathValue("id")
+		id, _ := strconv.ParseInt(rawID, 10, 32)
+		b, err := bucketStore.OneByID(ctx, int32(id))
+		if err != nil {
+			return err
+		}
+
+		b.Recover()
+
+		if err := bucketStore.Save(ctx, &b); err != nil {
+			return err
+		}
+
+		http.Redirect(w, r, fmt.Sprintf("/buckets/%d", id), http.StatusFound)
+		return nil
+	}
+}

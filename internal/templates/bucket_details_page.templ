@@ -27,6 +27,11 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 				<div>
 					<div class="text-2xl font-semibold">{ vm.Bucket.Name }</div>
 					<div class="mt-4 flex flex-col gap-2">
+						if vm.Bucket.Archived() {
+							<div class="rounded-lg border border-yellow-500 bg-amber-100 text-yellow-700 text-sm p-4">
+								This bucket is <strong>archived</strong>. It is <strong>read only</strong> and will be removed in 3 days after the archival was done.
+							</div>
+						}
 						<div>
 							<div class="font-bold">Description</div>
 							<div>
@@ -40,19 +45,18 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 						<div class="flex gap-4">
 							<div>
 								<div class="font-bold">Created</div>
-								<div class="text-sm" title={vm.Bucket.CreatedAt.String()}>
+								<div class="text-sm" title={ vm.Bucket.CreatedAt.String() }>
 									{ humanize.Time(vm.Bucket.CreatedAt) }
 								</div>
 							</div>
 							<div>
 								<div class="font-bold">Updated</div>
 								<div class="text-sm">
-                                    if vm.Bucket.UpdatedAt.IsZero() {
-                                        [never updated]
-                                    } else {
-                                        <span title={vm.Bucket.UpdatedAt.String()}>{ humanize.Time(vm.Bucket.UpdatedAt) }</span>
-
-                                    }
+									if vm.Bucket.UpdatedAt.IsZero() {
+										[never updated]
+									} else {
+										<span title={ vm.Bucket.UpdatedAt.String() }>{ humanize.Time(vm.Bucket.UpdatedAt) }</span>
+									}
 								</div>
 							</div>
 						</div>
@@ -61,26 +65,42 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 				<div class="mt-30">
 					<div class="text-xl font-medium">Danger zone</div>
 					<div class="rounded-lg border border-red-700 p-3 mt-1">
-						<div class="flex items-center">
-							<div class="flex-1 ">
-								<div class="text-sm font-medium">Archive this bucket</div>
-								<div class="text-xs">Mark this bucket as archived, it will be automatically removed in 3 days.</div>
+						if vm.Bucket.ArchivedAt.IsZero() {
+							<div class="flex items-center">
+								<div class="flex-1 ">
+									<div class="text-sm font-medium">Archive this bucket</div>
+									<div class="text-xs">Mark this bucket as archived, it will be automatically removed in 3 days.</div>
+								</div>
+								<div>
+									<button
+										id="archiveButton"
+										class="rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer"
+										type="button"
+									>Archive</button>
+								</div>
 							</div>
-							<div>
-								<button
-									id="archiveButton"
-									class="rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer"
-									type="button"
-								>Archive</button>
+						} else {
+							<div class="flex items-center">
+								<div class="flex-1 ">
+									<div class="text-sm font-medium">Recover</div>
+									<div class="text-xs">Bring back the bucket from being archived.</div>
+								</div>
+								<div>
+									<button
+										id="recoverButton"
+										class="rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer"
+										type="button"
+									>Recover</button>
+								</div>
 							</div>
-						</div>
+						}
 					</div>
 				</div>
 			</div>
 		</div>
 		<dialog
 			id="archiveDialog"
-			class="relative m-auto pt-8 pb-4 px-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm"
+			class="js-dialog relative m-auto pt-8 pb-4 px-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm"
 		>
 			<button type="button" id="closeDialog" class="absolute top-0 right-0 p-2 m-1 hover:bg-gray-100 rounded-lg cursor-pointer">
 				@CloseIcon()
@@ -88,11 +108,36 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 			<div class="flex flex-col w-full">
 				<div class="text-sm">
 					<p>Are you sure you want to archive the <strong>"{ vm.Bucket.Name }"</strong> bucket?</p>
-                    <p>It will be completely removed in 3 days.</p>
+					<p>It will be completely removed in 3 days.</p>
 				</div>
 				<form
 					method="post"
 					action={ templ.URL(fmt.Sprintf("/buckets/%d/archive", vm.Bucket.ID)) }
+				>
+					<div class="flex justify-center gap-2 mt-3">
+						<button
+							type="submit"
+							class="rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer"
+						>I understand, proceed</button>
+					</div>
+				</form>
+			</div>
+		</dialog>
+		<dialog
+			id="recoverDialog"
+			class="js-dialog relative m-auto pt-8 pb-4 px-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm"
+		>
+			<button type="button" id="closeDialog" class="absolute top-0 right-0 p-2 m-1 hover:bg-gray-100 rounded-lg cursor-pointer">
+				@CloseIcon()
+			</button>
+			<div class="flex flex-col w-full">
+				<div class="text-sm">
+					<p>Are you sure you want to bring back the <strong>"{ vm.Bucket.Name }"</strong> bucket?</p>
+					<p>It will no longer be archived.</p>
+				</div>
+				<form
+					method="post"
+					action={ templ.URL(fmt.Sprintf("/buckets/%d/recover", vm.Bucket.ID)) }
 				>
 					<div class="flex justify-center gap-2 mt-3">
 						<button
