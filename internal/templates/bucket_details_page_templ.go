@@ -141,7 +141,7 @@ func BucketDetailsPage(vm BucketDetailsPageViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			if vm.Bucket.UpdatedAt.IsZero() {
+			if vm.Bucket.UpdatedAt != nil {
 				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "[never updated]")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -165,9 +165,9 @@ func BucketDetailsPage(vm BucketDetailsPageViewModel) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var8 string
-				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(humanize.Time(vm.Bucket.UpdatedAt))
+				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(humanize.Time(*vm.Bucket.UpdatedAt))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 58, Col: 91}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 58, Col: 92}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 				if templ_7745c5c3_Err != nil {
@@ -182,7 +182,7 @@ func BucketDetailsPage(vm BucketDetailsPageViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			if !vm.Bucket.ArchivedAt.IsZero() {
+			if vm.Bucket.Archived() {
 				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<div><div class=\"font-bold\">Archived</div><div class=\"text-sm\"><span title=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -201,9 +201,9 @@ func BucketDetailsPage(vm BucketDetailsPageViewModel) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var10 string
-				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(humanize.Time(vm.Bucket.ArchivedAt))
+				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(humanize.Time(*vm.Bucket.ArchivedAt))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 66, Col: 93}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_details_page.templ`, Line: 66, Col: 94}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 				if templ_7745c5c3_Err != nil {
@@ -218,7 +218,7 @@ func BucketDetailsPage(vm BucketDetailsPageViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			if vm.Bucket.ArchivedAt.IsZero() {
+			if !vm.Bucket.Archived() {
 				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<div class=\"flex items-center\"><div class=\"flex-1 \"><div class=\"text-sm font-medium\">Archive this bucket</div><div class=\"text-xs\">Mark this bucket as archived, it will be automatically removed in 3 days.</div></div><div><button id=\"archiveButton\" class=\"rounded-full text-red-700 bg-gray-100 border border-gray-200 text-sm px-3 py-2 font-medium hover:bg-red-700 hover:text-white cursor-pointer\" type=\"button\">Archive</button></div></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err

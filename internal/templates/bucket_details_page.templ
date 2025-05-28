@@ -52,18 +52,18 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 							<div>
 								<div class="font-bold">Updated</div>
 								<div class="text-sm">
-									if vm.Bucket.UpdatedAt.IsZero() {
+									if vm.Bucket.UpdatedAt != nil {
 										[never updated]
 									} else {
-										<span title={ vm.Bucket.UpdatedAt.String() }>{ humanize.Time(vm.Bucket.UpdatedAt) }</span>
+										<span title={ vm.Bucket.UpdatedAt.String() }>{ humanize.Time(*vm.Bucket.UpdatedAt) }</span>
 									}
 								</div>
 							</div>
-							if !vm.Bucket.ArchivedAt.IsZero() {
+							if vm.Bucket.Archived() {
 								<div>
 									<div class="font-bold">Archived</div>
 									<div class="text-sm">
-										<span title={ vm.Bucket.ArchivedAt.String() }>{ humanize.Time(vm.Bucket.ArchivedAt) }</span>
+										<span title={ vm.Bucket.ArchivedAt.String() }>{ humanize.Time(*vm.Bucket.ArchivedAt) }</span>
 									</div>
 								</div>
 							}
@@ -73,7 +73,7 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 				<div class="mt-30">
 					<div class="text-xl font-medium">Danger zone</div>
 					<div class="rounded-lg border border-red-700 p-3 mt-1">
-						if vm.Bucket.ArchivedAt.IsZero() {
+						if !vm.Bucket.Archived() {
 							<div class="flex items-center">
 								<div class="flex-1 ">
 									<div class="text-sm font-medium">Archive this bucket</div>

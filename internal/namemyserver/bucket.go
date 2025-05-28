@@ -7,19 +7,20 @@ type Bucket struct {
 	Name        string
 	Description string
 	Cursor      int32
-	ArchivedAt  time.Time
 	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	UpdatedAt   *time.Time
+	ArchivedAt  *time.Time
 }
 
 func (b *Bucket) MarkArchived() {
-	b.ArchivedAt = time.Now()
+	n := time.Now()
+	b.ArchivedAt = &n
 }
 
 func (b *Bucket) Recover() {
-	b.ArchivedAt = time.Time{}
+	b.ArchivedAt = nil
 }
 
 func (b Bucket) Archived() bool {
-	return !b.ArchivedAt.IsZero()
+	return b.ArchivedAt != nil
 }

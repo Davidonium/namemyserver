@@ -237,7 +237,9 @@ SELECT
 	created_at,
 	updated_at
 FROM
-	buckets`
+	buckets
+WHERE
+	archived_at IS NULL`
 
 func (s *BucketStore) All(ctx context.Context) ([]namemyserver.Bucket, error) {
 	var rows []bucketRow
@@ -282,8 +284,8 @@ func rowToBucket(row bucketRow) namemyserver.Bucket {
 		Name:        row.Name,
 		Description: row.Description.String,
 		Cursor:      row.Cursor.Int32,
-		ArchivedAt:  row.ArchivedAt.Time,
 		CreatedAt:   row.CreatedAt,
-		UpdatedAt:   row.UpdatedAt.Time,
+		UpdatedAt:   sqlTimeToPtr(row.UpdatedAt),
+		ArchivedAt:  sqlTimeToPtr(row.ArchivedAt),
 	}
 }
