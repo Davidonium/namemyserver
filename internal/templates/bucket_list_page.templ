@@ -6,7 +6,8 @@ import (
 )
 
 type BucketListPageViewModel struct {
-	Buckets []namemyserver.Bucket
+	Buckets  []namemyserver.Bucket
+	Archived bool
 }
 
 templ BucketListPage(vm BucketListPageViewModel) {
@@ -18,7 +19,7 @@ templ BucketListPage(vm BucketListPageViewModel) {
 				</a>
 			</div>
 			<div class="text-4xl">Buckets</div>
-			if len(vm.Buckets) == 0 {
+			if len(vm.Buckets) == 0 && ! vm.Archived {
 				<div class="flex flex-col gap-4 items-center">
 					<div>
 						Looks like you don't have any buckets. Create one with the button below.
@@ -36,7 +37,26 @@ templ BucketListPage(vm BucketListPageViewModel) {
 				</div>
 			} else {
 				<div class="w-lg">
-					<div class="flex justify-end">
+					<div class="flex justify-between">
+						if vm.Archived {
+							<a href="/buckets" class="rounded-full px-3 py-2 flex items-center gap-1 text-sm hover:bg-transparent hover:text-gray-400 font-bold bg-gray-300 text-white">
+								<div>
+									@ArchivedIcon()
+								</div>
+								<div>
+									Archived
+								</div>
+							</a>
+						} else {
+							<a href="/buckets?archived" class="rounded-full px-3 py-2 flex items-center gap-1 text-sm  text-gray-400 font-bold hover:bg-gray-300 hover:text-white">
+								<div>
+									@ArchivedIcon()
+								</div>
+								<div>
+									Archived
+								</div>
+							</a>
+						}
 						<a
 							href="/buckets/create"
 							class="cursor-pointer group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"

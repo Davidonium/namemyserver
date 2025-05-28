@@ -24,6 +24,7 @@ func bucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 
 		c := templates.BucketListPage(templates.BucketListPageViewModel{
 			Buckets: buckets,
+			Archived: archived,
 		})
 		return component(w, r, http.StatusOK, c)
 	}

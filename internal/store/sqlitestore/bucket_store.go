@@ -246,9 +246,9 @@ func (s *BucketStore) List(ctx context.Context, opts namemyserver.ListOptions) (
 	wheres := []string{"1=1"}
 
 	if opts.ArchivedOnly {
-		wheres = append(wheres, "archived_at IS NULL")
-	} else {
 		wheres = append(wheres, "archived_at IS NOT NULL")
+	} else {
+		wheres = append(wheres, "archived_at IS NULL")
 	}
 
 	var rows []bucketRow
