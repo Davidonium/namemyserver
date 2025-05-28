@@ -82,7 +82,11 @@ func apiBucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
-		buckets, err := bucketStore.List(ctx, namemyserver.ListOptions{})
+		_, archived := r.URL.Query()["archived"]
+
+		buckets, err := bucketStore.List(ctx, namemyserver.ListOptions{
+			ArchivedOnly: archived,
+		})
 		if err != nil {
 			return err
 		}
