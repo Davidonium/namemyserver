@@ -5,7 +5,7 @@ import (
 )
 
 type BucketStore interface {
-	All(ctx context.Context) ([]Bucket, error)
+	List(ctx context.Context, opts ListOptions) ([]Bucket, error)
 	Create(ctx context.Context, b *Bucket) error
 	SetCursor(ctx context.Context, bucketID int32, cursor int32) error
 	OneByName(ctx context.Context, name string) (Bucket, error)
@@ -13,4 +13,8 @@ type BucketStore interface {
 	FillBucketValues(ctx context.Context, b Bucket, f RandomPairFilters) error
 	PopName(ctx context.Context, b Bucket) (string, error)
 	Save(ctx context.Context, b *Bucket) error
+}
+
+type ListOptions struct {
+	ArchivedOnly bool
 }

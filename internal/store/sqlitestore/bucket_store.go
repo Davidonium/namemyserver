@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -227,7 +228,7 @@ func (s *BucketStore) OneByID(ctx context.Context, id int32) (namemyserver.Bucke
 	return rowToBucket(row), nil
 }
 
-const allBucketsSQL = `
+const listBucketsSQLTpl = `
 SELECT
 	id,
 	name,
@@ -239,11 +240,19 @@ SELECT
 FROM
 	buckets
 WHERE
-	archived_at IS NULL`
+	%s`
 
-func (s *BucketStore) All(ctx context.Context) ([]namemyserver.Bucket, error) {
+func (s *BucketStore) List(ctx context.Context, opts namemyserver.ListOptions) ([]namemyserver.Bucket, error) {
+	wheres := []string{"1=1"}
+
+	if opts.ArchivedOnly {
+		wheres = append(wheres, "archived_at IS NULL")
+	} else {
+		wheres = append(wheres, "archived_at IS NOT NULL")
+	}
+
 	var rows []bucketRow
-	if err := s.db.SelectContext(ctx, &rows, allBucketsSQL); err != nil {
+	if err := s.db.SelectContext(ctx, &rows, fmt.Sprintf(listBucketsSQLTpl, strings.Join(wheres, " AND "))); err != nil {
 		return nil, err
 	}
 
@@ -254,6 +263,7 @@ func (s *BucketStore) All(ctx context.Context) ([]namemyserver.Bucket, error) {
 
 	return buckets, nil
 }
+
 
 const archiveBucketSQL = `
 UPDATE

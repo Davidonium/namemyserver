@@ -82,7 +82,7 @@ func apiBucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
-		buckets, err := bucketStore.All(ctx)
+		buckets, err := bucketStore.List(ctx, namemyserver.ListOptions{})
 		if err != nil {
 			return err
 		}
