@@ -28,7 +28,7 @@ func NewRunner(logger *slog.Logger, bucketStore namemyserver.BucketStore) *Runne
 }
 
 func (r *Runner) setup() {
-	r.cron.AddFunc("* * * * *", r.task("remove_archived_buckets", removeArchivedBucketsTask(r.logger, r.bucketStore)))
+	r.cron.AddFunc("0 * * * *", r.task("remove_archived_buckets", removeArchivedBucketsTask(r.logger, r.bucketStore)))
 }
 
 func (r *Runner) task(name string, f func(context.Context) error) func() {
