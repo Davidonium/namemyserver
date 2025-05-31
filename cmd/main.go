@@ -17,6 +17,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 
 	embed "github.com/davidonium/namemyserver"
+	"github.com/davidonium/namemyserver/internal/bg"
 	"github.com/davidonium/namemyserver/internal/env"
 	"github.com/davidonium/namemyserver/internal/namemyserver"
 	"github.com/davidonium/namemyserver/internal/server"
@@ -101,9 +102,12 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 	}
 
 	pairStore := sqlitestore.NewPairStore(db)
-	bucketStore := sqlitestore.NewBucketStore(db)
+	bucketStore := sqlitestore.NewBucketStore(logger, db)
 
 	generator := namemyserver.NewGenerator(pairStore)
+
+	runner := bg.NewRunner(logger, bucketStore)
+	runner.Start()
 
 	s := server.New(&server.Services{
 		Logger:      logger,

@@ -2,6 +2,7 @@ package sqlitestore_test
 
 import (
 	"context"
+	"log/slog"
 	"testing"
 
 	"github.com/davidonium/namemyserver/internal/dbtesting"
@@ -12,7 +13,8 @@ import (
 func TestBucketStore(t *testing.T) {
 	dbtesting.Run(t, func(t *testing.T, db *sqlitestore.DB) {
 		ctx := context.Background()
-		store := sqlitestore.NewBucketStore(db)
+		logger := slog.New(slog.DiscardHandler)
+		store := sqlitestore.NewBucketStore(logger, db)
 
 		b := &namemyserver.Bucket{
 			Name: "test-bucket",

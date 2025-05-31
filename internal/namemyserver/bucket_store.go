@@ -2,6 +2,7 @@ package namemyserver
 
 import (
 	"context"
+	"time"
 )
 
 type BucketStore interface {
@@ -13,6 +14,7 @@ type BucketStore interface {
 	FillBucketValues(ctx context.Context, b Bucket, f RandomPairFilters) error
 	PopName(ctx context.Context, b Bucket) (string, error)
 	Save(ctx context.Context, b *Bucket) error
+	RemoveBucketsArchivedForMoreThan(ctx context.Context, t time.Duration) (int64, error)
 }
 
 type ListOptions struct {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log/slog"
 	"strings"
 	"time"
 
@@ -23,11 +24,12 @@ type bucketRow struct {
 }
 
 type BucketStore struct {
-	db *DB
+	db     *DB
+	logger *slog.Logger
 }
 
-func NewBucketStore(db *DB) *BucketStore {
-	return &BucketStore{db: db}
+func NewBucketStore(logger *slog.Logger, db *DB) *BucketStore {
+	return &BucketStore{logger: logger, db: db}
 }
 
 const createBucketSQL = `
@@ -264,7 +266,6 @@ func (s *BucketStore) List(ctx context.Context, opts namemyserver.ListOptions) (
 	return buckets, nil
 }
 
-
 const saveBucketSQL = `
 UPDATE
 	buckets
@@ -286,6 +287,61 @@ func (s *BucketStore) Save(ctx context.Context, b *namemyserver.Bucket) error {
 	}
 
 	return nil
+}
+
+const removeBucketValuesFromArchivedSQL = `
+DELETE FROM
+	bucket_values
+WHERE
+	bucket_id IN (
+		SELECT
+			id
+		FROM
+			buckets
+		WHERE
+			archived_at < :cutoff
+	)`
+const removeArchivedBucketsSQL = `DELETE FROM buckets WHERE archived_at < :cutoff`
+
+func (s *BucketStore) RemoveBucketsArchivedForMoreThan(ctx context.Context, t time.Duration) (amount int64, err error) {
+	tx, err := s.db.BeginTxx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return
+	}
+
+	defer func() {
+		if err != nil {
+			if txErr := tx.Rollback(); txErr != nil {
+				s.logger.Error("failure rolling back after failure", slog.Any("err", txErr), slog.Any("err.original", err))
+			}
+			return
+		}
+
+		if txErr := tx.Commit(); txErr != nil {
+			err = txErr
+		}
+	}()
+
+	cutoff := time.Now().Add(-t)
+
+	params := map[string]any{
+		"cutoff": cutoff,
+	}
+	if _, err = tx.NamedExecContext(ctx, removeBucketValuesFromArchivedSQL, params); err != nil {
+		return
+	}
+
+	result, err := tx.NamedExecContext(ctx, removeArchivedBucketsSQL, params)
+	if err != nil {
+		return
+	}
+
+	amount, err = result.RowsAffected()
+	if err != nil {
+		return
+	}
+
+	return
 }
 
 func rowToBucket(row bucketRow) namemyserver.Bucket {
