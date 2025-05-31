@@ -74,7 +74,7 @@ func BucketListPage(vm BucketListPageViewModel) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				if vm.Archived {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<a href=\"/buckets\" class=\"rounded-full px-3 py-2 flex items-center gap-1 text-sm hover:bg-transparent hover:text-gray-400 font-bold bg-gray-300 text-white\"><div>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<a href=\"/buckets\" class=\"rounded-full px-3 py-2 flex items-center gap-1 text-sm font-bold bg-gray-400 text-white hover:bg-gray-300 hover:text-white \"><div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
