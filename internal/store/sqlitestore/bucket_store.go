@@ -265,7 +265,7 @@ func (s *BucketStore) List(ctx context.Context, opts namemyserver.ListOptions) (
 }
 
 
-const archiveBucketSQL = `
+const saveBucketSQL = `
 UPDATE
 	buckets
 SET
@@ -281,7 +281,7 @@ func (s *BucketStore) Save(ctx context.Context, b *namemyserver.Bucket) error {
 		"archived_at": b.ArchivedAt,
 		"description": b.Description,
 	}
-	if _, err := s.db.NamedExecContext(ctx, archiveBucketSQL, params); err != nil {
+	if _, err := s.db.NamedExecContext(ctx, saveBucketSQL, params); err != nil {
 		return err
 	}
 

@@ -138,5 +138,11 @@ dev() { ## launches the app with support for live reload of the server on file c
     air
 }
 
+dev:frontend() {
+    pushd frontend
+    pnpm dev
+    popd
+}
+
 TIMEFORMAT="Task completed in %3lR"
 time ${@:-default}
