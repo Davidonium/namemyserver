@@ -1,11 +1,14 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/davidonium/namemyserver/internal/namemyserver"
 )
+
+var ErrArchived = errors.New("the bucket is archived")
 
 func apiCreateBucketHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 	type filters struct {
@@ -58,6 +61,10 @@ func apiPopBucketNameHandler(bucketStore namemyserver.BucketStore) appHandlerFun
 		b, err := bucketStore.OneByName(ctx, bucketName)
 		if err != nil {
 			return fmt.Errorf("failed to retrieve bucket by name: %w", err)
+		}
+
+		if b.Archived() {
+			return ErrArchived
 		}
 
 		name, err := bucketStore.PopName(ctx, b)

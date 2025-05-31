@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"log/slog"
@@ -72,14 +73,27 @@ func WebErrorHandler(logger *slog.Logger, debug bool) ErrorHandler {
 }
 
 func APIErrorHandler(logger *slog.Logger, debug bool) ErrorHandler {
-	return func(w http.ResponseWriter, _ *http.Request, err error) {
+	return func(w http.ResponseWriter, _ *http.Request, handlerErr error) {
 		// TODO proper error handling and maybe use the problem detail RFC https://www.rfc-editor.org/rfc/rfc7807
+		if errors.Is(handlerErr, ErrArchived) {
+			res := map[string]any{
+				"status": http.StatusConflict,
+				"type":   "operation_conflict",
+				"title":  "Operation conflict. Bucket is read only.",
+				"detail": "The bucket is archived. Only read operations can be issued against it.",
+			}
+			if err := encode(w, http.StatusConflict, res); err != nil {
+				logger.Error("could not write error response", slog.Any("err", err), slog.Any("err.parent", handlerErr))
+			}
+			return
+		}
+
 		res := map[string]any{
-			"message": "Internal Server Error",
+			"title": "Internal Server Error",
 		}
 		if debug {
-			res["internal.error.type"] = fmt.Sprintf("%T", err)
-			res["internal.error.message"] = err.Error()
+			res["internal.error.type"] = fmt.Sprintf("%T", handlerErr)
+			res["internal.error.message"] = handlerErr.Error()
 		}
 
 		if err := encode(w, http.StatusInternalServerError, res); err != nil {
