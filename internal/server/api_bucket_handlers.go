@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/davidonium/namemyserver/internal/namemyserver"
 )
@@ -56,9 +58,14 @@ func apiPopBucketNameHandler(bucketStore namemyserver.BucketStore) appHandlerFun
 
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
-		bucketName := r.PathValue("name")
+		rawID := r.PathValue("id")
 
-		b, err := bucketStore.OneByName(ctx, bucketName)
+		id, err := strconv.Atoi(rawID)
+		if err != nil {
+			return err
+		}
+
+		b, err := bucketStore.OneByID(ctx, int32(id))
 		if err != nil {
 			return fmt.Errorf("failed to retrieve bucket by name: %w", err)
 		}
@@ -79,10 +86,6 @@ func apiPopBucketNameHandler(bucketStore namemyserver.BucketStore) appHandlerFun
 }
 
 func apiBucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
-	type bucketItem struct {
-		ID   int32  `json:"id"`
-		Name string `json:"name"`
-	}
 	type response struct {
 		Buckets []bucketItem `json:"buckets"`
 	}
@@ -100,14 +103,50 @@ func apiBucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 
 		var items []bucketItem
 		for _, b := range buckets {
-			items = append(items, bucketItem{
-				ID:   b.ID,
-				Name: b.Name,
-			})
+			items = append(items, bucketToItemResponse(b))
 		}
 
 		return encode(w, http.StatusOK, response{
 			Buckets: items,
 		})
+	}
+}
+
+func apiBucketDetailsHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) error {
+		ctx := r.Context()
+		rawID := r.PathValue("id")
+
+		id, err := strconv.Atoi(rawID)
+		if err != nil {
+			return err
+		}
+
+		b, err := bucketStore.OneByID(ctx, int32(id))
+		if err != nil {
+			return err
+		}
+
+		return encode(w, http.StatusOK, bucketToItemResponse(b))
+	}
+}
+
+type bucketItem struct {
+	ID          int32      `json:"id"`
+	Name        string     `json:"name"`
+	Description string     `json:"description"`
+	CreatedAt   time.Time  `json:"createdAt"`
+	UpdatedAt   *time.Time `json:"updatedAt"`
+	ArchivedAt  *time.Time `json:"archivedAt"`
+}
+
+func bucketToItemResponse(b namemyserver.Bucket) bucketItem {
+	return bucketItem{
+		ID:          b.ID,
+		Name:        b.Name,
+		Description: b.Description,
+		CreatedAt:   b.CreatedAt,
+		UpdatedAt:   b.UpdatedAt,
+		ArchivedAt:  b.ArchivedAt,
 	}
 }
