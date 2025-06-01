@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"regexp"
+	"time"
 
 	"github.com/davidonium/namemyserver/internal/namemyserver"
 	"github.com/robfig/cron/v3"
@@ -38,7 +39,13 @@ func (r *Runner) task(name string, f func(context.Context) error) func() {
 
 	return func() {
 		r.logger.Info("starting task", slog.String("name", name))
-		defer r.logger.Info("ending task", slog.String("name", name))
+		now := time.Now()
+		defer func() {
+			r.logger.Info("ending task",
+				slog.String("name", name),
+				slog.Duration("elapsed", time.Since(now)),
+			)
+		}()
 
 		ctx := context.Background()
 		if err := f(ctx); err != nil {
