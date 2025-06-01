@@ -87,7 +87,7 @@ func apiPopBucketNameHandler(bucketStore namemyserver.BucketStore) appHandlerFun
 
 func apiBucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 	type response struct {
-		Buckets []bucketItem `json:"buckets"`
+		Buckets []bucketListItem `json:"buckets"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) error {
@@ -101,9 +101,9 @@ func apiBucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 			return err
 		}
 
-		var items []bucketItem
+		var items []bucketListItem
 		for _, b := range buckets {
-			items = append(items, bucketToItemResponse(b))
+			items = append(items, bucketToListItem(b))
 		}
 
 		return encode(w, http.StatusOK, response{
@@ -127,11 +127,11 @@ func apiBucketDetailsHandler(bucketStore namemyserver.BucketStore) appHandlerFun
 			return err
 		}
 
-		return encode(w, http.StatusOK, bucketToItemResponse(b))
+		return encode(w, http.StatusOK, bucketToDetails(b))
 	}
 }
 
-type bucketItem struct {
+type bucketListItem struct {
 	ID          int32      `json:"id"`
 	Name        string     `json:"name"`
 	Description string     `json:"description"`
@@ -140,8 +140,28 @@ type bucketItem struct {
 	ArchivedAt  *time.Time `json:"archivedAt"`
 }
 
-func bucketToItemResponse(b namemyserver.Bucket) bucketItem {
-	return bucketItem{
+func bucketToListItem(b namemyserver.Bucket) bucketListItem {
+	return bucketListItem{
+		ID:          b.ID,
+		Name:        b.Name,
+		Description: b.Description,
+		CreatedAt:   b.CreatedAt,
+		UpdatedAt:   b.UpdatedAt,
+		ArchivedAt:  b.ArchivedAt,
+	}
+}
+
+type bucketDetails struct {
+	ID          int32      `json:"id"`
+	Name        string     `json:"name"`
+	Description string     `json:"description"`
+	CreatedAt   time.Time  `json:"createdAt"`
+	UpdatedAt   *time.Time `json:"updatedAt"`
+	ArchivedAt  *time.Time `json:"archivedAt"`
+}
+
+func bucketToDetails(b namemyserver.Bucket) bucketDetails {
+	return bucketDetails{
 		ID:          b.ID,
 		Name:        b.Name,
 		Description: b.Description,
