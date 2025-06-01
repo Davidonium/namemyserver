@@ -19,7 +19,7 @@ type Runner struct {
 
 func NewRunner(logger *slog.Logger, bucketStore namemyserver.BucketStore) *Runner {
 	r := &Runner{
-		cron:        cron.New(cron.WithLogger(&cronLogger{Logger: logger})),
+		cron:        cron.New(cron.WithLogger(&cronLogger{Logger: logger.With(slog.String("service", "cron"))})),
 		logger:      logger,
 		bucketStore: bucketStore,
 	}
