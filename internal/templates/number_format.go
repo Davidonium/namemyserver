@@ -14,3 +14,7 @@ var p = message.NewPrinter(language.English)
 func humanInt(v int) string {
 	return p.Sprint(v)
 }
+
+func humanInt64(v int64) string {
+	return p.Sprint(v)
+}

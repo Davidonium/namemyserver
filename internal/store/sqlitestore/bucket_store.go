@@ -344,6 +344,30 @@ func (s *BucketStore) RemoveBucketsArchivedForMoreThan(ctx context.Context, t ti
 	return
 }
 
+const remainingValuesSQL = `
+SELECT
+	count(*) as count
+FROM
+	bucket_values
+WHERE
+	bucket_id = :id
+AND
+	order_id >= :cursor`
+
+func (s *BucketStore) RemainingValuesTotal(ctx context.Context, b namemyserver.Bucket) (int64, error) {
+	stmt, err := s.db.PrepareNamedContext(ctx, remainingValuesSQL)
+	if err != nil {
+		return 0, err
+	}
+
+	var count int64
+	if err := stmt.GetContext(ctx, &count, map[string]any{"id": b.ID, "cursor": b.Cursor}); err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
 func rowToBucket(row bucketRow) namemyserver.Bucket {
 	return namemyserver.Bucket{
 		ID:          row.ID,

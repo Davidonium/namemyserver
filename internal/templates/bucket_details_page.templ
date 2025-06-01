@@ -8,7 +8,8 @@ import (
 )
 
 type BucketDetailsPageViewModel struct {
-	Bucket namemyserver.Bucket
+	Bucket         namemyserver.Bucket
+	RemainingPairs int64
 }
 
 templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
@@ -67,6 +68,12 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 									</div>
 								</div>
 							}
+						</div>
+						<div class="flex gap-4">
+							<div>
+								<div class="font-bold">Remaining Pairs</div>
+								<div class="font-semibold text-lg">{ humanInt64(vm.RemainingPairs) }</div>
+							</div>
 						</div>
 					</div>
 				</div>

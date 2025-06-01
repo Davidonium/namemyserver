@@ -23,7 +23,7 @@ func bucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 		}
 
 		c := templates.BucketListPage(templates.BucketListPageViewModel{
-			Buckets: buckets,
+			Buckets:  buckets,
 			Archived: archived,
 		})
 		return component(w, r, http.StatusOK, c)
@@ -81,7 +81,12 @@ func bucketDetailsHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 			return err
 		}
 
-		c := templates.BucketDetailsPage(templates.BucketDetailsPageViewModel{Bucket: b})
+		count, err := bucketStore.RemainingValuesTotal(ctx, b)
+		if err != nil {
+			return err
+		}
+
+		c := templates.BucketDetailsPage(templates.BucketDetailsPageViewModel{Bucket: b, RemainingPairs: count})
 		return component(w, r, http.StatusOK, c)
 	}
 }
@@ -106,7 +111,6 @@ func bucketArchiveHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 		return nil
 	}
 }
-
 
 func bucketRecoverHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {

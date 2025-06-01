@@ -7,8 +7,9 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/davidonium/namemyserver/internal/namemyserver"
 	"github.com/robfig/cron/v3"
+
+	"github.com/davidonium/namemyserver/internal/namemyserver"
 )
 
 type Runner struct {

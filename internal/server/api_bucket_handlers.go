@@ -127,7 +127,12 @@ func apiBucketDetailsHandler(bucketStore namemyserver.BucketStore) appHandlerFun
 			return err
 		}
 
-		return encode(w, http.StatusOK, bucketToDetails(b))
+		remaining, err := bucketStore.RemainingValuesTotal(ctx, b)
+		if err != nil {
+			return err
+		}
+
+		return encode(w, http.StatusOK, bucketToDetails(b, remaining))
 	}
 }
 
@@ -152,21 +157,23 @@ func bucketToListItem(b namemyserver.Bucket) bucketListItem {
 }
 
 type bucketDetails struct {
-	ID          int32      `json:"id"`
-	Name        string     `json:"name"`
-	Description string     `json:"description"`
-	CreatedAt   time.Time  `json:"createdAt"`
-	UpdatedAt   *time.Time `json:"updatedAt"`
-	ArchivedAt  *time.Time `json:"archivedAt"`
+	ID             int32      `json:"id"`
+	Name           string     `json:"name"`
+	Description    string     `json:"description"`
+	CreatedAt      time.Time  `json:"createdAt"`
+	UpdatedAt      *time.Time `json:"updatedAt"`
+	ArchivedAt     *time.Time `json:"archivedAt"`
+	RemainingPairs int64      `json:"remainingPairs"`
 }
 
-func bucketToDetails(b namemyserver.Bucket) bucketDetails {
+func bucketToDetails(b namemyserver.Bucket, remainingPairs int64) bucketDetails {
 	return bucketDetails{
-		ID:          b.ID,
-		Name:        b.Name,
-		Description: b.Description,
-		CreatedAt:   b.CreatedAt,
-		UpdatedAt:   b.UpdatedAt,
-		ArchivedAt:  b.ArchivedAt,
+		ID:             b.ID,
+		Name:           b.Name,
+		Description:    b.Description,
+		CreatedAt:      b.CreatedAt,
+		UpdatedAt:      b.UpdatedAt,
+		ArchivedAt:     b.ArchivedAt,
+		RemainingPairs: remainingPairs,
 	}
 }
