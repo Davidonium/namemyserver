@@ -110,7 +110,7 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 	runner.Start()
 
 	s := server.New(&server.Services{
-		Logger:      logger,
+		Logger:      logger.With("service", "server"),
 		Config:      cfg,
 		Assets:      assets,
 		Generator:   generator,
