@@ -36,7 +36,10 @@ func bucketCreateHandler(logger *slog.Logger, generator *namemyserver.Generator)
 
 		result, err := generator.Generate(ctx, namemyserver.GenerateOptions{})
 		if err != nil {
-			logger.Error("failed to automatically generate a name for a new bucket", slog.Any("err", err))
+			logger.Error(
+				"failed to automatically generate a name for a new bucket",
+				slog.Any("err", err),
+			)
 		}
 
 		vm := templates.BucketCreatePageViewModel{
@@ -86,7 +89,9 @@ func bucketDetailsHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 			return err
 		}
 
-		c := templates.BucketDetailsPage(templates.BucketDetailsPageViewModel{Bucket: b, RemainingPairs: count})
+		c := templates.BucketDetailsPage(
+			templates.BucketDetailsPageViewModel{Bucket: b, RemainingPairs: count},
+		)
 		return component(w, r, http.StatusOK, c)
 	}
 }

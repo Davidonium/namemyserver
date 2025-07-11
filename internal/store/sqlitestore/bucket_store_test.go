@@ -25,7 +25,9 @@ func TestBucketStore(t *testing.T) {
 		}
 
 		if err := store.Create(ctx, b); err == nil {
-			t.Error("Create() = expected to fail when creating a bucket with an already existing name but succeeded")
+			t.Error(
+				"Create() = expected to fail when creating a bucket with an already existing name but succeeded",
+			)
 		}
 
 		bk, err := store.OneByName(ctx, "test-bucket")
@@ -34,7 +36,11 @@ func TestBucketStore(t *testing.T) {
 		}
 
 		if bk.Name != "test-bucket" {
-			t.Errorf("OneByName() = unexpected bucket name retrieved. got '%s' want '%s'", bk.Name, "test-bucket")
+			t.Errorf(
+				"OneByName() = unexpected bucket name retrieved. got '%s' want '%s'",
+				bk.Name,
+				"test-bucket",
+			)
 		}
 	})
 }

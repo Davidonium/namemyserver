@@ -71,7 +71,11 @@ JOIN
 WHERE
 	%s`
 
-func (s *BucketStore) FillBucketValues(ctx context.Context, b namemyserver.Bucket, f namemyserver.RandomPairFilters) error {
+func (s *BucketStore) FillBucketValues(
+	ctx context.Context,
+	b namemyserver.Bucket,
+	f namemyserver.RandomPairFilters,
+) error {
 	whereSQL, args := buildPairFilterWhereSQL(f)
 	// TODO maybe the two operations should be done in a transaction
 	args["bucket_id"] = b.ID
@@ -144,29 +148,33 @@ func (s *BucketStore) PopName(ctx context.Context, b namemyserver.Bucket) (strin
 		Name string `db:"value"`
 	}
 
-	err := s.db.WithImmediateTx(ctx, &sql.TxOptions{}, func(ctx context.Context, tx *sqlx.Tx) error {
-		stmt, err := tx.PrepareNamedContext(ctx, currentBucketNameValueSQL)
-		if err != nil {
-			return fmt.Errorf("failed to prepare query to retrieve cursor name: %w", err)
-		}
+	err := s.db.WithImmediateTx(
+		ctx,
+		&sql.TxOptions{},
+		func(ctx context.Context, tx *sqlx.Tx) error {
+			stmt, err := tx.PrepareNamedContext(ctx, currentBucketNameValueSQL)
+			if err != nil {
+				return fmt.Errorf("failed to prepare query to retrieve cursor name: %w", err)
+			}
 
-		args := map[string]any{
-			"bucket_id": b.ID,
-			"cursor":    b.Cursor,
-		}
-		if err := stmt.GetContext(ctx, &row, args); err != nil {
-			return fmt.Errorf("failed to retrieve name from the cursor: %w", err)
-		}
+			args := map[string]any{
+				"bucket_id": b.ID,
+				"cursor":    b.Cursor,
+			}
+			if err := stmt.GetContext(ctx, &row, args); err != nil {
+				return fmt.Errorf("failed to retrieve name from the cursor: %w", err)
+			}
 
-		args = map[string]any{
-			"bucket_id": b.ID,
-		}
-		if _, err := tx.NamedExecContext(ctx, advanceCursorSQL, args); err != nil {
-			return fmt.Errorf("failed to advance the cursor to the next position: %w", err)
-		}
+			args = map[string]any{
+				"bucket_id": b.ID,
+			}
+			if _, err := tx.NamedExecContext(ctx, advanceCursorSQL, args); err != nil {
+				return fmt.Errorf("failed to advance the cursor to the next position: %w", err)
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 	if err != nil {
 		return "", err
 	}
@@ -244,7 +252,10 @@ FROM
 WHERE
 	%s`
 
-func (s *BucketStore) List(ctx context.Context, opts namemyserver.ListOptions) ([]namemyserver.Bucket, error) {
+func (s *BucketStore) List(
+	ctx context.Context,
+	opts namemyserver.ListOptions,
+) ([]namemyserver.Bucket, error) {
 	wheres := []string{"1=1"}
 
 	if opts.ArchivedOnly {
@@ -303,7 +314,10 @@ WHERE
 	)`
 const removeArchivedBucketsSQL = `DELETE FROM buckets WHERE archived_at < :cutoff`
 
-func (s *BucketStore) RemoveBucketsArchivedForMoreThan(ctx context.Context, t time.Duration) (amount int64, err error) {
+func (s *BucketStore) RemoveBucketsArchivedForMoreThan(
+	ctx context.Context,
+	t time.Duration,
+) (amount int64, err error) {
 	tx, err := s.db.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return
@@ -312,7 +326,11 @@ func (s *BucketStore) RemoveBucketsArchivedForMoreThan(ctx context.Context, t ti
 	defer func() {
 		if err != nil {
 			if txErr := tx.Rollback(); txErr != nil {
-				s.logger.Error("failure rolling back after failure", slog.Any("err", txErr), slog.Any("err.original", err))
+				s.logger.Error(
+					"failure rolling back after failure",
+					slog.Any("err", txErr),
+					slog.Any("err.original", err),
+				)
 			}
 			return
 		}
@@ -354,7 +372,10 @@ WHERE
 AND
 	order_id >= :cursor`
 
-func (s *BucketStore) RemainingValuesTotal(ctx context.Context, b namemyserver.Bucket) (int64, error) {
+func (s *BucketStore) RemainingValuesTotal(
+	ctx context.Context,
+	b namemyserver.Bucket,
+) (int64, error) {
 	stmt, err := s.db.PrepareNamedContext(ctx, remainingValuesSQL)
 	if err != nil {
 		return 0, err

@@ -23,7 +23,10 @@ func viteMiddleware(assets *vite.Assets) MiddlewareFunc {
 
 // appMiddleware returns an adapter to be able to return errors in http handlers. This way, a centralized place
 // for error handling can be set up through the use of the errorHandler argument.
-func appMiddleware(logger *slog.Logger, errorHandler ErrorHandler) func(appHandlerFunc) http.Handler {
+func appMiddleware(
+	logger *slog.Logger,
+	errorHandler ErrorHandler,
+) func(appHandlerFunc) http.Handler {
 	return func(h appHandlerFunc) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 			if err := h(rw, r); err != nil {

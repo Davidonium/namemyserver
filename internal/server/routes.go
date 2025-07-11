@@ -19,7 +19,10 @@ func addRoutes(
 	if svcs.Config.AssetsUseManifest {
 		fileServer, err := fs.Sub(namemyserver.FrontendFS, "frontend/dist")
 		if err != nil {
-			svcs.Logger.Error("failed to create assets filesystem, a 404 will be returned for assets requests", slog.Any("err", err))
+			svcs.Logger.Error(
+				"failed to create assets filesystem, a 404 will be returned for assets requests",
+				slog.Any("err", err),
+			)
 		} else {
 			m.Handle("/static/", http.StripPrefix("/static", http.FileServerFS(fileServer)))
 		}
@@ -84,7 +87,11 @@ func APIErrorHandler(logger *slog.Logger, debug bool) ErrorHandler {
 				"detail": "The bucket is archived. Only read operations can be issued against it.",
 			}
 			if err := encode(w, http.StatusConflict, res); err != nil {
-				logger.Error("could not write error response", slog.Any("err", err), slog.Any("err.parent", handlerErr))
+				logger.Error(
+					"could not write error response",
+					slog.Any("err", err),
+					slog.Any("err.parent", handlerErr),
+				)
 			}
 			return
 		}

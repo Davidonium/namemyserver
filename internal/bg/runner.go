@@ -20,7 +20,9 @@ type Runner struct {
 
 func NewRunner(logger *slog.Logger, bucketStore namemyserver.BucketStore) *Runner {
 	r := &Runner{
-		cron:        cron.New(cron.WithLogger(&cronLogger{Logger: logger.With(slog.String("service", "cron"))})),
+		cron: cron.New(
+			cron.WithLogger(&cronLogger{Logger: logger.With(slog.String("service", "cron"))}),
+		),
 		logger:      logger,
 		bucketStore: bucketStore,
 	}
@@ -30,7 +32,10 @@ func NewRunner(logger *slog.Logger, bucketStore namemyserver.BucketStore) *Runne
 }
 
 func (r *Runner) setup() {
-	r.cron.AddFunc("0 * * * *", r.task("remove_archived_buckets", removeArchivedBucketsTask(r.logger, r.bucketStore)))
+	r.cron.AddFunc(
+		"0 * * * *",
+		r.task("remove_archived_buckets", removeArchivedBucketsTask(r.logger, r.bucketStore)),
+	)
 }
 
 func (r *Runner) task(name string, f func(context.Context) error) func() {

@@ -120,12 +120,20 @@ func (v *Assets) RenderCSS(entry string) string {
 	imported := v.ImportedChunks(entry)
 
 	for _, cssEntry := range manifestEntry.CSS {
-		fmt.Fprintf(buf, `<link type="text/css" rel="stylesheet" href=%q />`+"\n", v.rootURL+cssEntry)
+		fmt.Fprintf(
+			buf,
+			`<link type="text/css" rel="stylesheet" href=%q />`+"\n",
+			v.rootURL+cssEntry,
+		)
 	}
 
 	for _, imp := range imported {
 		for _, cssEntry := range imp.CSS {
-			fmt.Fprintf(buf, `<link type="text/css" rel="stylesheet" href=%q />`+"\n", v.rootURL+cssEntry)
+			fmt.Fprintf(
+				buf,
+				`<link type="text/css" rel="stylesheet" href=%q />`+"\n",
+				v.rootURL+cssEntry,
+			)
 		}
 	}
 

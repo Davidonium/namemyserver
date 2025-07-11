@@ -95,7 +95,12 @@ func TestValidateNameSegmentTable(t *testing.T) {
 		t.Run(fmt.Sprintf("Test Case #%d", i), func(t *testing.T) {
 			ok := namemyserver.ValidateNameSegment(tt.Input)
 			if ok != tt.Valid {
-				t.Errorf("ValidateNameSegment() = input: %q - got %v, want %v", tt.Input, ok, tt.Valid)
+				t.Errorf(
+					"ValidateNameSegment() = input: %q - got %v, want %v",
+					tt.Input,
+					ok,
+					tt.Valid,
+				)
 			}
 		})
 	}

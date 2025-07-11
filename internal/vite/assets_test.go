@@ -34,8 +34,16 @@ func TestNewAssets_RootURL(t *testing.T) {
 		config   vite.AssetsConfig
 		expected string
 	}{
-		{"with trailing slash", vite.AssetsConfig{RootURL: "/static/", UseManifest: false}, "/static/foo.js"},
-		{"without trailing slash", vite.AssetsConfig{RootURL: "/static", UseManifest: false}, "/static/foo.js"},
+		{
+			"with trailing slash",
+			vite.AssetsConfig{RootURL: "/static/", UseManifest: false},
+			"/static/foo.js",
+		},
+		{
+			"without trailing slash",
+			vite.AssetsConfig{RootURL: "/static", UseManifest: false},
+			"/static/foo.js",
+		},
 		{"empty root", vite.AssetsConfig{RootURL: "", UseManifest: false}, "/foo.js"},
 	}
 	for _, tt := range tests {

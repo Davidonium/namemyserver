@@ -16,7 +16,10 @@ import (
 func Connect(ctx context.Context, connStr string) (*DB, error) {
 	parts := strings.SplitN(connStr, ":", 2)
 	if len(parts) != 2 {
-		return nil, fmt.Errorf("database url '%s' has an unexpected format, expected 'sqlite:<path_to_file>'", connStr)
+		return nil, fmt.Errorf(
+			"database url '%s' has an unexpected format, expected 'sqlite:<path_to_file>'",
+			connStr,
+		)
 	}
 
 	parsed, err := url.Parse(parts[1])
@@ -73,7 +76,11 @@ func NewDB(db *sqlx.DB, imDB *sqlx.DB) *DB {
 	}
 }
 
-func (db *DB) WithImmediateTx(ctx context.Context, opts *sql.TxOptions, f func(context.Context, *sqlx.Tx) error) (err error) {
+func (db *DB) WithImmediateTx(
+	ctx context.Context,
+	opts *sql.TxOptions,
+	f func(context.Context, *sqlx.Tx) error,
+) (err error) {
 	tx, err := db.imDB.BeginTxx(ctx, opts)
 	if err != nil {
 		return
@@ -82,7 +89,11 @@ func (db *DB) WithImmediateTx(ctx context.Context, opts *sql.TxOptions, f func(c
 	defer func() {
 		if err != nil {
 			if txErr := tx.Rollback(); txErr != nil {
-				err = fmt.Errorf("failed to rollback on immediate tx error: %v - source: %w", txErr, err)
+				err = fmt.Errorf(
+					"failed to rollback on immediate tx error: %v - source: %w",
+					txErr,
+					err,
+				)
 			}
 			return
 		}

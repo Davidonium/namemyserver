@@ -32,7 +32,10 @@ AND
 	%s
 LIMIT 1`
 
-func (s *PairStore) OneRandom(ctx context.Context, f namemyserver.RandomPairFilters) (namemyserver.Pair, error) {
+func (s *PairStore) OneRandom(
+	ctx context.Context,
+	f namemyserver.RandomPairFilters,
+) (namemyserver.Pair, error) {
 	whereSQL, args := buildPairFilterWhereSQL(f)
 	sql := fmt.Sprintf(singlePairSQLTpl, whereSQL)
 
@@ -61,7 +64,10 @@ SELECT
     (SELECT count(*) FROM adjectives) AS adjective_count,
     (SELECT count(*) FROM adjectives a CROSS JOIN nouns n WHERE %s) AS pair_count`
 
-func (s *PairStore) Stats(ctx context.Context, f namemyserver.RandomPairFilters) (namemyserver.Stats, error) {
+func (s *PairStore) Stats(
+	ctx context.Context,
+	f namemyserver.RandomPairFilters,
+) (namemyserver.Stats, error) {
 	whereSQL, args := buildPairFilterWhereSQL(f)
 	sql := fmt.Sprintf(statsSQLTpl, whereSQL)
 	var row struct {

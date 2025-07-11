@@ -97,7 +97,11 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 	if cfg.AssetsUseManifest {
 		logger.Info("assets manifest is enabled, loading manifest from embed fs")
 		if err := assets.LoadManifestFromFS(embed.FrontendFS, cfg.AssetsManifestLocation); err != nil {
-			return fmt.Errorf("failed to load assets from fs at %s: %w", cfg.AssetsManifestLocation, err)
+			return fmt.Errorf(
+				"failed to load assets from fs at %s: %w",
+				cfg.AssetsManifestLocation,
+				err,
+			)
 		}
 	}
 
@@ -197,7 +201,11 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 		insSQL := fmt.Sprintf(insTemplSQL, table, tempTable)
 		insResult, err := tx.ExecContext(ctx, insSQL)
 		if err != nil {
-			return fmt.Errorf("failed to move the values from temporary table to the real table %q: %w", table, err)
+			return fmt.Errorf(
+				"failed to move the values from temporary table to the real table %q: %w",
+				table,
+				err,
+			)
 		}
 
 		nins, err := insResult.RowsAffected()
@@ -217,7 +225,11 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 		delSQL := fmt.Sprintf(delTemplSQL, table, tempTable)
 		delResult, err := tx.ExecContext(ctx, delSQL)
 		if err != nil {
-			return fmt.Errorf("failed to remove values that ceased to exist in the seed from table %q: %w", table, err)
+			return fmt.Errorf(
+				"failed to remove values that ceased to exist in the seed from table %q: %w",
+				table,
+				err,
+			)
 		}
 		ndel, err := delResult.RowsAffected()
 		if err != nil {
@@ -232,7 +244,11 @@ func seedByTable(ctx context.Context, logger *slog.Logger, db *sqlx.DB, table st
 	}()
 	if err != nil {
 		if txErr := tx.Rollback(); txErr != nil {
-			return fmt.Errorf("failed to rollback on seed error: original - %w, transaction error - %v", err, txErr)
+			return fmt.Errorf(
+				"failed to rollback on seed error: original - %w, transaction error - %v",
+				err,
+				txErr,
+			)
 		}
 		return err
 	}
