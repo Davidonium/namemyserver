@@ -117,24 +117,15 @@ func (v *Assets) RenderCSS(entry string) string {
 
 	buf := &strings.Builder{}
 
+	imported := v.ImportedChunks(entry)
+
 	for _, cssEntry := range manifestEntry.CSS {
-		buf.WriteString(fmt.Sprintf(`<link type="text/css" rel="stylesheet" href=%q />`+"\n", v.rootURL+cssEntry))
+		fmt.Fprintf(buf, `<link type="text/css" rel="stylesheet" href=%q />`+"\n", v.rootURL+cssEntry)
 	}
 
-	imports := manifestEntry.Imports
-	imports = append(imports, manifestEntry.DynamicImports...)
-
-	for _, im := range imports {
-		v.manifestLock.RLock()
-		chunkEntry, ok := v.manifest[im]
-		v.manifestLock.RUnlock()
-
-		if !ok {
-			continue
-		}
-
-		for _, cssEntry := range chunkEntry.CSS {
-			buf.WriteString(fmt.Sprintf(`<link type="text/css" rel="stylesheet" href=%q />`+"\n", v.rootURL+cssEntry))
+	for _, imp := range imported {
+		for _, cssEntry := range imp.CSS {
+			fmt.Fprintf(buf, `<link type="text/css" rel="stylesheet" href=%q />`+"\n", v.rootURL+cssEntry)
 		}
 	}
 
@@ -148,34 +139,18 @@ func (v *Assets) RenderJS(entry string) string {
 
 	buf := &strings.Builder{}
 
-	v.manifestLock.RLock()
-	manifestEntry, ok := v.manifest[entry]
-	v.manifestLock.RUnlock()
+	manifestEntry, ok := v.manifestEntry(entry)
 	if !ok {
 		// TODO log this and handle differently
 		return ""
 	}
 
 	file := v.rootURL + manifestEntry.File
+	fmt.Fprintf(buf, `<script type="module" src=%q></script>`+"\n", file)
 
-	buf.WriteString(fmt.Sprintf(`<script type="module" src=%q></script>`+"\n", file))
-
-	imports := manifestEntry.Imports
-	imports = append(imports, manifestEntry.DynamicImports...)
-
-	for _, im := range imports {
-		v.manifestLock.RLock()
-		chunkEntry, ok := v.manifest[im]
-		v.manifestLock.RUnlock()
-
-		if !ok {
-			continue
-		}
-
-		// not sure if modulepreload can be set for static imports, it's not clarified or exemplified in the docs
-		if chunkEntry.IsDynamicEntry {
-			buf.WriteString(fmt.Sprintf(`<links rel="modulepreload" href=%q />`+"\n", file))
-		}
+	imported := v.ImportedChunks(entry)
+	for _, imp := range imported {
+		fmt.Fprintf(buf, `<link rel="modulepreload" href=%q />`+"\n", v.rootURL+imp.File)
 	}
 
 	return buf.String()
@@ -183,6 +158,72 @@ func (v *Assets) RenderJS(entry string) string {
 
 func (v *Assets) RenderAsset(location string) string {
 	return v.rootURL + location
+}
+
+// ImportedChunks uses an iterative depth-first search (DFS) with a stack.
+// It preserves the post-order traversal logic of the original recursive function,
+// where a chunk is added to the result after all its transitive imports.
+func (v *Assets) ImportedChunks(name string) []ManifestEntry {
+	type StackItem struct {
+		Chunk          ManifestEntry
+		ChildrenPushed bool
+	}
+
+	seen := make(map[string]struct{})
+	stack := []StackItem{}
+	imported := []ManifestEntry{}
+
+	initialChunk, ok := v.manifestEntry(name)
+	if !ok {
+		return []ManifestEntry{}
+	}
+
+	// Only add children (imports) to the stack, not the initial chunk itself
+	for i := len(initialChunk.Imports) - 1; i >= 0; i-- {
+		file := initialChunk.Imports[i]
+		if _, visited := seen[file]; !visited {
+			if importee, ok := v.manifestEntry(file); ok {
+				stack = append(stack, StackItem{Chunk: importee, ChildrenPushed: false})
+				seen[file] = struct{}{}
+			}
+		}
+	}
+
+	for len(stack) > 0 {
+		topIndex := len(stack) - 1
+		currentItem := stack[topIndex]
+
+		if !currentItem.ChildrenPushed {
+			stack[topIndex].ChildrenPushed = true
+
+			foundUnvisitedChild := false
+			for i := len(currentItem.Chunk.Imports) - 1; i >= 0; i-- {
+				file := currentItem.Chunk.Imports[i]
+				if _, visited := seen[file]; !visited {
+					if importee, ok := v.manifestEntry(file); ok {
+						stack = append(stack, StackItem{Chunk: importee, ChildrenPushed: false})
+						seen[file] = struct{}{}
+						foundUnvisitedChild = true
+					}
+				}
+			}
+			if foundUnvisitedChild {
+				continue
+			}
+		}
+
+		stack = stack[:topIndex]
+		imported = append(imported, currentItem.Chunk)
+	}
+
+	return imported
+}
+
+func (v *Assets) manifestEntry(name string) (ManifestEntry, bool) {
+	v.manifestLock.RLock()
+	defer v.manifestLock.RUnlock()
+	manifestEntry, ok := v.manifest[name]
+	return manifestEntry, ok
 }
 
 type contextKey struct{}

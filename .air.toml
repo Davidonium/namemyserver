@@ -2,9 +2,9 @@ root = "."
 tmp_dir = "build"
 
 [build]
-args_bin = []
-bin = "./build/namemyserver-dev server"
-cmd = "templ generate && go build -o ./build/namemyserver-dev ./cmd"
+args_bin = ["server"]
+bin = "./build/namemyserver-dev"
+cmd = "templ generate; go build -o ./build/namemyserver-dev -v ./cmd"
 delay = 1000
 exclude_dir = ["frontend", "build", "var"]
 exclude_file = []
