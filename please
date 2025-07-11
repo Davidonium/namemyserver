@@ -45,12 +45,12 @@ require:templ() {
 
 require:golangci-lint() {
     local cmd="golangci-lint"
-    local version="v1.64.7"
+    local version="v2.2.1"
     local dest="$HOME/.local/bin"
 
     if ! command -v "$cmd" &>/dev/null; then
         echo "Installing $cmd..."
-        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b ${dest} v1.64.7
+        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b ${dest} ${version}
     fi
 }
 
