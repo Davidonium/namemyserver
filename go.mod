@@ -3,7 +3,7 @@ module github.com/davidonium/namemyserver
 go 1.24
 
 require (
-	github.com/a-h/templ v0.3.833
+	github.com/a-h/templ v0.3.924
 	github.com/amacneil/dbmate/v2 v2.26.0
 	github.com/caarlos0/env/v11 v11.3.1
 	github.com/doug-martin/goqu/v9 v9.19.0
