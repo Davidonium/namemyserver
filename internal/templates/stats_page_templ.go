@@ -55,7 +55,7 @@ func StatsPage(vm StatsViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</a></div><div class=\"text-4xl\">Stats</div><div class=\"flex flex-row gap-3 mt-10 w-2/3\"><div class=\"flex-1 rounded shadow-lg p-5\"><div class=\"text-xl\">Pair Count</div><div class=\"mt-5 text-right text-2xl font-bold\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</a></div><div class=\"text-4xl\">Stats</div><div class=\"flex flex-row gap-3 mt-10 w-2/3\"><div class=\"flex-1 rounded shadow-lg p-5\"><div class=\"text-xl\">Pair Count</div><div class=\"mt-5 text-right text-2xl font-mono font-bold\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -68,7 +68,7 @@ func StatsPage(vm StatsViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div><div class=\"flex-1 rounded shadow-lg p-5\"><div class=\"text-xl\">Adjective Count</div><div class=\"mt-5 text-right text-2xl font-bold\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div><div class=\"flex-1 rounded shadow-lg p-5\"><div class=\"text-xl\">Adjective Count</div><div class=\"mt-5 text-right text-2xl font-mono font-bold\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -81,7 +81,7 @@ func StatsPage(vm StatsViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div></div><div class=\"flex-1 rounded shadow-lg p-5\"><div class=\"text-xl\">Noun Count</div><div class=\"mt-5 text-right text-2xl font-bold\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div></div><div class=\"flex-1 rounded shadow-lg p-5\"><div class=\"text-xl\">Noun Count</div><div class=\"mt-5 text-right text-2xl font-mono font-bold\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
