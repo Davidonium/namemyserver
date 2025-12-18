@@ -29,23 +29,13 @@ default() {
 }
 
 install_tools() { ## installs tools required for development and building the project
-    require:air
-    require:templ
     require:golangci-lint
     require:dbmate
 }
 
-require:air() {
-    install_if_missing "air" "github.com/air-verse/air@v1.61.7"
-}
-
-require:templ() {
-    install_if_missing "templ" "github.com/a-h/templ/cmd/templ@v0.3.833"
-}
-
 require:golangci-lint() {
     local cmd="golangci-lint"
-    local version="v2.2.1"
+    local version="v2.7.2"
     local dest="$HOME/.local/bin"
 
     if ! command -v "$cmd" &>/dev/null; then
@@ -82,8 +72,7 @@ build() { ## builds namemyserver's binary for production use in the current mach
 }
 
 generate() { ## runs all code generation targets
-    require:templ
-    templ generate
+    go tool templ generate
 }
 
 test() { ## runs all namemyserver tests
@@ -113,7 +102,7 @@ format() { ## formats the codebase using golangci-lint linters
     require:golangci-lint
     require:templ
     golangci-lint run --fix
-    templ fmt ./internal/templates
+    go tool templ fmt ./internal/templates
 }
 
 docker() { ## builds the application's docker image
@@ -133,9 +122,12 @@ db:reset() { ## recreates the current database and applies migrations, useful fo
     dbmate up
 }
 
+db:seed() {
+    go run ./cmd seed
+}
+
 dev() { ## launches the app with support for live reload of the server on file change
-    require:air
-    air
+    go tool air
 }
 
 dev:frontend() {
