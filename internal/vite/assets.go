@@ -9,6 +9,12 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
+)
+
+const (
+	AssetManifestFSOS    = "os"
+	AssetManifestFSEmbed = "embed"
 )
 
 type ManifestEntry struct {
@@ -22,48 +28,68 @@ type ManifestEntry struct {
 	Assets         []string `json:"assets"`
 }
 
+type AssetsConfig struct {
+	RootURL          string
+	UseManifest      bool
+	ManifestLocation string
+	WatchForChanges  bool
+	AssetsFS         fs.FS
+}
+
+type Logger interface {
+	Info(msg string, keysAndValues ...any)
+	Error(msg string, keysAndValues ...any)
+}
+
 type Assets struct {
-	rootURL      string
-	useManifest  bool
+	logger Logger
+
+	rootURL          string
+	useManifest      bool
+	manifestLocation string
+	watchEnabled     bool
+	assetsFS         fs.FS
+
 	manifest     map[string]ManifestEntry
 	manifestLock *sync.RWMutex
+	watchCancel  context.CancelFunc
+	lastModTime  time.Time
 }
 
-type AssetsConfig struct {
-	RootURL     string
-	UseManifest bool
-}
-
-func NewAssets(config AssetsConfig) *Assets {
+func NewAssets(logger Logger, config AssetsConfig) *Assets {
 	// root url should always end with / because entries are declared without leading slash
 	rootURL := config.RootURL
 	if !strings.HasSuffix(config.RootURL, "/") {
 		rootURL += "/"
 	}
 
-	return &Assets{
-		rootURL:      rootURL,
-		useManifest:  config.UseManifest,
+	if config.AssetsFS == nil {
+		config.AssetsFS = os.DirFS(".")
+	}
+
+	a := &Assets{
+		rootURL:          rootURL,
+		useManifest:      config.UseManifest,
+		watchEnabled:     config.WatchForChanges,
+		manifestLocation: config.ManifestLocation,
+		assetsFS:         config.AssetsFS,
+		logger:           logger,
+
 		manifestLock: &sync.RWMutex{},
 	}
+
+	return a
 }
 
-func (v *Assets) LoadManifest(r io.Reader) error {
+func (v *Assets) LoadManifestFromReader(r io.Reader) error {
 	v.manifestLock.Lock()
 	defer v.manifestLock.Unlock()
 
 	return json.NewDecoder(r).Decode(&v.manifest)
 }
 
-func (v *Assets) LoadManifestFromFile(location string) error {
-	fd, err := os.Open(location)
-	if err != nil {
-		return fmt.Errorf("failed to open assets manifest file: %w", err)
-	}
-
-	defer fd.Close()
-
-	return v.LoadManifest(fd)
+func (v *Assets) LoadManifest() error {
+	return v.LoadManifestFromFS(v.assetsFS, v.manifestLocation)
 }
 
 func (v *Assets) LoadManifestFromFS(fs fs.FS, location string) error {
@@ -74,7 +100,54 @@ func (v *Assets) LoadManifestFromFS(fs fs.FS, location string) error {
 
 	defer fd.Close()
 
-	return v.LoadManifest(fd)
+	return v.LoadManifestFromReader(fd)
+}
+
+// WatchManifest begins watching the manifest file for changes
+func (v *Assets) WatchManifest(ctx context.Context) {
+	if !v.watchEnabled {
+		return
+	}
+
+	watchCtx, cancel := context.WithCancel(ctx)
+	v.watchCancel = cancel
+
+	go v.watchManifestFile(watchCtx)
+}
+
+// StopWatching stops the file watching
+func (v *Assets) Close() {
+	if v.watchCancel != nil {
+		v.watchCancel()
+		v.watchCancel = nil
+	}
+}
+
+// watchManifestFile polls the manifest file for changes
+func (v *Assets) watchManifestFile(ctx context.Context) {
+	ticker := time.NewTicker(500 * time.Millisecond)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+
+			if stat, err := fs.Stat(v.assetsFS, v.manifestLocation); err == nil {
+				if stat.ModTime().After(v.lastModTime) {
+					v.logger.Info(
+						"detected change in assets manifest, reloading",
+						"file", v.manifestLocation,
+					)
+					v.lastModTime = stat.ModTime()
+					if err := v.LoadManifest(); err != nil {
+						v.logger.Error("failed to reload manifest", "error", err)
+					}
+				}
+			}
+		}
+	}
 }
 
 func (v *Assets) RenderViteClientJS() string {

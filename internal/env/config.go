@@ -8,6 +8,8 @@ type Config struct {
 	LogFormat              string   `env:"LOG_FORMAT"               envDefault:"text"`
 	LogLevel               string   `env:"LOG_LEVEL"                envDefault:"info"`
 	AssetsRootURL          *url.URL `env:"ASSETS_ROOT_URL,required"`
-	AssetsUseManifest      bool     `env:"ASSETS_USE_MANIFEST"      envDefault:"false"`
+	AssetsUseManifest      bool     `env:"ASSETS_MANIFEST_USE"      envDefault:"false"`
+	AssetsWatch            bool     `env:"ASSETS_MANIFEST_WATCH"    envDefault:"false"`
 	AssetsManifestLocation string   `env:"ASSETS_MANIFEST_LOCATION"`
+	AssetsManifestFS       string   `env:"ASSETS_MANIFEST_FS"       envDefault:"os"`
 }

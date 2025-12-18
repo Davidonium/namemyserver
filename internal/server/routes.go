@@ -6,9 +6,11 @@ import (
 	"io/fs"
 	"log/slog"
 	"net/http"
+	"os"
 
 	"github.com/davidonium/namemyserver"
 	"github.com/davidonium/namemyserver/internal/templates"
+	"github.com/davidonium/namemyserver/internal/vite"
 )
 
 func addRoutes(
@@ -17,14 +19,26 @@ func addRoutes(
 ) {
 	// register the assets on the root as the last step to avoid conflicts with the home handler
 	if svcs.Config.AssetsUseManifest {
-		fileServer, err := fs.Sub(namemyserver.FrontendFS, "frontend/dist")
+		var stfs fs.FS
+		var err error
+		switch svcs.Config.AssetsManifestFS {
+		case vite.AssetManifestFSOS:
+			svcs.Logger.Info("os assets loading")
+			stfs, err = fs.Sub(os.DirFS("."), "frontend/dist")
+		case vite.AssetManifestFSEmbed:
+			svcs.Logger.Info("embed assets loading")
+			stfs, err = fs.Sub(namemyserver.FrontendFS, "frontend/dist")
+		default:
+			panic(fmt.Sprintf("unknown asset fs kind %q", svcs.Config.AssetsManifestFS))
+		}
+
 		if err != nil {
 			svcs.Logger.Error(
 				"failed to create assets filesystem, a 404 will be returned for assets requests",
 				slog.Any("err", err),
 			)
 		} else {
-			m.Handle("/static/", http.StripPrefix("/static", http.FileServerFS(fileServer)))
+			m.Handle("/static/", http.StripPrefix("/static", http.FileServerFS(stfs)))
 		}
 	}
 

@@ -88,15 +88,21 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 	if err := dbm.Migrate(); err != nil {
 		return fmt.Errorf("failed to apply migrations: %w", err)
 	}
+	assetsCfg := vite.AssetsConfig{
+		RootURL:          cfg.AssetsRootURL.String(),
+		UseManifest:      cfg.AssetsUseManifest,
+		ManifestLocation: cfg.AssetsManifestLocation,
+		WatchForChanges:  cfg.AssetsWatch,
+	}
+	if cfg.AssetsManifestFS == vite.AssetManifestFSEmbed {
+		assetsCfg.AssetsFS = embed.FrontendFS
+	}
 
-	assets := vite.NewAssets(vite.AssetsConfig{
-		RootURL:     cfg.AssetsRootURL.String(),
-		UseManifest: cfg.AssetsUseManifest,
-	})
+	assets := vite.NewAssets(logger, assetsCfg)
 
 	if cfg.AssetsUseManifest {
 		logger.Info("assets manifest is enabled, loading manifest from embed fs")
-		if err := assets.LoadManifestFromFS(embed.FrontendFS, cfg.AssetsManifestLocation); err != nil {
+		if err := assets.LoadManifest(); err != nil {
 			return fmt.Errorf(
 				"failed to load assets from fs at %s: %w",
 				cfg.AssetsManifestLocation,
