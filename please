@@ -100,7 +100,6 @@ lint() { ## detects flaws in the code and checks for style
 
 format() { ## formats the codebase using golangci-lint linters
     require:golangci-lint
-    require:templ
     golangci-lint run --fix
     go tool templ fmt ./internal/templates
 }
