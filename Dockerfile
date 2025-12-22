@@ -1,4 +1,4 @@
-FROM docker.io/library/node:22-slim AS frontend
+FROM docker.io/library/node:24-slim AS frontend
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -12,7 +12,7 @@ WORKDIR /app/frontend
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run build
 
-FROM docker.io/library/golang:1.24 AS builder
+FROM docker.io/library/golang:1.25 AS builder
 
 WORKDIR /app
 
@@ -29,7 +29,7 @@ COPY please .
 
 RUN ./please build
 
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM gcr.io/distroless/static-debian13:nonroot
 
 WORKDIR /app
 COPY --from=builder /app/build/namemyserver /app/namemyserver
