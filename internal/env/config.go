@@ -3,6 +3,7 @@ package env
 import "net/url"
 
 type Config struct {
+	ListenAddr             string   `env:"LISTEN_ADDR"              envDefault:":8080"`
 	DatabaseURL            *url.URL `env:"DATABASE_URL,required"`
 	Debug                  bool     `env:"DEBUG"                    envDefault:"false"`
 	LogFormat              string   `env:"LOG_FORMAT"               envDefault:"text"`

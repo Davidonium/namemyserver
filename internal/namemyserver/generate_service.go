@@ -8,8 +8,8 @@ import (
 type LengthMode string
 
 const (
-	LengthModeExactly = "exactly"
-	LengthModeUpto    = "upto"
+	LengthModeExactly LengthMode = "exactly"
+	LengthModeUpto    LengthMode = "upto"
 )
 
 type Generator struct {

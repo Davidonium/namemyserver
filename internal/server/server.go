@@ -1,8 +1,6 @@
 package server
 
 import (
-	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
@@ -11,6 +9,7 @@ import (
 
 	"github.com/davidonium/namemyserver/internal/env"
 	"github.com/davidonium/namemyserver/internal/namemyserver"
+	"github.com/davidonium/namemyserver/internal/server/api"
 	"github.com/davidonium/namemyserver/internal/vite"
 )
 
@@ -27,32 +26,17 @@ func New(svcs *Services) *http.Server {
 	m := http.NewServeMux()
 	addRoutes(m, svcs)
 
-	apiMux := http.NewServeMux()
-	addAPIRoutes(apiMux, svcs)
-	m.Handle("/api/v1alpha1/", http.StripPrefix("/api/v1alpha1", apiMux))
+	handlers := api.New(svcs.Generator, svcs.BucketStore)
+	strict := api.NewStrictHandler(handlers, nil)
+	apiHandler := api.HandlerFromMuxWithBaseURL(strict, http.NewServeMux(), "/api")
+
+	m.Handle("/api/", apiHandler)
 
 	return &http.Server{
-		Addr:              "127.0.0.1:8080", // TODO parameterize
+		Addr:              svcs.Config.ListenAddr,
 		Handler:           m,
 		ReadHeaderTimeout: 3 * time.Second,
 	}
-}
-
-func encode[T any](w http.ResponseWriter, status int, v T) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	if err := json.NewEncoder(w).Encode(v); err != nil {
-		return fmt.Errorf("encode json: %w", err)
-	}
-	return nil
-}
-
-func decode[T any](r *http.Request) (T, error) {
-	var v T
-	if err := json.NewDecoder(r.Body).Decode(&v); err != nil {
-		return v, fmt.Errorf("decode json: %w", err)
-	}
-	return v, nil
 }
 
 func component(w http.ResponseWriter, r *http.Request, status int, c templ.Component) error {

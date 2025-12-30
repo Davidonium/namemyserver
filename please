@@ -73,6 +73,7 @@ build() { ## builds namemyserver's binary for production use in the current mach
 
 generate() { ## runs all code generation targets
     go tool templ generate
+    go tool oapi-codegen -config oapicodegen.config.yaml openapi.yaml
 }
 
 test() { ## runs all namemyserver tests
