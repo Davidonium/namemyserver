@@ -1,5 +1,12 @@
 @import "tailwindcss" source("../../../internal/templates/");
 
+@theme {
+  --color-primary: oklch(49.6% 0.265 301.924); /* purple-700 */
+  --color-secondary: oklch(64.6% 0.222 41.116); /* orange-600 */
+  --color-secondary-dark: oklch(55.3% 0.195 38.402); /* orange-700 */
+  --color-secondary-light: oklch(83.7% 0.128 66.29); /* orange-300 */
+}
+
 @custom-variant htmx-request {
   &.htmx-request {
     @slot;
