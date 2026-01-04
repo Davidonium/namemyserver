@@ -61,7 +61,7 @@ func BucketCreatePage(vm BucketCreatePageViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</a></div><div class=\"text-4xl\">Create a Bucket</div><div class=\"flex flex-col gap-4 items-center\"><form method=\"post\" action=\"/buckets\"><div class=\"flex flex-col gap-2 w-lg\"><div class=\"bg-gradient-to-r from-purple-600 to-cyan-400 rounded-full p-[2px] w-48\"><input id=\"name\" class=\"w-full rounded-full px-3 py-2 bg-white text-sm font-medium\" type=\"text\" name=\"name\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</a></div><div class=\"text-4xl\">Create a Bucket</div><div class=\"flex flex-col gap-4 items-center\"><form method=\"post\" action=\"/buckets\"><div class=\"flex flex-col gap-2 w-lg\"><div class=\"border-2 border-purple-600 rounded-full w-48\"><input id=\"name\" class=\"w-full rounded-full px-3 py-2 bg-white text-sm font-medium\" type=\"text\" name=\"name\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -74,7 +74,7 @@ func BucketCreatePage(vm BucketCreatePageViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" placeholder=\"Name\"></div><div class=\"bg-gradient-to-r from-purple-600 to-cyan-400 rounded-lg p-[2px]\"><textarea id=\"description\" class=\"block w-full rounded-lg p-2 bg-white text-sm font-medium\" name=\"description\" placeholder=\"What will the bucket be used for?\" rows=\"5\"></textarea></div><div><button class=\"cursor-pointer group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] text-white focus:outline-none focus:ring active:text-opacity-75 hover:shadow-lg\" type=\"submit\"><span class=\"block rounded-full bg-transparent px-8 py-3 text-sm font-medium\">Create</span></button></div></div></form></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" placeholder=\"Name\"></div><div class=\"border-2 border-purple-600 rounded-lg\"><textarea id=\"description\" class=\"block w-full rounded-lg p-2 bg-white text-sm font-medium\" name=\"description\" placeholder=\"What will the bucket be used for?\" rows=\"5\"></textarea></div><div><button class=\"cursor-pointer rounded-full border-2 border-purple-600 px-8 py-3 text-sm font-medium hover:bg-purple-600 hover:text-white focus:outline-none focus:ring active:text-opacity-75 hover:shadow-lg\" type=\"submit\">Create</button></div></div></form></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

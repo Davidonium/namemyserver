@@ -64,7 +64,7 @@ func BucketListPage(vm BucketListPageViewModel) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if len(vm.Buckets) == 0 && !vm.Archived {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"flex flex-col gap-4 items-center\"><div>Looks like you don't have any buckets. Create one with the button below.</div><a href=\"/buckets/create\" class=\"cursor-pointer group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75\"><span class=\"block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent\">Create a new Bucket</span></a></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"flex flex-col gap-4 items-center\"><div>Looks like you don't have any buckets. Create one with the button below.</div><a href=\"/buckets/create\" class=\"cursor-pointer rounded-full border-2 border-purple-600 px-8 py-3 text-sm font-medium hover:bg-purple-600 hover:text-white focus:outline-none focus:ring active:text-opacity-75\">Create a new Bucket</a></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -100,7 +100,7 @@ func BucketListPage(vm BucketListPageViewModel) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<a href=\"/buckets/create\" class=\"cursor-pointer group inline-block rounded-full bg-gradient-to-r from-purple-600 to-cyan-400 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75\"><span class=\"block rounded-full bg-white px-4 py-2 text-sm font-medium group-hover:bg-transparent\">Create a new Bucket</span></a></div><ul class=\"flex flex-col gap-1 mt-4 divide-gray-200\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<a href=\"/buckets/create\" class=\"cursor-pointer rounded-full border-2 border-purple-600 px-4 py-2 text-sm font-medium hover:bg-purple-600 hover:text-white focus:outline-none focus:ring active:text-opacity-75\">Create a new Bucket</a></div><ul class=\"flex flex-col gap-1 mt-4 divide-gray-200\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -112,7 +112,7 @@ func BucketListPage(vm BucketListPageViewModel) templ.Component {
 					var templ_7745c5c3_Var3 templ.SafeURL
 					templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(fmt.Sprintf("/buckets/%d", b.ID)))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_list_page.templ`, Line: 74, Col: 139}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_list_page.templ`, Line: 66, Col: 139}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 					if templ_7745c5c3_Err != nil {
@@ -125,7 +125,7 @@ func BucketListPage(vm BucketListPageViewModel) templ.Component {
 					var templ_7745c5c3_Var4 string
 					templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(b.Name)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_list_page.templ`, Line: 76, Col: 18}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_list_page.templ`, Line: 68, Col: 18}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 					if templ_7745c5c3_Err != nil {
@@ -139,7 +139,7 @@ func BucketListPage(vm BucketListPageViewModel) templ.Component {
 						var templ_7745c5c3_Var5 string
 						templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(b.Description)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_list_page.templ`, Line: 80, Col: 26}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/bucket_list_page.templ`, Line: 72, Col: 26}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 						if templ_7745c5c3_Err != nil {
