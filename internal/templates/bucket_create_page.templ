@@ -19,10 +19,10 @@ templ BucketCreatePage(vm BucketCreatePageViewModel) {
 			<div class="flex flex-col gap-4 items-center">
 				<form method="post" action="/buckets">
 					<div class="flex flex-col gap-2 w-lg">
-						<div class="border-2 border-purple-600 rounded-full w-48">
+						<div class="border-2 border-purple-700 rounded-full w-48">
 							<input id="name" class="w-full rounded-full px-3 py-2 bg-white text-sm font-medium" type="text" name="name" value={ vm.GeneratedName } placeholder="Name"/>
 						</div>
-						<div class="border-2 border-purple-600 rounded-lg">
+						<div class="border-2 border-purple-700 rounded-lg">
 							<textarea
 								id="description"
 								class="block w-full rounded-lg p-2 bg-white text-sm font-medium"
@@ -33,7 +33,7 @@ templ BucketCreatePage(vm BucketCreatePageViewModel) {
 						</div>
 						<div>
 							<button
-								class="cursor-pointer rounded-full border-2 border-purple-600 px-8 py-3 text-sm font-medium hover:bg-purple-600 hover:text-white focus:outline-none focus:ring active:text-opacity-75 hover:shadow-lg"
+								class="cursor-pointer rounded-full border-2 border-purple-700 px-8 py-3 text-sm font-medium hover:bg-purple-700 hover:text-white focus:outline-none focus:ring active:text-opacity-75 hover:shadow-lg"
 								type="submit"
 							>
 								Create

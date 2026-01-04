@@ -64,7 +64,7 @@ func BucketListPage(vm BucketListPageViewModel) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if len(vm.Buckets) == 0 && !vm.Archived {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"flex flex-col gap-4 items-center\"><div>Looks like you don't have any buckets. Create one with the button below.</div><a href=\"/buckets/create\" class=\"cursor-pointer rounded-full border-2 border-purple-600 px-8 py-3 text-sm font-medium hover:bg-purple-600 hover:text-white focus:outline-none focus:ring active:text-opacity-75\">Create a new Bucket</a></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"flex flex-col gap-4 items-center\"><div>Looks like you don't have any buckets. Create one with the button below.</div><a href=\"/buckets/create\" class=\"cursor-pointer rounded-full border-2 border-purple-700 px-8 py-3 text-sm font-medium hover:bg-purple-700 hover:text-white focus:outline-none focus:ring active:text-opacity-75\">Create a new Bucket</a></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -100,7 +100,7 @@ func BucketListPage(vm BucketListPageViewModel) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<a href=\"/buckets/create\" class=\"cursor-pointer rounded-full border-2 border-purple-600 px-4 py-2 text-sm font-medium hover:bg-purple-600 hover:text-white focus:outline-none focus:ring active:text-opacity-75\">Create a new Bucket</a></div><ul class=\"flex flex-col gap-1 mt-4 divide-gray-200\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<a href=\"/buckets/create\" class=\"cursor-pointer rounded-full border-2 border-purple-700 px-4 py-2 text-sm font-medium hover:bg-purple-700 hover:text-white focus:outline-none focus:ring active:text-opacity-75\">Create a new Bucket</a></div><ul class=\"flex flex-col gap-1 mt-4 divide-gray-200\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
