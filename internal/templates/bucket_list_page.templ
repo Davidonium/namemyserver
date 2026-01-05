@@ -26,7 +26,7 @@ templ BucketListPage(vm BucketListPageViewModel) {
 					</div>
 					<a
 						href="/buckets/create"
-						class="cursor-pointer rounded-full border-2 border-primary px-8 py-3 text-sm font-medium hover:bg-primary hover:text-white focus:outline-none focus:ring active:text-opacity-75"
+						class="cursor-pointer rounded-full border-2 border-primary bg-primary text-white px-8 py-3 text-sm font-medium hover:bg-primary/80 focus:outline-none focus:ring active:text-opacity-75"
 					>
 						Create a new Bucket
 					</a>
@@ -53,12 +53,12 @@ templ BucketListPage(vm BucketListPageViewModel) {
 								</div>
 							</a>
 						}
-					<a
-						href="/buckets/create"
-						class="cursor-pointer rounded-full border-2 border-primary px-4 py-2 text-sm font-medium hover:bg-primary hover:text-white focus:outline-none focus:ring active:text-opacity-75"
-					>
-						Create a new Bucket
-					</a>
+				<a
+					href="/buckets/create"
+					class="cursor-pointer rounded-full border-2 border-primary bg-primary text-white px-4 py-2 text-sm font-medium hover:bg-primary/80 focus:outline-none focus:ring active:text-opacity-75"
+				>
+					Create a new Bucket
+				</a>
 					</div>
 					<ul class="flex flex-col gap-1 mt-4 divide-gray-200">
 						for _, b := range vm.Buckets {
