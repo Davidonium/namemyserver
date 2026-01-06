@@ -49,6 +49,7 @@ func addRoutes(
 	m.Handle("GET /health", healthHandler())
 	m.Handle("GET /{$}", c(app(homeHandler(svcs.PairStore))))
 	m.Handle("GET /stats", c(app(statsHandler(svcs.PairStore))))
+	m.Handle("GET /generate", c(app(generateHandler(svcs.Generator))))
 	m.Handle("POST /generate", c(app(generateHandler(svcs.Generator))))
 	m.Handle("GET /config/stats", c(app(configStatsHandler(svcs.PairStore))))
 	m.Handle("GET /buckets", c(app(bucketListHandler(svcs.BucketStore))))

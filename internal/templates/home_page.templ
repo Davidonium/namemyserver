@@ -24,7 +24,7 @@ templ HomePage(vm HomeViewModel) {
 			<h1 class="text-3xl">Generate a server name</h1>
 			<div id="generate-name-container" class="w-full flex justify-center"><span class="text-gray-400">The name will be here</span></div>
 			<button
-				hx-post="/generate"
+				hx-get="/generate"
 				hx-target="#generate-name-container"
 				hx-include=".js-generate-configuration"
 				class="cursor-pointer rounded-full border-2 border-primary bg-primary text-white px-8 py-3 text-sm font-medium hover:bg-primary-600 focus:outline-none focus:ring active:text-opacity-75"

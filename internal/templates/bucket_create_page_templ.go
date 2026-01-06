@@ -59,7 +59,23 @@ func BucketCreatePage(vm BucketCreatePageViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</a></div><div class=\"text-4xl\">Create a Bucket</div><div class=\"flex flex-col gap-4 items-center\"><form method=\"post\" action=\"/buckets\"><div class=\"flex flex-col gap-6 w-lg\"><div class=\"flex flex-col gap-2\"><label for=\"name\" class=\"text-sm font-semibold\">Bucket Name <span class=\"text-red-600\">*</span></label> <input id=\"name\" class=\"border border-primary-200 rounded-lg w-full px-4 py-3 bg-primary-50 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent hover:border-primary-300\" type=\"text\" name=\"name\" placeholder=\"e.g., production-servers\" required></div><div class=\"flex flex-col gap-2\"><label for=\"description\" class=\"text-sm font-semibold\">Description</label> <textarea id=\"description\" class=\"w-full border border-primary-200 rounded-lg p-4 bg-primary-50 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent hover:border-primary-300 resize-none\" name=\"description\" placeholder=\"What will the bucket be used for?\" rows=\"5\"></textarea></div><div><button class=\"cursor-pointer rounded-full bg-primary text-white px-8 py-3 text-sm font-medium hover:bg-primary-600 focus:outline-none focus:ring active:text-opacity-75 hover:shadow-lg\" type=\"submit\">Create</button></div></div></form></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</a></div><div class=\"text-4xl\">Create a Bucket</div><div class=\"flex flex-col gap-4 items-center\"><form method=\"post\" action=\"/buckets\"><div class=\"flex flex-col gap-6 w-lg\"><div class=\"flex flex-col gap-2\"><label for=\"name\" class=\"text-sm font-semibold\">Bucket Name <span class=\"text-red-600\">*</span></label><div class=\"flex\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = BucketNameInput("").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<button type=\"button\" hx-get=\"/generate?component=bucket-input\" hx-target=\"#name\" hx-swap=\"outerHTML\" class=\"border border-l-0 border-primary-200 rounded-r-lg px-3 bg-primary-50 text-primary-600 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all\" title=\"Generate random bucket name\" aria-label=\"Generate random bucket name\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = DiceIcon().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</button></div></div><div class=\"flex flex-col gap-2\"><label for=\"description\" class=\"text-sm font-semibold\">Description</label> <textarea id=\"description\" class=\"w-full border border-primary-200 rounded-lg p-4 bg-primary-50 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent hover:border-primary-300 resize-none\" name=\"description\" placeholder=\"What will the bucket be used for?\" rows=\"5\"></textarea></div><div><button class=\"cursor-pointer rounded-full bg-primary text-white px-8 py-3 text-sm font-medium hover:bg-primary-600 focus:outline-none focus:ring active:text-opacity-75 hover:shadow-lg\" type=\"submit\">Create</button></div></div></form></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -1,0 +1,14 @@
+package templates
+
+templ BucketNameInput(value string) {
+	<input
+		id="name"
+		name="name"
+		class="border border-primary-200 rounded-l-lg w-full px-4 py-3 bg-primary-50 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent hover:border-primary-300"
+		type="text"
+		autocomplete="off"
+		value={ value }
+		placeholder="e.g., production-servers"
+		required
+	/>
+}
