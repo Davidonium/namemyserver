@@ -18,7 +18,7 @@ export default defineConfig({
       onwarn: (entry, next) => {
         if (
           entry.loc?.file &&
-          /htmx\.min\.js$/.test(entry.loc.file) &&
+          /htmx\.esm\.js$/.test(entry.loc.file) &&
           /Use of eval in/.test(entry.message)
         )
           return;
