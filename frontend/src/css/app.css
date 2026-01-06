@@ -1,6 +1,7 @@
 @import "tailwindcss" source("../../../internal/templates/");
 
 @theme {
+  /* purple */
   --color-primary-50: oklch(97.3% 0.041 301.924);
   --color-primary-100: oklch(94.6% 0.083 301.924);
   --color-primary-200: oklch(89.3% 0.166 301.924);
@@ -13,6 +14,7 @@
   --color-primary-900: oklch(37.0% 0.165 301.924);
   --color-primary: var(--color-primary-700);
 
+  /* orange */
   --color-secondary-50: oklch(97.3% 0.032 41.116);
   --color-secondary-100: oklch(94.6% 0.063 41.116);
   --color-secondary-200: oklch(89.3% 0.127 41.116);
