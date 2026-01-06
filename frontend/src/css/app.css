@@ -1,11 +1,33 @@
 @import "tailwindcss" source("../../../internal/templates/");
 
 @theme {
-  --color-primary: oklch(49.6% 0.265 301.924); /* purple-700 */
-  --color-secondary: oklch(64.6% 0.222 41.116); /* orange-600 */
-  --color-secondary-dark: oklch(55.3% 0.195 38.402); /* orange-700 */
-  --color-secondary-light: oklch(83.7% 0.128 66.29); /* orange-300 */
+  --color-primary-50: oklch(97.3% 0.041 301.924);
+  --color-primary-100: oklch(94.6% 0.083 301.924);
+  --color-primary-200: oklch(89.3% 0.166 301.924);
+  --color-primary-300: oklch(83.9% 0.249 301.924);
+  --color-primary-400: oklch(74.5% 0.249 301.924);
+  --color-primary-500: oklch(64.0% 0.265 301.924);
+  --color-primary-600: oklch(57.0% 0.265 301.924);
+  --color-primary-700: oklch(49.6% 0.265 301.924);
+  --color-primary-800: oklch(43.0% 0.215 301.924);
+  --color-primary-900: oklch(37.0% 0.165 301.924);
+  --color-primary: var(--color-primary-700);
+
+  --color-secondary-50: oklch(97.3% 0.032 41.116);
+  --color-secondary-100: oklch(94.6% 0.063 41.116);
+  --color-secondary-200: oklch(89.3% 0.127 41.116);
+  --color-secondary-300: oklch(83.9% 0.191 41.116);
+  --color-secondary-400: oklch(74.5% 0.191 41.116);
+  --color-secondary-500: oklch(71.5% 0.222 41.116);
+  --color-secondary-600: oklch(64.6% 0.222 41.116);
+  --color-secondary-700: oklch(55.3% 0.195 38.402);
+  --color-secondary-800: oklch(48.0% 0.155 38.402);
+  --color-secondary-900: oklch(41.0% 0.115 38.402);
+  --color-secondary: var(--color-secondary-600);
+  --color-secondary-dark: var(--color-secondary-700);
+  --color-secondary-light: var(--color-secondary-300);
 }
+
 
 @custom-variant htmx-request {
   &.htmx-request {

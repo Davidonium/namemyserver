@@ -74,7 +74,7 @@ func BucketCreatePage(vm BucketCreatePageViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" placeholder=\"Name\"></div><div class=\"border-2 border-primary rounded-lg\"><textarea id=\"description\" class=\"block w-full rounded-lg p-2 bg-white text-sm font-medium\" name=\"description\" placeholder=\"What will the bucket be used for?\" rows=\"5\"></textarea></div><div><button class=\"cursor-pointer rounded-full border-2 border-primary bg-primary text-white px-8 py-3 text-sm font-medium hover:bg-primary/80 focus:outline-none focus:ring active:text-opacity-75 hover:shadow-lg\" type=\"submit\">Create</button></div></div></form></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" placeholder=\"Name\"></div><div class=\"border-2 border-primary rounded-lg\"><textarea id=\"description\" class=\"block w-full rounded-lg p-2 bg-white text-sm font-medium\" name=\"description\" placeholder=\"What will the bucket be used for?\" rows=\"5\"></textarea></div><div><button class=\"cursor-pointer rounded-full border-2 border-primary bg-primary text-white px-8 py-3 text-sm font-medium hover:bg-primary-600 focus:outline-none focus:ring active:text-opacity-75 hover:shadow-lg\" type=\"submit\">Create</button></div></div></form></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
