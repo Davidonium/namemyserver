@@ -1,8 +1,6 @@
 package templates
 
-type BucketCreatePageViewModel struct {
-	GeneratedName string
-}
+type BucketCreatePageViewModel struct{}
 
 templ BucketCreatePage(vm BucketCreatePageViewModel) {
 	@Layout() {
@@ -18,14 +16,23 @@ templ BucketCreatePage(vm BucketCreatePageViewModel) {
 			<div class="text-4xl">Create a Bucket</div>
 			<div class="flex flex-col gap-4 items-center">
 				<form method="post" action="/buckets">
-					<div class="flex flex-col gap-2 w-lg">
-						<div class="border-2 border-primary rounded-full w-48">
-							<input id="name" class="w-full rounded-full px-3 py-2 bg-white text-sm font-medium" type="text" name="name" value={ vm.GeneratedName } placeholder="Name"/>
+					<div class="flex flex-col gap-6 w-lg">
+						<div class="flex flex-col gap-2">
+							<label for="name" class="text-sm font-semibold">Bucket Name <span class="text-red-600">*</span></label>
+							<input
+								id="name"
+								class="border border-primary-200 rounded-lg w-full px-4 py-3 bg-primary-50 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent hover:border-primary-300"
+								type="text"
+								name="name"
+								placeholder="e.g., production-servers"
+								required
+							/>
 						</div>
-						<div class="border-2 border-primary rounded-lg">
+						<div class="flex flex-col gap-2">
+							<label for="description" class="text-sm font-semibold">Description</label>
 							<textarea
 								id="description"
-								class="block w-full rounded-lg p-2 bg-white text-sm font-medium"
+								class="w-full border border-primary-200 rounded-lg p-4 bg-primary-50 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent hover:border-primary-300 resize-none"
 								name="description"
 								placeholder="What will the bucket be used for?"
 								rows="5"
@@ -33,7 +40,7 @@ templ BucketCreatePage(vm BucketCreatePageViewModel) {
 						</div>
 						<div>
 							<button
-								class="cursor-pointer rounded-full border-2 border-primary bg-primary text-white px-8 py-3 text-sm font-medium hover:bg-primary-600 focus:outline-none focus:ring active:text-opacity-75 hover:shadow-lg"
+								class="cursor-pointer rounded-full bg-primary text-white px-8 py-3 text-sm font-medium hover:bg-primary-600 focus:outline-none focus:ring active:text-opacity-75 hover:shadow-lg"
 								type="submit"
 							>
 								Create

@@ -32,19 +32,7 @@ func bucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 
 func bucketCreateHandler(logger *slog.Logger, generator *namemyserver.Generator) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		ctx := r.Context()
-
-		result, err := generator.Generate(ctx, namemyserver.GenerateOptions{})
-		if err != nil {
-			logger.Error(
-				"failed to automatically generate a name for a new bucket",
-				slog.Any("err", err),
-			)
-		}
-
-		vm := templates.BucketCreatePageViewModel{
-			GeneratedName: result.Name,
-		}
+		vm := templates.BucketCreatePageViewModel{}
 		c := templates.BucketCreatePage(vm)
 		return component(w, r, http.StatusOK, c)
 	}
