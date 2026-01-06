@@ -23,6 +23,18 @@ import (
 	strictnethttp "github.com/oapi-codegen/runtime/strictmiddleware/nethttp"
 )
 
+// Defines values for BucketDetailsFiltersLengthMode.
+const (
+	BucketDetailsFiltersLengthModeExactly BucketDetailsFiltersLengthMode = "exactly"
+	BucketDetailsFiltersLengthModeUpto    BucketDetailsFiltersLengthMode = "upto"
+)
+
+// Defines values for CreateBucketJSONBodyFiltersLengthMode.
+const (
+	CreateBucketJSONBodyFiltersLengthModeExactly CreateBucketJSONBodyFiltersLengthMode = "exactly"
+	CreateBucketJSONBodyFiltersLengthModeUpto    CreateBucketJSONBodyFiltersLengthMode = "upto"
+)
+
 // BucketDetails defines model for BucketDetails.
 type BucketDetails struct {
 	// ArchivedAt Timestamp when the bucket was archived
@@ -33,6 +45,18 @@ type BucketDetails struct {
 
 	// Description Description of the bucket
 	Description string `json:"description"`
+
+	// Filters Filter configuration for this bucket
+	Filters struct {
+		// Length Length constraint value (null if not enabled)
+		Length *int `json:"length"`
+
+		// LengthEnabled Whether length filtering is enabled
+		LengthEnabled bool `json:"length_enabled"`
+
+		// LengthMode Mode for length constraint
+		LengthMode *BucketDetailsFiltersLengthMode `json:"length_mode,omitempty"`
+	} `json:"filters"`
 
 	// Id Unique identifier for the bucket
 	Id int32 `json:"id"`
@@ -46,6 +70,9 @@ type BucketDetails struct {
 	// UpdatedAt Timestamp when the bucket was last updated
 	UpdatedAt *time.Time `json:"updated_at"`
 }
+
+// BucketDetailsFiltersLengthMode Mode for length constraint
+type BucketDetailsFiltersLengthMode string
 
 // BucketListItem defines model for BucketListItem.
 type BucketListItem struct {
@@ -106,17 +133,27 @@ type ListBucketsParams struct {
 
 // CreateBucketJSONBody defines parameters for CreateBucket.
 type CreateBucketJSONBody struct {
-	Filters struct {
-		// Length Length constraint for generated names
-		Length int `json:"length"`
+	// Description Description of the bucket
+	Description *string `json:"description,omitempty"`
 
-		// LengthMode Mode for length constraint (e.g., exact, max, min)
-		LengthMode string `json:"length_mode"`
-	} `json:"filters"`
+	// Filters Optional filters for name generation. If not provided, names are generated without constraints.
+	Filters *struct {
+		// Length Length constraint for generated names (required if length_enabled is true)
+		Length *int `json:"length,omitempty"`
+
+		// LengthEnabled Whether length filtering is enabled
+		LengthEnabled *bool `json:"length_enabled,omitempty"`
+
+		// LengthMode Mode for length constraint
+		LengthMode *CreateBucketJSONBodyFiltersLengthMode `json:"length_mode,omitempty"`
+	} `json:"filters,omitempty"`
 
 	// Name Name of the bucket
 	Name string `json:"name"`
 }
+
+// CreateBucketJSONBodyFiltersLengthMode defines parameters for CreateBucket.
+type CreateBucketJSONBodyFiltersLengthMode string
 
 // CreateBucketJSONRequestBody defines body for CreateBucket for application/json ContentType.
 type CreateBucketJSONRequestBody CreateBucketJSONBody
@@ -724,33 +761,35 @@ func (sh *strictHandler) GenerateName(w http.ResponseWriter, r *http.Request) {
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
-	"yRkAAA==",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

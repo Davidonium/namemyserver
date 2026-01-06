@@ -14,13 +14,16 @@ import (
 )
 
 type bucketRow struct {
-	ID          int32          `db:"id"`
-	Name        string         `db:"name"`
-	Description sql.NullString `db:"description"`
-	Cursor      sql.NullInt32  `db:"cursor"`
-	ArchivedAt  sql.NullTime   `db:"archived_at"`
-	CreatedAt   time.Time      `db:"created_at"`
-	UpdatedAt   sql.NullTime   `db:"updated_at"`
+	ID                  int32          `db:"id"`
+	Name                string         `db:"name"`
+	Description         sql.NullString `db:"description"`
+	Cursor              sql.NullInt32  `db:"cursor"`
+	ArchivedAt          sql.NullTime   `db:"archived_at"`
+	CreatedAt           time.Time      `db:"created_at"`
+	UpdatedAt           sql.NullTime   `db:"updated_at"`
+	FilterLengthEnabled int            `db:"filter_length_enabled"`
+	FilterLengthMode    sql.NullString `db:"filter_length_mode"`
+	FilterLengthValue   sql.NullInt32  `db:"filter_length_value"`
 }
 
 type BucketStore struct {
@@ -34,14 +37,17 @@ func NewBucketStore(logger *slog.Logger, db *DB) *BucketStore {
 
 const createBucketSQL = `
 INSERT INTO buckets
-	(name, description)
+	(name, description, filter_length_enabled, filter_length_mode, filter_length_value)
 VALUES
-	(:name, :description)`
+	(:name, :description, :filter_length_enabled, :filter_length_mode, :filter_length_value)`
 
 func (s *BucketStore) Create(ctx context.Context, b *namemyserver.Bucket) error {
 	args := map[string]any{
-		"name":        b.Name,
-		"description": b.Description,
+		"name":                  b.Name,
+		"description":           b.Description,
+		"filter_length_enabled": boolToInt(b.FilterLengthEnabled),
+		"filter_length_mode":    nullableString(string(b.FilterLengthMode)),
+		"filter_length_value":   nullableInt(b.FilterLengthValue, b.FilterLengthEnabled),
 	}
 	r, err := s.db.NamedExecContext(ctx, createBucketSQL, args)
 	if err != nil {
@@ -190,7 +196,10 @@ SELECT
 	cursor,
 	archived_at,
 	created_at,
-	updated_at
+	updated_at,
+	filter_length_enabled,
+	filter_length_mode,
+	filter_length_value
 FROM
 	buckets
 WHERE
@@ -218,7 +227,10 @@ SELECT
 	cursor,
 	archived_at,
 	created_at,
-	updated_at
+	updated_at,
+	filter_length_enabled,
+	filter_length_mode,
+	filter_length_value
 FROM
 	buckets
 WHERE
@@ -246,7 +258,10 @@ SELECT
 	cursor,
 	archived_at,
 	created_at,
-	updated_at
+	updated_at,
+	filter_length_enabled,
+	filter_length_mode,
+	filter_length_value
 FROM
 	buckets
 WHERE
@@ -391,12 +406,15 @@ func (s *BucketStore) RemainingValuesTotal(
 
 func rowToBucket(row bucketRow) namemyserver.Bucket {
 	return namemyserver.Bucket{
-		ID:          row.ID,
-		Name:        row.Name,
-		Description: row.Description.String,
-		Cursor:      row.Cursor.Int32,
-		CreatedAt:   row.CreatedAt,
-		UpdatedAt:   sqlTimeToPtr(row.UpdatedAt),
-		ArchivedAt:  sqlTimeToPtr(row.ArchivedAt),
+		ID:                  row.ID,
+		Name:                row.Name,
+		Description:         row.Description.String,
+		Cursor:              row.Cursor.Int32,
+		CreatedAt:           row.CreatedAt,
+		UpdatedAt:           sqlTimeToPtr(row.UpdatedAt),
+		ArchivedAt:          sqlTimeToPtr(row.ArchivedAt),
+		FilterLengthEnabled: row.FilterLengthEnabled == 1,
+		FilterLengthMode:    namemyserver.LengthMode(row.FilterLengthMode.String),
+		FilterLengthValue:   int(row.FilterLengthValue.Int32),
 	}
 }

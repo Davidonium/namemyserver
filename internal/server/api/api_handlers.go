@@ -48,20 +48,33 @@ func (s *Handlers) CreateBucket(
 	b := namemyserver.Bucket{
 		Name: request.Body.Name,
 	}
+
+	if request.Body.Description != nil {
+		b.Description = *request.Body.Description
+	}
+
+	if request.Body.Filters != nil {
+		if request.Body.Filters.LengthEnabled != nil {
+			b.FilterLengthEnabled = *request.Body.Filters.LengthEnabled
+		}
+
+		if b.FilterLengthEnabled {
+			if request.Body.Filters.Length != nil {
+				b.FilterLengthValue = *request.Body.Filters.Length
+			}
+			if request.Body.Filters.LengthMode != nil {
+				b.FilterLengthMode = namemyserver.LengthMode(*request.Body.Filters.LengthMode)
+			} else {
+				b.FilterLengthMode = namemyserver.LengthModeUpto
+			}
+		}
+	}
+
 	if err := s.bucketStore.Create(ctx, &b); err != nil {
 		return nil, err
 	}
 
-	lengthMode := namemyserver.LengthModeUpto
-	if request.Body.Filters.LengthMode != "" {
-		lengthMode = namemyserver.LengthMode(request.Body.Filters.LengthMode)
-	}
-
-	f := namemyserver.RandomPairFilters{
-		Length:     request.Body.Filters.Length,
-		LengthMode: lengthMode,
-	}
-	if err := s.bucketStore.FillBucketValues(ctx, b, f); err != nil {
+	if err := s.bucketStore.FillBucketValues(ctx, b, b.Filters()); err != nil {
 		return nil, err
 	}
 
@@ -112,7 +125,7 @@ func (s *Handlers) GetBucketDetails(
 		return nil, err
 	}
 
-	return GetBucketDetails200JSONResponse{
+	response := GetBucketDetails200JSONResponse{
 		Id:             b.ID,
 		Name:           b.Name,
 		Description:    b.Description,
@@ -120,7 +133,16 @@ func (s *Handlers) GetBucketDetails(
 		UpdatedAt:      b.UpdatedAt,
 		ArchivedAt:     b.ArchivedAt,
 		RemainingPairs: remaining,
-	}, nil
+	}
+
+	response.Filters.LengthEnabled = b.FilterLengthEnabled
+	if b.FilterLengthEnabled {
+		response.Filters.Length = ptr.To(b.FilterLengthValue)
+		lengthMode := BucketDetailsFiltersLengthMode(b.FilterLengthMode)
+		response.Filters.LengthMode = &lengthMode
+	}
+
+	return response, nil
 }
 
 func (s *Handlers) PopBucketName(

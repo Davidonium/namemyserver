@@ -54,4 +54,33 @@ u(document).on("htmx:load", (ev) => {
   el.find(".js-close-dialog").on("click", (ev) => {
     u(ev.currentTarget).closest("dialog").first().close();
   });
+
+  // Bucket create page filter controls
+  const filterLengthToggle = el.find(".js-filter-length-toggle").first();
+  const filterLengthControls = el.find(".js-filter-length-controls").first();
+  const filterLengthLinked = el.find(".js-filter-length-linked");
+  const filterLengthSlider = el.find(".js-filter-length-range-slider").first();
+  const filterLengthValue = el.find(".js-filter-length-range-value").first();
+
+  if (filterLengthToggle) {
+    filterLengthToggle.addEventListener("change", () => {
+      const isEnabled = filterLengthToggle.checked;
+
+      if (isEnabled) {
+        filterLengthControls.classList.remove("opacity-40");
+      } else {
+        filterLengthControls.classList.add("opacity-40");
+      }
+
+      filterLengthLinked.each((input) => {
+        input.disabled = !isEnabled;
+      });
+    });
+  }
+
+  if (filterLengthSlider && filterLengthValue) {
+    filterLengthSlider.addEventListener("input", () => {
+      filterLengthValue.textContent = filterLengthSlider.value;
+    });
+  }
 });

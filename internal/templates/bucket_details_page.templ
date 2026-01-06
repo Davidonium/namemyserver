@@ -14,7 +14,7 @@ type BucketDetailsPageViewModel struct {
 
 templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 	@Layout() {
-		<div class="relative flex flex-col items-center min-h-screen gap-5 pt-20">
+		<div class="relative flex flex-col min-h-screen gap-8 pt-20">
 			<div class="absolute top-0 left-0">
 				<a href="/" class="inline-block p-4">
 					@HomeIcon()
@@ -23,66 +23,108 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 					@BucketsIcon()
 				</a>
 			</div>
-			<div class="text-4xl">Bucket Details</div>
-			<div class="w-lg flex flex-col gap-3">
-				<div>
-					<div class="text-2xl font-semibold">{ vm.Bucket.Name }</div>
-					<div class="mt-4 flex flex-col gap-2">
-						if vm.Bucket.Archived() {
-							<div class="rounded-lg border border-yellow-500 bg-amber-100 text-yellow-700 text-sm p-4">
-								This bucket is <strong>archived</strong>. It is <strong>read only</strong> and will be removed in 3 days after the archival was done.
+			<div class="w-full max-w-5xl px-4 mx-auto">
+				<h1 class="text-4xl font-bold text-gray-900 mb-2">
+					{ vm.Bucket.Name }
+				</h1>
+				<div class="text-gray-600 mb-4">
+					if len(vm.Bucket.Description) > 0 {
+						{ vm.Bucket.Description }
+					} else {
+						<span class="text-gray-400 italic">[no description]</span>
+					}
+				</div>
+				if vm.Bucket.Archived() {
+					<div class="rounded-lg border border-yellow-500 bg-amber-100 text-yellow-700 text-sm p-4">
+						This bucket is <strong>archived</strong>. It is <strong>read only</strong> and will be removed in 3 days after the archival was done.
+					</div>
+				}
+			</div>
+			<div class="w-full max-w-5xl px-4 mx-auto grid grid-cols-3 gap-6">
+				<div class="col-span-2">
+					<div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-primary-700">
+						<div class="text-xs font-semibold uppercase tracking-wide text-gray-600 mb-4">
+							Filters
+						</div>
+						if vm.Bucket.FilterLengthEnabled {
+							<div class="flex flex-wrap gap-3">
+								<div class="px-4 py-3 bg-primary-50 rounded-lg shadow-sm">
+									<div class="text-xs text-primary-600 font-medium uppercase tracking-wide mb-1">
+										Length
+									</div>
+									<div class="text-sm font-semibold text-primary-800">
+										if vm.Bucket.FilterLengthMode == "exactly" {
+											Exactly { fmt.Sprintf("%d", vm.Bucket.FilterLengthValue) } chars
+										} else {
+											Up to { fmt.Sprintf("%d", vm.Bucket.FilterLengthValue) } chars
+										}
+									</div>
+								</div>
+							</div>
+						} else {
+							<div class="text-gray-400 italic text-sm">
+								No filters applied
 							</div>
 						}
-						<div>
-							<div class="font-bold">Description</div>
-							<div>
-								if len(vm.Bucket.Description) > 0 {
-									{ vm.Bucket.Description }
-								} else {
-									[none]
-								}
+					</div>
+				</div>
+				<div class="col-span-1">
+					<div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-primary-700">
+						<div class="text-xs font-semibold uppercase tracking-wide text-gray-600 mb-4">
+							Bucket Stats
+						</div>
+						<div class="text-center mb-4 pb-4 border-b border-gray-200">
+							<div class="text-5xl font-bold font-mono text-primary-700">
+								{ humanInt64(vm.RemainingPairs) }
+							</div>
+							<div class="text-sm text-gray-600 mt-1">
+								pairs remaining
 							</div>
 						</div>
-						<div class="flex gap-4">
+						<div class="flex flex-col gap-3 text-sm">
 							<div>
-								<div class="font-bold">Created</div>
-								<div class="text-sm" title={ vm.Bucket.CreatedAt.String() }>
+								<div class="text-xs uppercase tracking-wide text-gray-500 font-medium">
+									Created
+								</div>
+								<div class="text-gray-700" title={ vm.Bucket.CreatedAt.String() }>
 									{ humanize.Time(vm.Bucket.CreatedAt) }
 								</div>
 							</div>
 							<div>
-								<div class="font-bold">Updated</div>
-								<div class="text-sm">
-									if vm.Bucket.UpdatedAt != nil {
-										[never updated]
+								<div class="text-xs uppercase tracking-wide text-gray-500 font-medium">
+									Updated
+								</div>
+								<div class="text-gray-700">
+									if vm.Bucket.UpdatedAt == nil {
+										<span class="text-gray-400 italic">never updated</span>
 									} else {
-										<span title={ vm.Bucket.UpdatedAt.String() }>{ humanize.Time(*vm.Bucket.UpdatedAt) }</span>
+										<span title={ vm.Bucket.UpdatedAt.String() }>
+											{ humanize.Time(*vm.Bucket.UpdatedAt) }
+										</span>
 									}
 								</div>
 							</div>
 							if vm.Bucket.Archived() {
 								<div>
-									<div class="font-bold">Archived</div>
-									<div class="text-sm">
-										<span title={ vm.Bucket.ArchivedAt.String() }>{ humanize.Time(*vm.Bucket.ArchivedAt) }</span>
+									<div class="text-xs uppercase tracking-wide text-gray-500 font-medium">
+										Archived
+									</div>
+									<div class="text-gray-700" title={ vm.Bucket.ArchivedAt.String() }>
+										{ humanize.Time(*vm.Bucket.ArchivedAt) }
 									</div>
 								</div>
 							}
 						</div>
-						<div class="flex gap-4">
-							<div>
-								<div class="font-bold">Remaining Pairs</div>
-								<div class="font-mono text-lg">{ humanInt64(vm.RemainingPairs) }</div>
-							</div>
-						</div>
 					</div>
 				</div>
-				<div class="mt-30">
-					<div class="text-xl font-medium">Danger zone</div>
-					<div class="rounded-lg border border-red-700 p-3 mt-1">
+			</div>
+			<div class="w-full max-w-5xl px-4 mx-auto mt-4">
+				<div class="border-t-2 border-gray-200 pt-8">
+					<div class="text-xl font-medium mb-2">Danger zone</div>
+					<div class="rounded-lg border border-red-700 p-3">
 						if !vm.Bucket.Archived() {
 							<div class="flex items-center">
-								<div class="flex-1 ">
+								<div class="flex-1">
 									<div class="text-sm font-medium">Archive this bucket</div>
 									<div class="text-xs">Mark this bucket as archived, it will be automatically removed in 3 days.</div>
 								</div>
@@ -96,7 +138,7 @@ templ BucketDetailsPage(vm BucketDetailsPageViewModel) {
 							</div>
 						} else {
 							<div class="flex items-center">
-								<div class="flex-1 ">
+								<div class="flex-1">
 									<div class="text-sm font-medium">Recover</div>
 									<div class="text-xs">Bring back the bucket from being archived.</div>
 								</div>

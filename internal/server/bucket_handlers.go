@@ -44,17 +44,31 @@ func bucketCreateSubmitHandler(bucketStore namemyserver.BucketStore) appHandlerF
 		name := r.FormValue("name")
 		description := r.FormValue("description")
 
+		lengthEnabled := r.FormValue("filter_length_enabled") == "on"
+		lengthMode := namemyserver.LengthModeUpto
+		if r.FormValue("filter_length_mode") != "" {
+			lengthMode = namemyserver.LengthMode(r.FormValue("filter_length_mode"))
+		}
+		lengthValue := 14 // default
+		if val := r.FormValue("filter_length_value"); val != "" {
+			if parsed, err := strconv.Atoi(val); err == nil {
+				lengthValue = parsed
+			}
+		}
+
 		b := namemyserver.Bucket{
-			Name:        name,
-			Description: description,
+			Name:                name,
+			Description:         description,
+			FilterLengthEnabled: lengthEnabled,
+			FilterLengthMode:    lengthMode,
+			FilterLengthValue:   lengthValue,
 		}
 		if err := bucketStore.Create(ctx, &b); err != nil {
 			return err
 		}
 
-		// TODO handle creating buckets with filters
-		f := namemyserver.RandomPairFilters{}
-		if err := bucketStore.FillBucketValues(ctx, b, f); err != nil {
+		// Use the bucket's configured filters
+		if err := bucketStore.FillBucketValues(ctx, b, b.Filters()); err != nil {
 			return err
 		}
 		http.Redirect(w, r, fmt.Sprintf("/buckets/%d", b.ID), http.StatusFound)

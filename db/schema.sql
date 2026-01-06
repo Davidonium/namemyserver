@@ -23,7 +23,7 @@ CREATE TABLE buckets (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT NULL,
     archived_at DATETIME
-);
+, filter_length_enabled INTEGER NOT NULL DEFAULT 0, filter_length_mode TEXT DEFAULT 'upto', filter_length_value INTEGER DEFAULT NULL);
 CREATE UNIQUE INDEX idx_unique_name_buckets ON buckets(name);
 CREATE TABLE bucket_values (
     id INTEGER PRIMARY KEY,
@@ -37,4 +37,5 @@ CREATE TABLE bucket_values (
 CREATE INDEX idx_bucket_values_bucket_id ON bucket_values(bucket_id, order_id);
 -- Dbmate schema migrations
 INSERT INTO "schema_migrations" (version) VALUES
-  ('20240609195352');
+  ('20240609195352'),
+  ('20260106101541');

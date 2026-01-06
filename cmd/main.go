@@ -101,7 +101,7 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 	assets := vite.NewAssets(logger, assetsCfg)
 
 	if cfg.AssetsUseManifest {
-		logger.Info("assets manifest is enabled, loading manifest from embed fs")
+		logger.Info("assets manifest is enabled, loading manifest")
 		if err := assets.LoadManifest(); err != nil {
 			return fmt.Errorf(
 				"failed to load assets from fs at %s: %w",

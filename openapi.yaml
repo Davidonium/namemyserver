@@ -4,9 +4,8 @@ info:
   description: API for generating random server names and managing name buckets
   version: 1.0.0-alpha1
 servers:
-  - url: http://localhost:8080/api
-    description: Local development server
-
+- url: http://localhost:8080/api
+  description: Local development server
 paths:
   /v1alpha1/generate:
     post:
@@ -21,19 +20,19 @@ paths:
               schema:
                 type: object
                 required:
-                  - name
+                - name
                 properties:
                   name:
                     type: string
                     description: The generated server name
-                    example: "brave-mountain"
+                    example: brave-mountain
         '500':
           $ref: '#/components/responses/InternalServerError'
-
   /v1alpha1/buckets:
     post:
       summary: Create a new bucket
-      description: Creates a new bucket and fills it with generated names based on the provided filters
+      description: Creates a new bucket and fills it with generated names based on
+        the provided filters
       operationId: createBucket
       requestBody:
         required: true
@@ -42,44 +41,56 @@ paths:
             schema:
               type: object
               required:
-                - name
-                - filters
+              - name
               properties:
                 name:
                   type: string
                   description: Name of the bucket
-                  example: "production-servers"
+                  example: production-servers
                 filters:
                   type: object
-                  required:
-                    - length
-                    - length_mode
+                  description: Optional filters for name generation. If not provided,
+                    names are generated without constraints.
                   properties:
+                    length_enabled:
+                      type: boolean
+                      description: Whether length filtering is enabled
+                      default: false
+                      example: true
                     length:
                       type: integer
-                      description: Length constraint for generated names
-                      example: 10
+                      description: Length constraint for generated names (required
+                        if length_enabled is true)
+                      example: 14
                     length_mode:
                       type: string
-                      description: Mode for length constraint (e.g., exact, max, min)
-                      example: "max"
+                      enum:
+                      - upto
+                      - exactly
+                      description: Mode for length constraint
+                      default: upto
+                      example: upto
+                description:
+                  type: string
+                  description: Description of the bucket
+                  example: Server names for production environment
       responses:
         '201':
           description: Bucket successfully created
         '500':
           $ref: '#/components/responses/InternalServerError'
-
     get:
       summary: List all buckets
-      description: Returns a list of all buckets, optionally filtered to show only archived buckets
+      description: Returns a list of all buckets, optionally filtered to show only
+        archived buckets
       operationId: listBuckets
       parameters:
-        - name: archived
-          in: query
-          description: If present (regardless of value), returns only archived buckets
-          required: false
-          schema:
-            type: string
+      - name: archived
+        in: query
+        description: If present (regardless of value), returns only archived buckets
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: Successfully retrieved bucket list
@@ -88,7 +99,7 @@ paths:
               schema:
                 type: object
                 required:
-                  - buckets
+                - buckets
                 properties:
                   buckets:
                     type: array
@@ -96,20 +107,19 @@ paths:
                       $ref: '#/components/schemas/BucketListItem'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
   /v1alpha1/buckets/{id}:
     get:
       summary: Get bucket details
       description: Returns detailed information about a specific bucket
       operationId: getBucketDetails
       parameters:
-        - name: id
-          in: path
-          description: Bucket ID
-          required: true
-          schema:
-            type: integer
-            format: int32
+      - name: id
+        in: path
+        description: Bucket ID
+        required: true
+        schema:
+          type: integer
+          format: int32
       responses:
         '200':
           description: Successfully retrieved bucket details
@@ -119,20 +129,19 @@ paths:
                 $ref: '#/components/schemas/BucketDetails'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
   /v1alpha1/buckets/{id}/pop:
     post:
       summary: Pop a name from bucket
       description: Removes and returns a name from the specified bucket
       operationId: popBucketName
       parameters:
-        - name: id
-          in: path
-          description: Bucket ID
-          required: true
-          schema:
-            type: integer
-            format: int32
+      - name: id
+        in: path
+        description: Bucket ID
+        required: true
+        schema:
+          type: integer
+          format: int32
       responses:
         '200':
           description: Successfully popped a name from the bucket
@@ -141,12 +150,12 @@ paths:
               schema:
                 type: object
                 required:
-                  - name
+                - name
                 properties:
                   name:
                     type: string
                     description: The popped server name
-                    example: "brave-mountain"
+                    example: brave-mountain
         '409':
           description: Conflict - Bucket is archived and read-only
           content:
@@ -155,16 +164,15 @@ paths:
                 $ref: '#/components/schemas/ProblemDetail'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
 components:
   schemas:
     BucketListItem:
       type: object
       required:
-        - id
-        - name
-        - description
-        - created_at
+      - id
+      - name
+      - description
+      - created_at
       properties:
         id:
           type: integer
@@ -174,37 +182,37 @@ components:
         name:
           type: string
           description: Name of the bucket
-          example: "production-servers"
+          example: production-servers
         description:
           type: string
           description: Description of the bucket
-          example: "Server names for production environment"
+          example: Server names for production environment
         created_at:
           type: string
           format: date-time
           description: Timestamp when the bucket was created
-          example: "2025-12-22T10:00:00Z"
+          example: '2025-12-22T10:00:00Z'
         updated_at:
           type: string
           format: date-time
           nullable: true
           description: Timestamp when the bucket was last updated
-          example: "2025-12-22T10:30:00Z"
+          example: '2025-12-22T10:30:00Z'
         archived_at:
           type: string
           format: date-time
           nullable: true
           description: Timestamp when the bucket was archived
           example: null
-
     BucketDetails:
       type: object
       required:
-        - id
-        - name
-        - description
-        - created_at
-        - remaining_pairs
+      - id
+      - name
+      - description
+      - created_at
+      - remaining_pairs
+      - filters
       properties:
         id:
           type: integer
@@ -214,22 +222,22 @@ components:
         name:
           type: string
           description: Name of the bucket
-          example: "production-servers"
+          example: production-servers
         description:
           type: string
           description: Description of the bucket
-          example: "Server names for production environment"
+          example: Server names for production environment
         created_at:
           type: string
           format: date-time
           description: Timestamp when the bucket was created
-          example: "2025-12-22T10:00:00Z"
+          example: '2025-12-22T10:00:00Z'
         updated_at:
           type: string
           format: date-time
           nullable: true
           description: Timestamp when the bucket was last updated
-          example: "2025-12-22T10:30:00Z"
+          example: '2025-12-22T10:30:00Z'
         archived_at:
           type: string
           format: date-time
@@ -241,14 +249,35 @@ components:
           format: int64
           description: Number of names remaining in the bucket
           example: 42
-
+        filters:
+          type: object
+          description: Filter configuration for this bucket
+          required:
+          - length_enabled
+          properties:
+            length_enabled:
+              type: boolean
+              description: Whether length filtering is enabled
+              example: true
+            length:
+              type: integer
+              nullable: true
+              description: Length constraint value (null if not enabled)
+              example: 14
+            length_mode:
+              type: string
+              enum:
+              - upto
+              - exactly
+              description: Mode for length constraint
+              example: upto
     ProblemDetail:
       type: object
       description: RFC 7807 Problem Details for HTTP APIs
       required:
-        - status
-        - type
-        - title
+      - status
+      - type
+      - title
       properties:
         status:
           type: integer
@@ -257,34 +286,33 @@ components:
         type:
           type: string
           description: A URI reference that identifies the problem type
-          example: "operation_conflict"
+          example: operation_conflict
         title:
           type: string
           description: A short, human-readable summary of the problem
-          example: "Operation conflict. Bucket is read only."
+          example: Operation conflict. Bucket is read only.
         detail:
           type: string
           description: A human-readable explanation specific to this occurrence
-          example: "The bucket is archived. Only read operations can be issued against it."
-
+          example: The bucket is archived. Only read operations can be issued against
+            it.
     Error:
       type: object
       required:
-        - title
+      - title
       properties:
         title:
           type: string
           description: Error title
-          example: "Internal Server Error"
+          example: Internal Server Error
         internal.error.type:
           type: string
           description: Internal error type (only in debug mode)
-          example: "*errors.errorString"
+          example: '*errors.errorString'
         internal.error.message:
           type: string
           description: Internal error message (only in debug mode)
-          example: "database connection failed"
-
+          example: database connection failed
   responses:
     InternalServerError:
       description: Internal server error
