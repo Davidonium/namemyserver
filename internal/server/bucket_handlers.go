@@ -30,7 +30,7 @@ func bucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 	}
 }
 
-func bucketCreateHandler(logger *slog.Logger, generator *namemyserver.Generator) appHandlerFunc {
+func bucketCreateHandler(logger *slog.Logger) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		vm := templates.BucketCreatePageViewModel{}
 		c := templates.BucketCreatePage(vm)
