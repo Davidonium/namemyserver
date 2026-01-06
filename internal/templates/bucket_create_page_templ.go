@@ -67,7 +67,7 @@ func BucketCreatePage(vm BucketCreatePageViewModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<button type=\"button\" hx-get=\"/generate?component=bucket-input\" hx-target=\"#name\" hx-swap=\"outerHTML\" class=\"border border-l-0 border-primary-200 rounded-r-lg px-3 bg-primary-50 text-primary-600 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all\" title=\"Generate random bucket name\" aria-label=\"Generate random bucket name\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<button type=\"button\" hx-get=\"/generate?component=bucket-input\" hx-target=\"#name\" hx-swap=\"outerHTML\" class=\"border cursor-pointer border-l-0 border-primary-200 rounded-r-lg px-3 bg-primary-50 text-primary-600 hover:bg-primary-100 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all\" title=\"Generate random bucket name\" aria-label=\"Generate random bucket name\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
