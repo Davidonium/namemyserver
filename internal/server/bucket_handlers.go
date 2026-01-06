@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -30,7 +29,7 @@ func bucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 	}
 }
 
-func bucketCreateHandler(logger *slog.Logger) appHandlerFunc {
+func bucketCreateHandler() appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		vm := templates.BucketCreatePageViewModel{}
 		c := templates.BucketCreatePage(vm)

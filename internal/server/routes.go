@@ -54,7 +54,7 @@ func addRoutes(
 	m.Handle("GET /config/stats", c(app(configStatsHandler(svcs.PairStore))))
 	m.Handle("GET /buckets", c(app(bucketListHandler(svcs.BucketStore))))
 	m.Handle("GET /buckets/{id}", c(app(bucketDetailsHandler(svcs.BucketStore))))
-	m.Handle("GET /buckets/create", c(app(bucketCreateHandler(svcs.Logger))))
+	m.Handle("GET /buckets/create", c(app(bucketCreateHandler())))
 	m.Handle("POST /buckets", c(app(bucketCreateSubmitHandler(svcs.BucketStore))))
 	m.Handle("POST /buckets/{id}/archive", c(app(bucketArchiveHandler(svcs.BucketStore))))
 	m.Handle("POST /buckets/{id}/recover", c(app(bucketRecoverHandler(svcs.BucketStore))))

@@ -13,6 +13,10 @@ import (
 	"github.com/davidonium/namemyserver/internal/namemyserver"
 )
 
+type NamedExecContexter interface {
+	NamedExecContext(ctx context.Context, query string, arg any) (sql.Result, error)
+}
+
 type bucketRow struct {
 	ID                  int32          `db:"id"`
 	Name                string         `db:"name"`
@@ -27,11 +31,11 @@ type bucketRow struct {
 }
 
 type BucketStore struct {
-	db     *DB
+	db     *DBPool
 	logger *slog.Logger
 }
 
-func NewBucketStore(logger *slog.Logger, db *DB) *BucketStore {
+func NewBucketStore(logger *slog.Logger, db *DBPool) *BucketStore {
 	return &BucketStore{logger: logger, db: db}
 }
 
@@ -49,7 +53,7 @@ func (s *BucketStore) Create(ctx context.Context, b *namemyserver.Bucket) error 
 		"filter_length_mode":    nullableString(string(b.FilterLengthMode)),
 		"filter_length_value":   nullableInt(b.FilterLengthValue, b.FilterLengthEnabled),
 	}
-	r, err := s.db.NamedExecContext(ctx, createBucketSQL, args)
+	r, err := s.db.Write().NamedExecContext(ctx, createBucketSQL, args)
 	if err != nil {
 		return err
 	}
@@ -82,19 +86,20 @@ func (s *BucketStore) FillBucketValues(
 	b namemyserver.Bucket,
 	f namemyserver.RandomPairFilters,
 ) error {
-	whereSQL, args := buildPairFilterWhereSQL(f)
-	// TODO maybe the two operations should be done in a transaction
-	args["bucket_id"] = b.ID
-	sql := fmt.Sprintf(fillBucketValuesSQL, whereSQL)
-	if _, err := s.db.NamedExecContext(ctx, sql, args); err != nil {
-		return err
-	}
+	return s.db.Write().WithTx(ctx, &sql.TxOptions{}, func(ctx context.Context, tx *sqlx.Tx) error {
+		whereSQL, args := buildPairFilterWhereSQL(f)
+		args["bucket_id"] = b.ID
+		sql := fmt.Sprintf(fillBucketValuesSQL, whereSQL)
+		if _, err := tx.NamedExecContext(ctx, sql, args); err != nil {
+			return err
+		}
 
-	if err := s.SetCursor(ctx, b.ID, 1); err != nil {
-		return err
-	}
+		if err := s.setCursor(ctx, tx, b.ID, 1); err != nil {
+			return err
+		}
 
-	return nil
+		return nil
+	})
 }
 
 const setCursorSQL = `
@@ -107,11 +112,15 @@ WHERE
 	id = :bucket_id`
 
 func (s *BucketStore) SetCursor(ctx context.Context, bucketID int32, cursor int32) error {
+	return s.setCursor(ctx, s.db.Write(), bucketID, cursor)
+}
+
+func (s *BucketStore) setCursor(ctx context.Context, db NamedExecContexter, bucketID int32, cursor int32) error {
 	args := map[string]any{
 		"bucket_id": bucketID,
 		"cursor":    cursor,
 	}
-	if _, err := s.db.NamedExecContext(ctx, setCursorSQL, args); err != nil {
+	if _, err := db.NamedExecContext(ctx, setCursorSQL, args); err != nil {
 		return err
 	}
 
@@ -154,7 +163,7 @@ func (s *BucketStore) PopName(ctx context.Context, b namemyserver.Bucket) (strin
 		Name string `db:"value"`
 	}
 
-	err := s.db.WithImmediateTx(
+	err := s.db.Write().WithTx(
 		ctx,
 		&sql.TxOptions{},
 		func(ctx context.Context, tx *sqlx.Tx) error {
@@ -206,7 +215,7 @@ WHERE
 	name = :name`
 
 func (s *BucketStore) OneByName(ctx context.Context, name string) (namemyserver.Bucket, error) {
-	stmt, err := s.db.PrepareNamedContext(ctx, oneByNameSQL)
+	stmt, err := s.db.Read().PrepareNamedContext(ctx, oneByNameSQL)
 	if err != nil {
 		return namemyserver.Bucket{}, err
 	}
@@ -237,7 +246,7 @@ WHERE
 	id = :id`
 
 func (s *BucketStore) OneByID(ctx context.Context, id int32) (namemyserver.Bucket, error) {
-	stmt, err := s.db.PrepareNamedContext(ctx, oneByIDSQL)
+	stmt, err := s.db.Read().PrepareNamedContext(ctx, oneByIDSQL)
 	if err != nil {
 		return namemyserver.Bucket{}, err
 	}
@@ -280,7 +289,7 @@ func (s *BucketStore) List(
 	}
 
 	var rows []bucketRow
-	if err := s.db.SelectContext(ctx, &rows, fmt.Sprintf(listBucketsSQLTpl, strings.Join(wheres, " AND "))); err != nil {
+	if err := s.db.Read().SelectContext(ctx, &rows, fmt.Sprintf(listBucketsSQLTpl, strings.Join(wheres, " AND "))); err != nil {
 		return nil, err
 	}
 
@@ -308,7 +317,7 @@ func (s *BucketStore) Save(ctx context.Context, b *namemyserver.Bucket) error {
 		"archived_at": b.ArchivedAt,
 		"description": b.Description,
 	}
-	if _, err := s.db.NamedExecContext(ctx, saveBucketSQL, params); err != nil {
+	if _, err := s.db.Write().NamedExecContext(ctx, saveBucketSQL, params); err != nil {
 		return err
 	}
 
@@ -333,7 +342,7 @@ func (s *BucketStore) RemoveBucketsArchivedForMoreThan(
 	ctx context.Context,
 	t time.Duration,
 ) (amount int64, err error) {
-	tx, err := s.db.BeginTxx(ctx, &sql.TxOptions{})
+	tx, err := s.db.Write().BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return
 	}
@@ -391,7 +400,7 @@ func (s *BucketStore) RemainingValuesTotal(
 	ctx context.Context,
 	b namemyserver.Bucket,
 ) (int64, error) {
-	stmt, err := s.db.PrepareNamedContext(ctx, remainingValuesSQL)
+	stmt, err := s.db.Read().PrepareNamedContext(ctx, remainingValuesSQL)
 	if err != nil {
 		return 0, err
 	}

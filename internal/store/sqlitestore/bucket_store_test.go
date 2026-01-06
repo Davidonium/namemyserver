@@ -11,10 +11,10 @@ import (
 )
 
 func TestBucketStore(t *testing.T) {
-	dbtesting.Run(t, func(t *testing.T, db *sqlitestore.DB) {
+	dbtesting.Run(t, func(t *testing.T, pool *sqlitestore.DBPool) {
 		ctx := context.Background()
 		logger := slog.New(slog.DiscardHandler)
-		store := sqlitestore.NewBucketStore(logger, db)
+		store := sqlitestore.NewBucketStore(logger, pool)
 
 		b := &namemyserver.Bucket{
 			Name: "test-bucket",

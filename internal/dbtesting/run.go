@@ -15,7 +15,7 @@ import (
 	"github.com/davidonium/namemyserver/internal/store/sqlitestore"
 )
 
-func Run(t *testing.T, f func(*testing.T, *sqlitestore.DB)) {
+func Run(t *testing.T, f func(*testing.T, *sqlitestore.DBPool)) {
 	t.Helper()
 	if testing.Short() {
 		t.Skip("database tests are skipped for short testing")
@@ -34,13 +34,13 @@ func Run(t *testing.T, f func(*testing.T, *sqlitestore.DB)) {
 
 	ctx := context.Background()
 
-	db, err := sqlitestore.Connect(ctx, dbURL)
+	pool, err := sqlitestore.Connect(ctx, dbURL)
 	if err != nil {
 		t.Fatalf("failed to startup a database for the test: %v", err)
 	}
 
 	t.Cleanup(func() {
-		db.Close()
+		pool.Close()
 	})
 
 	u, err := url.Parse(dbURL)
@@ -56,5 +56,5 @@ func Run(t *testing.T, f func(*testing.T, *sqlitestore.DB)) {
 		t.Fatalf("failed to apply migrations: %v", err)
 	}
 
-	f(t, db)
+	f(t, pool)
 }

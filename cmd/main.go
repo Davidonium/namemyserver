@@ -154,7 +154,7 @@ func runSeed(logger *slog.Logger, cfg env.Config) error {
 
 	for _, t := range tables {
 		logger.Info("seeding table", "table", t)
-		if err := seedByTable(ctx, logger, db.DB, t); err != nil {
+		if err := seedByTable(ctx, logger, db.Write().DB, t); err != nil {
 			logger.Error("failure running seed", "error", err, "table", t)
 		}
 	}

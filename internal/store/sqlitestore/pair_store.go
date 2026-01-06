@@ -9,10 +9,10 @@ import (
 )
 
 type PairStore struct {
-	db *DB
+	db *DBPool
 }
 
-func NewPairStore(db *DB) *PairStore {
+func NewPairStore(db *DBPool) *PairStore {
 	return &PairStore{db: db}
 }
 
@@ -39,7 +39,7 @@ func (s *PairStore) OneRandom(
 	whereSQL, args := buildPairFilterWhereSQL(f)
 	sql := fmt.Sprintf(singlePairSQLTpl, whereSQL)
 
-	stmt, err := s.db.PrepareNamedContext(ctx, sql)
+	stmt, err := s.db.Read().PrepareNamedContext(ctx, sql)
 	if err != nil {
 		return namemyserver.Pair{}, err
 	}
@@ -75,7 +75,7 @@ func (s *PairStore) Stats(
 		AdjectiveCount int `db:"adjective_count"`
 		NounCount      int `db:"noun_count"`
 	}
-	stmt, err := s.db.PrepareNamedContext(ctx, sql)
+	stmt, err := s.db.Read().PrepareNamedContext(ctx, sql)
 	if err != nil {
 		return namemyserver.Stats{}, err
 	}
@@ -90,7 +90,6 @@ func (s *PairStore) Stats(
 		NounCount:      row.NounCount,
 	}, nil
 }
-
 
 // buildPairFilterWhereSQL returns the sql based on the namemyserver.RandomPairFilters. Assumes the query using the
 // resulting sql sets up aliases 'a' for adjectives table and 'n' for nouns table, these should potentially
