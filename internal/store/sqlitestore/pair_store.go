@@ -91,15 +91,16 @@ func (s *PairStore) Stats(
 	}, nil
 }
 
+
+// buildPairFilterWhereSQL returns the sql based on the namemyserver.RandomPairFilters. Assumes the query using the
+// resulting sql sets up aliases 'a' for adjectives table and 'n' for nouns table, these should potentially
+// be passed as function arguments instead of making this assumption but it works for now.
 func buildPairFilterWhereSQL(f namemyserver.RandomPairFilters) (string, map[string]any) {
 	wheres := []string{"1=1"}
 	args := map[string]any{}
 
 	if f.Length > 0 {
 		args["length"] = f.Length
-		// TODO assumes the query using the resulting sql sets up aliases 'a' for adjectives table
-		// and 'n' for nouns table, these should potentially be passed as function arguments
-		// instead of making this assumption.
 		switch f.LengthMode {
 		case namemyserver.LengthModeExactly:
 			wheres = append(wheres, "(LENGTH(a.value) + LENGTH(n.value) + 1) = :length")
