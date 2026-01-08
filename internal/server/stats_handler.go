@@ -16,9 +16,10 @@ func statsHandler(pairStore namemyserver.PairStore) appHandlerFunc {
 		}
 
 		vm := templates.StatsViewModel{
-			PairCount:      stats.PairCount,
-			AdjectiveCount: stats.AdjectiveCount,
-			NounCount:      stats.NounCount,
+			DatabaseSizeBytes: stats.DatabaseSizeBytes,
+			PairCount:         stats.PairCount,
+			AdjectiveCount:    stats.AdjectiveCount,
+			NounCount:         stats.NounCount,
 		}
 		c := templates.StatsPage(vm)
 		return component(w, r, http.StatusOK, c)

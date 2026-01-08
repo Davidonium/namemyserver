@@ -64,6 +64,10 @@ SELECT
     (SELECT count(*) FROM adjectives) AS adjective_count,
     (SELECT count(*) FROM adjectives a CROSS JOIN nouns n WHERE %s) AS pair_count`
 
+const dbSizeSQL = `
+SELECT page_count * page_size as size 
+FROM pragma_page_count(), pragma_page_size()`
+
 func (s *PairStore) Stats(
 	ctx context.Context,
 	f namemyserver.RandomPairFilters,
@@ -84,10 +88,19 @@ func (s *PairStore) Stats(
 		return namemyserver.Stats{}, err
 	}
 
+	// Query database size
+	var dbSizeRow struct {
+		Size int64 `db:"size"`
+	}
+	if err := s.db.Read().QueryRowContext(ctx, dbSizeSQL).Scan(&dbSizeRow.Size); err != nil {
+		return namemyserver.Stats{}, err
+	}
+
 	return namemyserver.Stats{
-		PairCount:      row.PairCount,
-		AdjectiveCount: row.AdjectiveCount,
-		NounCount:      row.NounCount,
+		DatabaseSizeBytes: dbSizeRow.Size,
+		PairCount:         row.PairCount,
+		AdjectiveCount:    row.AdjectiveCount,
+		NounCount:         row.NounCount,
 	}, nil
 }
 

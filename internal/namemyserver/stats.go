@@ -1,7 +1,8 @@
 package namemyserver
 
 type Stats struct {
-	PairCount      int
-	AdjectiveCount int
-	NounCount      int
+	DatabaseSizeBytes int64
+	PairCount         int
+	AdjectiveCount    int
+	NounCount         int
 }
