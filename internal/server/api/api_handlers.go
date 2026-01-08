@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 
@@ -173,4 +174,80 @@ func (s *Handlers) PopBucketName(
 	return PopBucketName200JSONResponse{
 		Name: name,
 	}, nil
+}
+
+func (s *Handlers) UpdateBucket(
+	ctx context.Context,
+	request UpdateBucketRequestObject,
+) (UpdateBucketResponseObject, error) {
+	if request.Body == nil {
+		return nil, fmt.Errorf("request body is required")
+	}
+
+	b, err := s.bucketStore.OneByID(ctx, request.Id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return UpdateBucket404JSONResponse{
+				Status: 404,
+				Type:   "not_found",
+				Title:  "Bucket not found",
+				Detail: ptr.To(fmt.Sprintf("No bucket exists with ID %d", request.Id)),
+			}, nil
+		}
+		return nil, fmt.Errorf("failed to retrieve bucket by id: %w", err)
+	}
+
+	if b.Archived() {
+		return UpdateBucket409JSONResponse{
+			Status: 409,
+			Type:   "operation_conflict",
+			Title:  "Operation conflict. Bucket is read only.",
+			Detail: ptr.To(
+				"The bucket is archived. Only read operations can be issued against it.",
+			),
+		}, nil
+	}
+
+	if request.Body.Description != nil {
+		newDesc := *request.Body.Description
+
+		if len(newDesc) > 2048 {
+			return UpdateBucket400JSONResponse{
+				Status: 400,
+				Type:   "validation_error",
+				Title:  "Validation failed",
+				Detail: ptr.To("Description must not exceed 2048 characters"),
+			}, nil
+		}
+
+		b.Description = newDesc
+	}
+
+	if err := s.bucketStore.Save(ctx, &b); err != nil {
+		return nil, fmt.Errorf("failed to save bucket: %w", err)
+	}
+
+	remaining, err := s.bucketStore.RemainingValuesTotal(ctx, b)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get remaining pairs count: %w", err)
+	}
+
+	response := UpdateBucket200JSONResponse{
+		Id:             b.ID,
+		Name:           b.Name,
+		Description:    b.Description,
+		CreatedAt:      b.CreatedAt,
+		UpdatedAt:      b.UpdatedAt,
+		ArchivedAt:     b.ArchivedAt,
+		RemainingPairs: remaining,
+	}
+
+	response.Filters.LengthEnabled = b.FilterLengthEnabled
+	if b.FilterLengthEnabled {
+		response.Filters.Length = ptr.To(b.FilterLengthValue)
+		lengthMode := BucketDetailsFiltersLengthMode(b.FilterLengthMode)
+		response.Filters.LengthMode = &lengthMode
+	}
+
+	return response, nil
 }

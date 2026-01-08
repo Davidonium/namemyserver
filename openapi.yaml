@@ -129,6 +129,57 @@ paths:
                 $ref: '#/components/schemas/BucketDetails'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    patch:
+      summary: Update bucket
+      description: Updates mutable fields of a bucket. Currently only the description can be updated. Name, filters, and cursor are immutable.
+      operationId: updateBucket
+      parameters:
+      - name: id
+        in: path
+        description: Bucket ID
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: New description for the bucket. Use empty string to clear the description.
+                  maxLength: 2048
+                  example: Updated server names for production environment
+      responses:
+        '200':
+          description: Successfully updated bucket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BucketDetails'
+        '400':
+          description: Bad Request - Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '404':
+          description: Not Found - Bucket does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '409':
+          description: Conflict - Bucket is archived and read-only
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /v1alpha1/buckets/{id}/pop:
     post:
       summary: Pop a name from bucket
