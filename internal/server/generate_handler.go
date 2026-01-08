@@ -11,9 +11,9 @@ import (
 
 func generateHandler(generator *namemyserver.Generator) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
-		lengthEnabled := r.FormValue("lengthEnabled")
-		lengthMode := r.FormValue("lengthMode")
-		lengthValue, _ := strconv.Atoi(r.FormValue("lengthValue"))
+		lengthEnabled := r.FormValue("length_enabled")
+		lengthMode := r.FormValue("length_mode")
+		lengthValue, _ := strconv.Atoi(r.FormValue("length_value"))
 		componentType := r.URL.Query().Get("component")
 
 		res, err := generator.Generate(r.Context(), namemyserver.GenerateOptions{

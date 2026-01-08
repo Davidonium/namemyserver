@@ -52,19 +52,19 @@ templ HomePage(vm HomeViewModel) {
 					<div class="flex flex-col gap-2">
 						<div class="flex gap-1 items-center">
 							<span class="text-sm font-medium text-gray-800">Length</span>
-							@Toggle(ToggleAttrs{Name: "lengthEnabled", Class: "js-config-length-toggle"})
+							@Toggle(ToggleAttrs{Name: "length_enabled", Class: "js-config-length-toggle"})
 						</div>
 						<div class="js-config-length-opacity opacity-40 flex flex-col gap-2">
 							<div>
 								<div class="inline-flex rounded-md shadow-sm" role="group">
 									<label>
-										<input type="radio" name="lengthMode" value="upto" checked="checked" disabled="disabled" class="sr-only peer js-length-linked"/>
+										<input type="radio" name="length_mode" value="upto" checked="checked" disabled="disabled" class="sr-only peer js-length-linked"/>
 										<div class="px-2 py-1 text-xs font-medium text-slate-800 bg-white border border-secondary/20 rounded-s cursor-pointer hover:bg-secondary/10 peer-checked:bg-secondary peer-checked:text-white peer-checked:hover:bg-secondary peer-checked:hover:text-white">
 											Up to
 										</div>
 									</label>
 									<label>
-										<input type="radio" name="lengthMode" value="exactly" disabled="disabled" class="sr-only peer js-length-linked"/>
+										<input type="radio" name="length_mode" value="exactly" disabled="disabled" class="sr-only peer js-length-linked"/>
 										<div class="px-2 py-1 text-xs font-medium text-slate-800 bg-white border border-secondary/20 rounded-e cursor-pointer hover:bg-secondary/10 peer-focus:z-10 peer-checked:bg-secondary peer-checked:text-white peer-checked:hover:bg-secondary peer-checked:hover:text-white">
 											Exactly
 										</div>
@@ -77,7 +77,7 @@ templ HomePage(vm HomeViewModel) {
 								</div>
 								<div class="relative">
 									<input
-										name="lengthValue"
+										name="length_value"
 										type="range"
 										value="14"
 										min="7"

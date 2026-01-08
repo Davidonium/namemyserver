@@ -26,9 +26,9 @@ func homeHandler(pairStore namemyserver.PairStore) appHandlerFunc {
 func configStatsHandler(pairStore namemyserver.PairStore) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
-		lengthEnabled := r.FormValue("lengthEnabled") == "on"
-		lengthMode := r.FormValue("lengthMode")
-		lengthValue, _ := strconv.Atoi(r.FormValue("lengthValue"))
+		lengthEnabled := r.FormValue("length_enabled") == "on"
+		lengthMode := r.FormValue("length_mode")
+		lengthValue, _ := strconv.Atoi(r.FormValue("length_value"))
 
 		filters := namemyserver.RandomPairFilters{}
 		if lengthEnabled {
