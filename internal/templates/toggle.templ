@@ -1,0 +1,33 @@
+package templates
+
+type ToggleAttrs struct {
+	Name     string
+	Class    string
+	ID       string
+	Value    string
+	Checked  bool
+	Disabled bool
+}
+
+templ Toggle(attrs ToggleAttrs) {
+	<label class="relative inline-flex items-center cursor-pointer">
+		<input
+			type="checkbox"
+			name={ attrs.Name }
+			if attrs.ID != "" {
+				id={ attrs.ID }
+			}
+			if attrs.Value != "" {
+				value={ attrs.Value }
+			}
+			if attrs.Checked {
+				checked
+			}
+			if attrs.Disabled {
+				disabled
+			}
+			class={ "sr-only peer", attrs.Class }
+		/>
+		<div class="relative w-7 h-4 bg-gray-300 peer-checked:bg-secondary rounded-full transition-colors duration-300 peer-focus:ring-2 peer-focus:ring-offset-1 peer-focus:ring-secondary/50 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-transform after:duration-300 peer-checked:after:translate-x-3"></div>
+	</label>
+}

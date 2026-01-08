@@ -50,14 +50,7 @@ templ BucketCreatePage(vm BucketCreatePageViewModel) {
 						<div class="flex flex-col gap-3 pt-2">
 								<div class="flex gap-2 items-center">
 									<span class="text-sm font-medium text-gray-800">Length Filter</span>
-									<label class="relative inline-flex items-center cursor-pointer">
-										<input
-											type="checkbox"
-											name="filter_length_enabled"
-											class="sr-only peer js-filter-length-toggle"
-										/>
-										<div class="w-7 h-4 bg-gray-200 hover:bg-gray-300 peer-focus:outline-0 peer-focus:ring-transparent rounded-full peer transition-all ease-in-out duration-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1.7px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-secondary hover:peer-checked:bg-secondary-dark"></div>
-									</label>
+									@Toggle(ToggleAttrs{Name: "filter_length_enabled", Class: "js-filter-length-toggle"})
 								</div>
 								<div class="js-filter-length-controls opacity-40 flex flex-col gap-3">
 									<div>
