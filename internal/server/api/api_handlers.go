@@ -28,8 +28,52 @@ func (s *Handlers) GenerateName(
 	ctx context.Context,
 	request GenerateNameRequestObject,
 ) (GenerateNameResponseObject, error) {
-	res, err := s.generator.Generate(ctx, namemyserver.GenerateOptions{})
+	// Build GenerateOptions from request body filters
+	opts := namemyserver.GenerateOptions{}
+
+	if request.Body != nil && request.Body.Filters != nil {
+		filters := request.Body.Filters
+
+		// Check if length filtering is enabled
+		if filters.LengthEnabled != nil && *filters.LengthEnabled {
+			opts.LengthEnabled = true
+
+			// Validate that length is provided when enabled
+			if filters.Length == nil {
+				return GenerateName400JSONResponse{
+					Status: 400,
+					Type:   "validation_error",
+					Title:  "Validation failed",
+					Detail: ptr.To("length is required when length_enabled is true"),
+				}, nil
+			}
+
+			opts.LengthValue = *filters.Length
+
+			// Apply default length_mode if not provided
+			if filters.LengthMode != nil {
+				opts.LengthMode = namemyserver.LengthMode(*filters.LengthMode)
+			} else {
+				opts.LengthMode = namemyserver.LengthModeUpto
+			}
+		}
+	}
+
+	// Generate the name
+	res, err := s.generator.Generate(ctx, opts)
 	if err != nil {
+		// Check if error is due to no matching pairs
+		if errors.Is(err, namemyserver.ErrNoMatchingPairs) {
+			return GenerateName400JSONResponse{
+				Status: 400,
+				Type:   "no_matches",
+				Title:  "No names match the specified filters",
+				Detail: ptr.To(
+					"The length constraints are too restrictive. No adjective-noun combinations match the criteria.",
+				),
+			}, nil
+		}
+		// All other errors are 500
 		return nil, err
 	}
 

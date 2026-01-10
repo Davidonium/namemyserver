@@ -115,7 +115,12 @@ func (s *BucketStore) SetCursor(ctx context.Context, bucketID int32, cursor int3
 	return s.setCursor(ctx, s.db.Write(), bucketID, cursor)
 }
 
-func (s *BucketStore) setCursor(ctx context.Context, db NamedExecContexter, bucketID int32, cursor int32) error {
+func (s *BucketStore) setCursor(
+	ctx context.Context,
+	db NamedExecContexter,
+	bucketID int32,
+	cursor int32,
+) error {
 	args := map[string]any{
 		"bucket_id": bucketID,
 		"cursor":    cursor,

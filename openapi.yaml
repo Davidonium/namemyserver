@@ -10,8 +10,38 @@ paths:
   /v1alpha1/generate:
     post:
       summary: Generate a random server name
-      description: Generates a single random server name
+      description: Generates a single random server name with optional filters
       operationId: generateName
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filters:
+                  type: object
+                  description: Optional filters for name generation. If not provided,
+                    names are generated without constraints.
+                  properties:
+                    length_enabled:
+                      type: boolean
+                      description: Whether length filtering is enabled
+                      default: false
+                      example: true
+                    length:
+                      type: integer
+                      description: Length constraint for generated names (required
+                        if length_enabled is true)
+                      example: 14
+                    length_mode:
+                      type: string
+                      enum:
+                      - upto
+                      - exactly
+                      description: Mode for length constraint
+                      default: upto
+                      example: upto
       responses:
         '200':
           description: Successfully generated a name
@@ -26,6 +56,12 @@ paths:
                     type: string
                     description: The generated server name
                     example: brave-mountain
+        '400':
+          description: Bad Request - Invalid filter parameters or no matches
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /v1alpha1/buckets:

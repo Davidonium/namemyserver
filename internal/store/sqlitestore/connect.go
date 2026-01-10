@@ -111,7 +111,6 @@ func (p *DBPool) Read() *DB {
 	return p.readDB
 }
 
-
 // Close closes both read and write connection pools.
 func (p *DBPool) Close() error {
 	return errors.Join(

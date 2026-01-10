@@ -2,6 +2,8 @@ package sqlitestore
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -37,9 +39,9 @@ func (s *PairStore) OneRandom(
 	f namemyserver.RandomPairFilters,
 ) (namemyserver.Pair, error) {
 	whereSQL, args := buildPairFilterWhereSQL(f)
-	sql := fmt.Sprintf(singlePairSQLTpl, whereSQL)
+	query := fmt.Sprintf(singlePairSQLTpl, whereSQL)
 
-	stmt, err := s.db.Read().PrepareNamedContext(ctx, sql)
+	stmt, err := s.db.Read().PrepareNamedContext(ctx, query)
 	if err != nil {
 		return namemyserver.Pair{}, err
 	}
@@ -49,6 +51,9 @@ func (s *PairStore) OneRandom(
 		Noun      string `db:"noun"`
 	}
 	if err := stmt.GetContext(ctx, &row, args); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return namemyserver.Pair{}, namemyserver.ErrNoMatchingPairs
+		}
 		return namemyserver.Pair{}, err
 	}
 
