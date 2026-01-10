@@ -1,0 +1,20 @@
+package templates
+
+import "github.com/davidonium/namemyserver/internal/vite"
+
+templ DocsPage() {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<link rel="apple-touch-icon" href={ vite.AssetURL(ctx, "apple-touch-icon.png") }/>
+			<link rel="icon" type="image/png" sizes="any" href={ vite.AssetURL(ctx, "favicon-64.png") }/>
+			<title>API Documentation - Name my Server</title>
+		</head>
+		<body>
+			<rapi-doc spec-url="/api/openapi.json"></rapi-doc>
+			<script type="module" src={ vite.AssetURL(ctx, "rapidoc-min.js") }></script>
+		</body>
+	</html>
+}

@@ -47,7 +47,8 @@ func addRoutes(
 	app := appMiddleware(svcs.Logger, WebErrorHandler(svcs.Logger, svcs.Config.Debug))
 
 	m.Handle("GET /health", healthHandler())
-	m.Handle("GET /openapi.json", openapiHandler(svcs.Logger))
+	m.Handle("GET /api/openapi.json", openapiHandler(svcs.Logger))
+	m.Handle("GET /api", c(app(apiDocsHandler())))
 	m.Handle("GET /{$}", c(app(homeHandler(svcs.PairStore))))
 	m.Handle("GET /stats", c(app(statsHandler(svcs.PairStore))))
 	m.Handle("GET /generate", c(app(generateHandler(svcs.Generator))))
