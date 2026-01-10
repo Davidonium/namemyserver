@@ -13,7 +13,23 @@ templ DocsPage() {
 			<title>API Documentation - Name my Server</title>
 		</head>
 		<body>
-			<rapi-doc spec-url="/api/openapi.json"></rapi-doc>
+			<rapi-doc
+				spec-url="/api/openapi.json"
+				theme="light"
+				bg-color="#ffffff"
+				text-color="#1f2937"
+				primary-color="#7c3aed"
+				nav-bg-color="#fafafa"
+				nav-text-color="#1f2937"
+				nav-hover-bg-color="#f3f4f6"
+				nav-hover-text-color="#7c3aed"
+				nav-accent-color="#ea580c"
+				schema-style="table"
+				show-header="false"
+				allow-try="true"
+				allow-authentication="true"
+				allow-server-selection="true"
+			></rapi-doc>
 			<script type="module" src={ vite.AssetURL(ctx, "rapidoc-min.js") }></script>
 		</body>
 	</html>
