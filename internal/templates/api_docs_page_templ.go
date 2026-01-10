@@ -57,14 +57,14 @@ func DocsPage() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><title>API Documentation - Name my Server</title></head><body><rapi-doc spec-url=\"/api/openapi.json\" theme=\"light\" bg-color=\"#ffffff\" text-color=\"#1f2937\" primary-color=\"#7c3aed\" nav-bg-color=\"#fafafa\" nav-text-color=\"#1f2937\" nav-hover-bg-color=\"#f3f4f6\" nav-hover-text-color=\"#7c3aed\" nav-accent-color=\"#ea580c\" schema-style=\"table\" show-header=\"false\" allow-try=\"true\" allow-authentication=\"true\" allow-server-selection=\"true\"></rapi-doc><script type=\"module\" src=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><title>API Documentation - Name my Server</title></head><body><rapi-doc spec-url=\"/api/openapi.json\" theme=\"dark\" primary-color=\"#7c3aed\" nav-hover-text-color=\"#a78bfa\" nav-accent-color=\"#ea580c\" show-method-in-nav-bar=\"as-colored-block\" schema-style=\"tree\" show-header=\"false\" allow-try=\"true\" allow-authentication=\"true\" allow-server-selection=\"true\"></rapi-doc><script type=\"module\" src=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(vite.AssetURL(ctx, "rapidoc-min.js"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/api_docs_page.templ`, Line: 33, Col: 67}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/api_docs_page.templ`, Line: 29, Col: 67}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
