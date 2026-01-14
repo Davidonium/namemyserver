@@ -251,6 +251,62 @@ paths:
                 $ref: '#/components/schemas/ProblemDetail'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /v1alpha1/buckets/{id}/archive:
+    post:
+      summary: Archive a bucket
+      description: Marks a bucket as archived. Archived buckets are read-only and will be automatically deleted after 3 days. This operation is idempotent - archiving an already-archived bucket returns success.
+      operationId: archiveBucket
+      parameters:
+      - name: id
+        in: path
+        description: Bucket ID
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully archived bucket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BucketDetails'
+        '404':
+          description: Not Found - Bucket does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1alpha1/buckets/{id}/recover:
+    post:
+      summary: Recover an archived bucket
+      description: Removes the archived status from a bucket, making it active again. This operation is idempotent - recovering an already-active bucket returns success.
+      operationId: recoverBucket
+      parameters:
+      - name: id
+        in: path
+        description: Bucket ID
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successfully recovered bucket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BucketDetails'
+        '404':
+          description: Not Found - Bucket does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
     BucketListItem:

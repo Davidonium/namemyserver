@@ -288,3 +288,99 @@ func (s *Handlers) UpdateBucket(
 
 	return response, nil
 }
+
+func (s *Handlers) ArchiveBucket(
+	ctx context.Context,
+	request ArchiveBucketRequestObject,
+) (ArchiveBucketResponseObject, error) {
+	b, err := s.bucketStore.OneByID(ctx, request.Id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ArchiveBucket404JSONResponse{
+				Status: 404,
+				Type:   "not_found",
+				Title:  "Bucket not found",
+				Detail: ptr.To(fmt.Sprintf("No bucket exists with ID %d", request.Id)),
+			}, nil
+		}
+		return nil, fmt.Errorf("failed to retrieve bucket by id: %w", err)
+	}
+
+	b.MarkArchived()
+
+	if err := s.bucketStore.Save(ctx, &b); err != nil {
+		return nil, fmt.Errorf("failed to save bucket: %w", err)
+	}
+
+	remaining, err := s.bucketStore.RemainingValuesTotal(ctx, b)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get remaining pairs count: %w", err)
+	}
+
+	response := ArchiveBucket200JSONResponse{
+		Id:             b.ID,
+		Name:           b.Name,
+		Description:    b.Description,
+		CreatedAt:      b.CreatedAt,
+		UpdatedAt:      b.UpdatedAt,
+		ArchivedAt:     b.ArchivedAt,
+		RemainingPairs: remaining,
+	}
+
+	response.Filters.LengthEnabled = b.FilterLengthEnabled
+	if b.FilterLengthEnabled {
+		response.Filters.Length = ptr.To(b.FilterLengthValue)
+		lengthMode := BucketDetailsFiltersLengthMode(b.FilterLengthMode)
+		response.Filters.LengthMode = &lengthMode
+	}
+
+	return response, nil
+}
+
+func (s *Handlers) RecoverBucket(
+	ctx context.Context,
+	request RecoverBucketRequestObject,
+) (RecoverBucketResponseObject, error) {
+	b, err := s.bucketStore.OneByID(ctx, request.Id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return RecoverBucket404JSONResponse{
+				Status: 404,
+				Type:   "not_found",
+				Title:  "Bucket not found",
+				Detail: ptr.To(fmt.Sprintf("No bucket exists with ID %d", request.Id)),
+			}, nil
+		}
+		return nil, fmt.Errorf("failed to retrieve bucket by id: %w", err)
+	}
+
+	b.Recover()
+
+	if err := s.bucketStore.Save(ctx, &b); err != nil {
+		return nil, fmt.Errorf("failed to save bucket: %w", err)
+	}
+
+	remaining, err := s.bucketStore.RemainingValuesTotal(ctx, b)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get remaining pairs count: %w", err)
+	}
+
+	response := RecoverBucket200JSONResponse{
+		Id:             b.ID,
+		Name:           b.Name,
+		Description:    b.Description,
+		CreatedAt:      b.CreatedAt,
+		UpdatedAt:      b.UpdatedAt,
+		ArchivedAt:     b.ArchivedAt,
+		RemainingPairs: remaining,
+	}
+
+	response.Filters.LengthEnabled = b.FilterLengthEnabled
+	if b.FilterLengthEnabled {
+		response.Filters.Length = ptr.To(b.FilterLengthValue)
+		lengthMode := BucketDetailsFiltersLengthMode(b.FilterLengthMode)
+		response.Filters.LengthMode = &lengthMode
+	}
+
+	return response, nil
+}

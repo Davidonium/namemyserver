@@ -208,9 +208,15 @@ type ServerInterface interface {
 	// Update bucket
 	// (PATCH /v1alpha1/buckets/{id})
 	UpdateBucket(w http.ResponseWriter, r *http.Request, id int32)
+	// Archive a bucket
+	// (POST /v1alpha1/buckets/{id}/archive)
+	ArchiveBucket(w http.ResponseWriter, r *http.Request, id int32)
 	// Pop a name from bucket
 	// (POST /v1alpha1/buckets/{id}/pop)
 	PopBucketName(w http.ResponseWriter, r *http.Request, id int32)
+	// Recover an archived bucket
+	// (POST /v1alpha1/buckets/{id}/recover)
+	RecoverBucket(w http.ResponseWriter, r *http.Request, id int32)
 	// Generate a random server name
 	// (POST /v1alpha1/generate)
 	GenerateName(w http.ResponseWriter, r *http.Request)
@@ -316,6 +322,31 @@ func (siw *ServerInterfaceWrapper) UpdateBucket(w http.ResponseWriter, r *http.R
 	handler.ServeHTTP(w, r)
 }
 
+// ArchiveBucket operation middleware
+func (siw *ServerInterfaceWrapper) ArchiveBucket(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id int32
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ArchiveBucket(w, r, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // PopBucketName operation middleware
 func (siw *ServerInterfaceWrapper) PopBucketName(w http.ResponseWriter, r *http.Request) {
 
@@ -332,6 +363,31 @@ func (siw *ServerInterfaceWrapper) PopBucketName(w http.ResponseWriter, r *http.
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PopBucketName(w, r, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RecoverBucket operation middleware
+func (siw *ServerInterfaceWrapper) RecoverBucket(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "id" -------------
+	var id int32
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RecoverBucket(w, r, id)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -479,7 +535,9 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc("POST "+options.BaseURL+"/v1alpha1/buckets", wrapper.CreateBucket)
 	m.HandleFunc("GET "+options.BaseURL+"/v1alpha1/buckets/{id}", wrapper.GetBucketDetails)
 	m.HandleFunc("PATCH "+options.BaseURL+"/v1alpha1/buckets/{id}", wrapper.UpdateBucket)
+	m.HandleFunc("POST "+options.BaseURL+"/v1alpha1/buckets/{id}/archive", wrapper.ArchiveBucket)
 	m.HandleFunc("POST "+options.BaseURL+"/v1alpha1/buckets/{id}/pop", wrapper.PopBucketName)
+	m.HandleFunc("POST "+options.BaseURL+"/v1alpha1/buckets/{id}/recover", wrapper.RecoverBucket)
 	m.HandleFunc("POST "+options.BaseURL+"/v1alpha1/generate", wrapper.GenerateName)
 
 	return m
@@ -628,6 +686,43 @@ func (response UpdateBucket500JSONResponse) VisitUpdateBucketResponse(w http.Res
 	return json.NewEncoder(w).Encode(response)
 }
 
+type ArchiveBucketRequestObject struct {
+	Id int32 `json:"id"`
+}
+
+type ArchiveBucketResponseObject interface {
+	VisitArchiveBucketResponse(w http.ResponseWriter) error
+}
+
+type ArchiveBucket200JSONResponse BucketDetails
+
+func (response ArchiveBucket200JSONResponse) VisitArchiveBucketResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ArchiveBucket404JSONResponse ProblemDetail
+
+func (response ArchiveBucket404JSONResponse) VisitArchiveBucketResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ArchiveBucket500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response ArchiveBucket500JSONResponse) VisitArchiveBucketResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
 type PopBucketNameRequestObject struct {
 	Id int32 `json:"id"`
 }
@@ -662,6 +757,43 @@ type PopBucketName500JSONResponse struct {
 }
 
 func (response PopBucketName500JSONResponse) VisitPopBucketNameResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type RecoverBucketRequestObject struct {
+	Id int32 `json:"id"`
+}
+
+type RecoverBucketResponseObject interface {
+	VisitRecoverBucketResponse(w http.ResponseWriter) error
+}
+
+type RecoverBucket200JSONResponse BucketDetails
+
+func (response RecoverBucket200JSONResponse) VisitRecoverBucketResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type RecoverBucket404JSONResponse ProblemDetail
+
+func (response RecoverBucket404JSONResponse) VisitRecoverBucketResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type RecoverBucket500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response RecoverBucket500JSONResponse) VisitRecoverBucketResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -722,9 +854,15 @@ type StrictServerInterface interface {
 	// Update bucket
 	// (PATCH /v1alpha1/buckets/{id})
 	UpdateBucket(ctx context.Context, request UpdateBucketRequestObject) (UpdateBucketResponseObject, error)
+	// Archive a bucket
+	// (POST /v1alpha1/buckets/{id}/archive)
+	ArchiveBucket(ctx context.Context, request ArchiveBucketRequestObject) (ArchiveBucketResponseObject, error)
 	// Pop a name from bucket
 	// (POST /v1alpha1/buckets/{id}/pop)
 	PopBucketName(ctx context.Context, request PopBucketNameRequestObject) (PopBucketNameResponseObject, error)
+	// Recover an archived bucket
+	// (POST /v1alpha1/buckets/{id}/recover)
+	RecoverBucket(ctx context.Context, request RecoverBucketRequestObject) (RecoverBucketResponseObject, error)
 	// Generate a random server name
 	// (POST /v1alpha1/generate)
 	GenerateName(ctx context.Context, request GenerateNameRequestObject) (GenerateNameResponseObject, error)
@@ -875,6 +1013,32 @@ func (sh *strictHandler) UpdateBucket(w http.ResponseWriter, r *http.Request, id
 	}
 }
 
+// ArchiveBucket operation middleware
+func (sh *strictHandler) ArchiveBucket(w http.ResponseWriter, r *http.Request, id int32) {
+	var request ArchiveBucketRequestObject
+
+	request.Id = id
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ArchiveBucket(ctx, request.(ArchiveBucketRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ArchiveBucket")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ArchiveBucketResponseObject); ok {
+		if err := validResponse.VisitArchiveBucketResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // PopBucketName operation middleware
 func (sh *strictHandler) PopBucketName(w http.ResponseWriter, r *http.Request, id int32) {
 	var request PopBucketNameRequestObject
@@ -894,6 +1058,32 @@ func (sh *strictHandler) PopBucketName(w http.ResponseWriter, r *http.Request, i
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(PopBucketNameResponseObject); ok {
 		if err := validResponse.VisitPopBucketNameResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// RecoverBucket operation middleware
+func (sh *strictHandler) RecoverBucket(w http.ResponseWriter, r *http.Request, id int32) {
+	var request RecoverBucketRequestObject
+
+	request.Id = id
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.RecoverBucket(ctx, request.(RecoverBucketRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "RecoverBucket")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(RecoverBucketResponseObject); ok {
+		if err := validResponse.VisitRecoverBucketResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -935,39 +1125,42 @@ func (sh *strictHandler) GenerateName(w http.ResponseWriter, r *http.Request) {
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/+xZ62/cNhL/Vwa8+5AetA877jXdb3bS5BZIHcNx7oALgoArjVbsUaRCUussgv3fD3zo",
-	"teJ608Z12iJAPnglap6/+c0M84mksqykQGE0WXwiCnUlhUb3YykMKkH5a1QbVD8pJZV9nEphUBj7J60q",
-	"zlJqmBSzX7QU9plOCyyp/evvCnOyIH+bdTpm/q2eeWm73S4hGepUscoKIYtWKWinFTAcTIJgZ9lFnf4P",
-	"zTM0lHH3oFKyQmWYN5yqtGAbzN5TZ+VQwQ0rURtaVnBboABTIKycOLilGppPSUJyqUorgGTU4MSwEklC",
-	"RM05XXEkC6NqTIjZVkgWRBvFxJrsEpIqpOY3qQ5fkoTgR1pWVgc5nZ9+Pzk5nZye3pzMF3P777+HTBuZ",
-	"MlC+b8uz7hfIvGfLQL9PPQhaooZcKqiUzOrUfYViw5QUpcVCRHvOuEGlx5qfuxeQSpGzda0cepxsUzDd",
-	"GTFMKUexNsVY2Ev33ArTRlEmDGworxEe2UQBy0FIAyhsyrLv+q6dnB1MJhMG16isE17t+yBgrP4/BZoC",
-	"Ffhz4H1mYg1MN1r7SgdqVlJypKKnppQZjnX8LDN08eH7vlrRoi7J4i2pKyO9ptTwLXnXT2J4t5ehXUIU",
-	"fqiZsn693ff0XXtern7B1FgrWSQAbwT7UCOwDIVhOUMVMhlD00kPuEyYx6ckFnKLtbGeS1riHTjtYDnx",
-	"vKFjkFRYUiaYWL+vKItB87IuV6isHo/49gNg4oDqs9OhV/88i3pVV9lvpAVOtYHw+R3c8PhObjhCW3tY",
-	"YFaRy8OQRAbsNg5nV/Mx9HjOfsm0WRosv5H2H5K0//Ql/ters1gttbPYsIRYmJ2mbmialqg1XUci3c5Y",
-	"7hyEc/BICr61TJfhql6D7UaDlmk9pSuq0bYggR5QOWW+yY2xNLTGvz9iij103I5/uMPaC37tFUYMMMzw",
-	"iMqfvCb3si+1NSXUjw/ysRx6ObEkXSm54lj6KXVsxvXzp/DDk/kPEM5BGGdddf3r5uYKzq+WejQIZQfE",
-	"nUNRl1RMFNLMIhDwY8Wp8NOVrjBlOUvBSD9lyTStlUKRDkNw05UE62h1Cq9sQqxksKY4mRpSKmCFwLSu",
-	"MQO6pkxoA8xMY7nQhpo60nGdo/4lpHb86bfW+Y8x9jiQ1nPQhVQm2Y+DrsuSqm3DLJWP9sDtV41Tbijl",
-	"LDVTuGjD4P0WfBt1LA7rc3hzvQSFOboggymo6RhU9y1xmB+Y08b4fWPOURSG8IZjyUFU7lxd5jJi8dXS",
-	"IW+NwmkXa1BUZLJsFjHfTqjIoKSCru0B+yjgRbdKA5H/vG3q6PxqSRJiCdtrOpnOp/MJ5VVBT2wEZYWC",
-	"VowsyOPpfPrYIp6awmFltjnx52aNlsUnssYIt1+jqZXQQIEzbWyyKeeNbQlId45yvg0zOma2FnQhb11q",
-	"W6z33GnTsMzsosG0uWjfVVTREv1+83bEaTlUCjUKA48UrqnKOGptbXK7yXcJqGDtIdXMivlQo9o2DWJB",
-	"ekNOt2Lvo+JdMlzhT+fzX7WyD7mmF3RmsNTHlvq9Ea+tDkKVotsRaBvxcZgOY/q6TlPUOq+5YyKjGHYh",
-	"czm36r737sZsbMMyi11ruPsFTxQh1338WNGV1BHYPXV92sJO4G1jja2RnHGugRm4ZaZoigqzUEW2iVpO",
-	"aXhgwzLMoJme96HnlVw0I5ENIWpzIbPtF+T2D3o58CoUahMMJ9fxTENMUkxh6ff6JnJJQ04Ke6G2kZe1",
-	"6e3LevoF9wo9cmzz+KiBM7Achhu07Rx2BhxdOnzeJUNOa27IIqdcY/JAlw5BZ3Nf8FC3EKPB6XdbD/b4",
-	"x+mJk093zEZvN2LVk7F9YWDQfaJqtsP7oybPBQO+cSdGnXL2iWW7o+3ST5MWrcLvM7Z26cqWDe2mxjbc",
-	"Q156gWZ4EXukL4YILZ81Hc72+a7BuW1oGPh+qzu6V35x8zve2hpHf3WDypoP7w0IL9BEhFfUpBE2e+PW",
-	"Wg1lbdxMnDPkmZtIaBAyhaduITB866cSW2Y9Ic20HxbkKdhyTBqWTlzPS2ulpXIszMqgajpCjbel7WZf",
-	"HzG/eze9xNtBKIfXJ1N4oxGwrMwWPFHZyTTlSNV+EqYDxvOBzIbz+Z1tuKQfX4Z+dzo/e/IZZPw5XPi1",
-	"iixAsWXBhJzdoy3D7T1iywXN4NqDBybwb8pZRvs3Is6es4ez51IaeC5rkcGkWV4zidr/B8jHMCCfzX98",
-	"OIuehu21M6h3qeAYw67WE0s390iMviyO98ZZJStXyNHB/hpLuQn7rmp3SzeI5kqWrjJDf+wguE91V7Ly",
-	"jl/6O74/dXccEl58Rrux64ysqiErDVhrpegGJ6WshaFMfMmMdgc1BBv2E9Znir98HVzJahCAaEE0C83h",
-	"QngRTlj4aybWHCP3Qn7LlXu7W2Rg9LJCOdxP6/22Sn5bJQ9NLxHe2D0QDXb5/apM2JnhueArj0lLsbGD",
-	"UgAadA0RbG1KKO3+gve7J/kAAI3wlje4uS8Y9+SXMqUcMtwgl5UdosPHJCG14mRBCmOqxWzG7blCarN4",
-	"Mn8yn9GKkd273f8DAAD//xWm6sxdJQAA",
+	"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",
+	"YxcP5g/mMyw5273Z/S8AAP//qnVfWn8rAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
