@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -13,19 +12,13 @@ func RequestErrorHandler() func(w http.ResponseWriter, r *http.Request, err erro
 	return func(w http.ResponseWriter, r *http.Request, err error) {
 		problem := ProblemDetail{
 			Status: http.StatusBadRequest,
-			Type:   "request_error",
+			Type:   "invalid_request",
 			Title:  "Invalid request format",
 		}
 		detail := err.Error()
 		problem.Detail = &detail
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-
-		if encErr := json.NewEncoder(w).Encode(problem); encErr != nil {
-			// Fallback to plain text if JSON encoding fails
-			http.Error(w, "Failed to encode error response", http.StatusInternalServerError)
-		}
+		writeJSON(w, http.StatusBadRequest, problem)
 	}
 }
 
@@ -42,14 +35,12 @@ func ErrorHandler(logger *slog.Logger, debug bool) func(w http.ResponseWriter, r
 			slog.String("request.method", r.Method),
 		)
 
-		// Build ProblemDetail response
 		problem := ProblemDetail{
 			Status: http.StatusInternalServerError,
 			Type:   "internal_error",
 			Title:  "Internal Server Error",
 		}
 
-		// Include debug information in detail field if debug mode enabled
 		var detail string
 		if debug {
 			detail = fmt.Sprintf("Internal error: %v (type: %T)", err, err)
@@ -58,16 +49,6 @@ func ErrorHandler(logger *slog.Logger, debug bool) func(w http.ResponseWriter, r
 		}
 		problem.Detail = &detail
 
-		// Write JSON response
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-
-		if encErr := json.NewEncoder(w).Encode(problem); encErr != nil {
-			logger.Error("failed to encode error response",
-				slog.Any("err", encErr),
-			)
-			// Fallback to plain text if JSON encoding fails
-			http.Error(w, "Failed to encode error response", http.StatusInternalServerError)
-		}
+		writeJSON(w, http.StatusInternalServerError, problem)
 	}
 }
