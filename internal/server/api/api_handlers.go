@@ -116,7 +116,29 @@ func (s *Handlers) CreateBucket(
 		return nil, err
 	}
 
-	return CreateBucket201Response{}, nil
+	remaining, err := s.bucketStore.RemainingValuesTotal(ctx, b)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get remaining pairs count: %w", err)
+	}
+
+	response := CreateBucket201JSONResponse{
+		Id:             b.ID,
+		Name:           b.Name,
+		Description:    b.Description,
+		CreatedAt:      b.CreatedAt,
+		UpdatedAt:      b.UpdatedAt,
+		ArchivedAt:     b.ArchivedAt,
+		RemainingPairs: remaining,
+	}
+
+	response.Filters.LengthEnabled = b.FilterLengthEnabled
+	if b.FilterLengthEnabled {
+		response.Filters.Length = ptr.To(b.FilterLengthValue)
+		lengthMode := BucketDetailsFiltersLengthMode(b.FilterLengthMode)
+		response.Filters.LengthMode = &lengthMode
+	}
+
+	return response, nil
 }
 
 func (s *Handlers) ListBuckets(

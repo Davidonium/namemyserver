@@ -425,20 +425,19 @@ components:
         status:
           type: integer
           description: HTTP status code
-          example: 409
+          example: 599
         type:
           type: string
           description: A URI reference that identifies the problem type
-          example: operation_conflict
+          example: example_error
         title:
           type: string
           description: A short, human-readable summary of the problem
-          example: Operation conflict. Bucket is read only.
+          example: Invalid input provided
         detail:
           type: string
           description: A human-readable explanation specific to this occurrence
-          example: The bucket is archived. Only read operations can be issued against
-            it.
+          example: The request contains invalid or missing required fields
     Error:
       type: object
       required:
