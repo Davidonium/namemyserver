@@ -63,7 +63,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         '500':
-          $ref: '#/components/responses/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
   /v1alpha1/buckets:
     post:
       summary: Create a new bucket
@@ -113,8 +117,16 @@ paths:
       responses:
         '201':
           description: Bucket successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BucketDetails'
         '500':
-          $ref: '#/components/responses/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
     get:
       summary: List all buckets
       description: Returns a list of all buckets, optionally filtered to show only
@@ -142,7 +154,11 @@ paths:
                     items:
                       $ref: '#/components/schemas/BucketListItem'
         '500':
-          $ref: '#/components/responses/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
   /v1alpha1/buckets/{id}:
     get:
       summary: Get bucket details
@@ -164,7 +180,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/BucketDetails'
         '500':
-          $ref: '#/components/responses/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
     patch:
       summary: Update bucket
       description: Updates mutable fields of a bucket. Currently only the description can be updated. Name, filters, and cursor are immutable.
@@ -215,7 +235,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         '500':
-          $ref: '#/components/responses/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
   /v1alpha1/buckets/{id}/pop:
     post:
       summary: Pop a name from bucket
@@ -250,7 +274,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         '500':
-          $ref: '#/components/responses/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
   /v1alpha1/buckets/{id}/archive:
     post:
       summary: Archive a bucket
@@ -278,7 +306,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         '500':
-          $ref: '#/components/responses/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
   /v1alpha1/buckets/{id}/recover:
     post:
       summary: Recover an archived bucket
@@ -306,7 +338,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetail'
         '500':
-          $ref: '#/components/responses/InternalServerError'
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 components:
   schemas:
     BucketListItem:
@@ -438,27 +474,4 @@ components:
           type: string
           description: A human-readable explanation specific to this occurrence
           example: The request contains invalid or missing required fields
-    Error:
-      type: object
-      required:
-      - title
-      properties:
-        title:
-          type: string
-          description: Error title
-          example: Internal Server Error
-        internal.error.type:
-          type: string
-          description: Internal error type (only in debug mode)
-          example: '*errors.errorString'
-        internal.error.message:
-          type: string
-          description: Internal error message (only in debug mode)
-          example: database connection failed
-  responses:
-    InternalServerError:
-      description: Internal server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+

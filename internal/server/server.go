@@ -27,7 +27,11 @@ func New(svcs *Services) *http.Server {
 	addRoutes(m, svcs)
 
 	handlers := api.New(svcs.Generator, svcs.BucketStore)
-	strict := api.NewStrictHandler(handlers, nil)
+	strictOptions := api.StrictHTTPServerOptions{
+		RequestErrorHandlerFunc:  api.RequestErrorHandler(),
+		ResponseErrorHandlerFunc: api.ErrorHandler(svcs.Logger, svcs.Config.Debug),
+	}
+	strict := api.NewStrictHandlerWithOptions(handlers, nil, strictOptions)
 	apiHandler := api.HandlerFromMuxWithBaseURL(strict, http.NewServeMux(), "/api")
 
 	m.Handle("/api/", apiHandler)
