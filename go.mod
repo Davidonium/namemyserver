@@ -68,6 +68,11 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
+// Avoid YAML v3/v4 incompatibility.
+// The newer version (v0.0.0-20251217220025-0b8845c5554e) requires go.yaml.in/yaml/v4,
+// which conflicts with gopkg.in/yaml.v3 used by vmware-labs/yaml-jsonpath (required by oapi-codegen).
+// This causes compilation errors in yaml-jsonpath. Keep this replace directive until
+// yaml-jsonpath is updated to support yaml v4 or the dependency chain is resolved upstream.
 replace github.com/dprotaso/go-yit => github.com/dprotaso/go-yit v0.0.0-20220510233725-9ba8df137936
 
 tool (
