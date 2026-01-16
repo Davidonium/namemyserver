@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/davidonium/namemyserver/internal/server/api"
+	"github.com/davidonium/namemyserver/internal/templates"
 )
 
 func healthHandler() http.Handler {
@@ -18,7 +19,6 @@ func healthHandler() http.Handler {
 
 func openapiHandler(logger *slog.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Get the embedded OpenAPI spec
 		spec, err := api.GetSwagger()
 		if err != nil {
 			logger.Error("failed to load OpenAPI spec",
@@ -29,7 +29,6 @@ func openapiHandler(logger *slog.Logger) http.Handler {
 			return
 		}
 
-		// Serialize to JSON using standard library
 		data, err := json.Marshal(spec)
 		if err != nil {
 			logger.Error("failed to serialize OpenAPI spec",
@@ -40,9 +39,17 @@ func openapiHandler(logger *slog.Logger) http.Handler {
 			return
 		}
 
-		// Set appropriate headers and write response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write(data)
 	})
+}
+
+func notFoundHandler() appHandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) error {
+		c := templates.NotFoundPage(templates.NotFoundViewModel{
+			Message: "Page not found",
+		})
+		return component(w, r, http.StatusNotFound, c)
+	}
 }

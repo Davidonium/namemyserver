@@ -9,7 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 type NotFoundViewModel struct {
-	EntityType string
+	Message string
 }
 
 func NotFoundPage(vm NotFoundViewModel) templ.Component {
@@ -50,15 +50,15 @@ func NotFoundPage(vm NotFoundViewModel) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(vm.EntityType)
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(vm.Message)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/not_found_page.templ`, Line: 11, Col: 40}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/not_found_page.templ`, Line: 11, Col: 37}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " not found</div><a href=\"/\" class=\"text-blue-600 hover:underline mt-4\">Go Home</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><a href=\"/\" class=\"text-blue-600 hover:underline mt-4\">Go Home</a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -62,6 +62,8 @@ func addRoutes(
 	m.Handle("POST /buckets", c(app(bucketCreateSubmitHandler(svcs.BucketStore))))
 	m.Handle("POST /buckets/{id}/archive", c(app(bucketArchiveHandler(svcs.BucketStore))))
 	m.Handle("POST /buckets/{id}/recover", c(app(bucketRecoverHandler(svcs.BucketStore))))
+
+	m.Handle("/{path...}", c(app(notFoundHandler())))
 }
 
 type appHandlerFunc func(http.ResponseWriter, *http.Request) error
@@ -70,11 +72,17 @@ type ErrorHandler func(http.ResponseWriter, *http.Request, error)
 
 func WebErrorHandler(logger *slog.Logger, debug bool) ErrorHandler {
 	return func(w http.ResponseWriter, r *http.Request, err error) {
-		// Check for specific not found errors
-		var entityType string
 		switch {
 		case errors.Is(err, domain.ErrBucketNotFound):
-			entityType = "Bucket"
+			c := templates.NotFoundPage(templates.NotFoundViewModel{
+				Message: "Bucket not found",
+			})
+			if err := component(w, r, http.StatusNotFound, c); err != nil {
+				logger.Error("failure rendering 404 page",
+					slog.Any("err", err),
+					slog.String("request.uri", r.RequestURI),
+				)
+			}
 		default:
 			// Not a known not-found error, return 500
 			c := templates.InternalErrorPage(templates.InternalErrorViewModel{
@@ -90,15 +98,5 @@ func WebErrorHandler(logger *slog.Logger, debug bool) ErrorHandler {
 			return
 		}
 
-		// Render 404 page for not-found errors
-		c := templates.NotFoundPage(templates.NotFoundViewModel{
-			EntityType: entityType,
-		})
-		if err := component(w, r, http.StatusNotFound, c); err != nil {
-			logger.Error("failure rendering 404 page",
-				slog.Any("err", err),
-				slog.String("request.uri", r.RequestURI),
-			)
-		}
 	}
 }
