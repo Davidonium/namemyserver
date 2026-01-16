@@ -21,23 +21,18 @@ func generateHandler(generator *namemyserver.Generator) appHandlerFunc {
 			LengthMode:    namemyserver.LengthMode(lengthMode),
 			LengthValue:   lengthValue,
 		})
-		// Handle errors based on component type
 		if err != nil {
 			if componentType == "bucket-input" {
-				// Silent failure: return empty input
 				return component(w, r, http.StatusOK, templates.BucketNameInput(""))
 			}
-			// Default: return error for other components
 			return err
 		}
 
-		// Render different components based on parameter
 		var c templ.Component
 		switch componentType {
 		case "bucket-input":
 			c = templates.BucketNameInput(res.Name)
 		default:
-			// Default behavior: render generate partial (home page)
 			c = templates.GeneratePartial(templates.GenerateViewModel{
 				Name: res.Name,
 			})
