@@ -179,6 +179,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BucketDetails'
+        '404':
+          description: Not Found - Bucket does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         '500':
           description: Internal Server Error
           content:
@@ -267,6 +273,12 @@ paths:
                     type: string
                     description: The popped server name
                     example: brave-mountain
+        '404':
+          description: Not Found - Bucket does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         '409':
           description: Conflict - Bucket is archived and read-only
           content:
@@ -382,7 +394,7 @@ components:
           format: date-time
           nullable: true
           description: Timestamp when the bucket was archived
-          example: null
+          example: '2025-12-22T10:30:00Z'
     BucketDetails:
       type: object
       required:

@@ -3,6 +3,7 @@ package sqlitestore
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log/slog"
 	"strings"
@@ -182,6 +183,9 @@ func (s *BucketStore) PopName(ctx context.Context, b namemyserver.Bucket) (strin
 				"cursor":    b.Cursor,
 			}
 			if err := stmt.GetContext(ctx, &row, args); err != nil {
+				if errors.Is(err, sql.ErrNoRows) {
+					return namemyserver.ErrBucketNotFound
+				}
 				return fmt.Errorf("failed to retrieve name from the cursor: %w", err)
 			}
 
@@ -227,6 +231,9 @@ func (s *BucketStore) OneByName(ctx context.Context, name string) (namemyserver.
 
 	var row bucketRow
 	if err := stmt.GetContext(ctx, &row, map[string]any{"name": name}); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return namemyserver.Bucket{}, namemyserver.ErrBucketNotFound
+		}
 		return namemyserver.Bucket{}, err
 	}
 
@@ -258,6 +265,9 @@ func (s *BucketStore) OneByID(ctx context.Context, id int32) (namemyserver.Bucke
 
 	var row bucketRow
 	if err := stmt.GetContext(ctx, &row, map[string]any{"id": id}); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return namemyserver.Bucket{}, namemyserver.ErrBucketNotFound
+		}
 		return namemyserver.Bucket{}, err
 	}
 

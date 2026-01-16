@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"log/slog"
@@ -8,6 +9,7 @@ import (
 	"os"
 
 	"github.com/davidonium/namemyserver"
+	domain "github.com/davidonium/namemyserver/internal/namemyserver"
 	"github.com/davidonium/namemyserver/internal/templates"
 	"github.com/davidonium/namemyserver/internal/vite"
 )
@@ -68,12 +70,32 @@ type ErrorHandler func(http.ResponseWriter, *http.Request, error)
 
 func WebErrorHandler(logger *slog.Logger, debug bool) ErrorHandler {
 	return func(w http.ResponseWriter, r *http.Request, err error) {
-		c := templates.InternalErrorPage(templates.InternalErrorViewModel{
-			Err:      err,
-			PrintErr: debug,
+		// Check for specific not found errors
+		var entityType string
+		switch {
+		case errors.Is(err, domain.ErrBucketNotFound):
+			entityType = "Bucket"
+		default:
+			// Not a known not-found error, return 500
+			c := templates.InternalErrorPage(templates.InternalErrorViewModel{
+				Err:      err,
+				PrintErr: debug,
+			})
+			if err := component(w, r, http.StatusInternalServerError, c); err != nil {
+				logger.Error("failure rendering error page",
+					slog.Any("err", err),
+					slog.String("request.uri", r.RequestURI),
+				)
+			}
+			return
+		}
+
+		// Render 404 page for not-found errors
+		c := templates.NotFoundPage(templates.NotFoundViewModel{
+			EntityType: entityType,
 		})
-		if err := component(w, r, http.StatusInternalServerError, c); err != nil {
-			logger.Error("failure rendering error page",
+		if err := component(w, r, http.StatusNotFound, c); err != nil {
+			logger.Error("failure rendering 404 page",
 				slog.Any("err", err),
 				slog.String("request.uri", r.RequestURI),
 			)

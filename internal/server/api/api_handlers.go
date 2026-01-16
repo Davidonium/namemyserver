@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 
@@ -21,6 +20,28 @@ func New(generator *namemyserver.Generator, bucketStore namemyserver.BucketStore
 	return &Handlers{
 		generator:   generator,
 		bucketStore: bucketStore,
+	}
+}
+
+// bucketNotFound returns a ProblemDetail for 404 "bucket not found" errors.
+// The return value can be type-converted to any *404JSONResponse type.
+func bucketNotFound() ProblemDetail {
+	return ProblemDetail{
+		Status: 404,
+		Type:   "not_found",
+		Title:  "Bucket not found",
+		Detail: ptr.To("The requested bucket does not exist"),
+	}
+}
+
+// bucketArchived returns a ProblemDetail for 409 "bucket archived" conflicts.
+// The return value can be type-converted to any *409JSONResponse type.
+func bucketArchived() ProblemDetail {
+	return ProblemDetail{
+		Status: 409,
+		Type:   "operation_conflict",
+		Title:  "Operation conflict. Bucket is read only.",
+		Detail: ptr.To("The bucket is archived. Only read operations can be issued against it."),
 	}
 }
 
@@ -177,6 +198,9 @@ func (s *Handlers) GetBucketDetails(
 ) (GetBucketDetailsResponseObject, error) {
 	b, err := s.bucketStore.OneByID(ctx, request.Id)
 	if err != nil {
+		if errors.Is(err, namemyserver.ErrBucketNotFound) {
+			return GetBucketDetails404JSONResponse(bucketNotFound()), nil
+		}
 		return nil, err
 	}
 
@@ -211,18 +235,14 @@ func (s *Handlers) PopBucketName(
 ) (PopBucketNameResponseObject, error) {
 	b, err := s.bucketStore.OneByID(ctx, request.Id)
 	if err != nil {
+		if errors.Is(err, namemyserver.ErrBucketNotFound) {
+			return PopBucketName404JSONResponse(bucketNotFound()), nil
+		}
 		return nil, fmt.Errorf("failed to retrieve bucket by id: %w", err)
 	}
 
 	if b.Archived() {
-		return PopBucketName409JSONResponse{
-			Status: 409,
-			Type:   "operation_conflict",
-			Title:  "Operation conflict. Bucket is read only.",
-			Detail: ptr.To(
-				"The bucket is archived. Only read operations can be issued against it.",
-			),
-		}, nil
+		return PopBucketName409JSONResponse(bucketArchived()), nil
 	}
 
 	name, err := s.bucketStore.PopName(ctx, b)
@@ -245,26 +265,14 @@ func (s *Handlers) UpdateBucket(
 
 	b, err := s.bucketStore.OneByID(ctx, request.Id)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return UpdateBucket404JSONResponse{
-				Status: 404,
-				Type:   "not_found",
-				Title:  "Bucket not found",
-				Detail: ptr.To(fmt.Sprintf("No bucket exists with ID %d", request.Id)),
-			}, nil
+		if errors.Is(err, namemyserver.ErrBucketNotFound) {
+			return UpdateBucket404JSONResponse(bucketNotFound()), nil
 		}
 		return nil, fmt.Errorf("failed to retrieve bucket by id: %w", err)
 	}
 
 	if b.Archived() {
-		return UpdateBucket409JSONResponse{
-			Status: 409,
-			Type:   "operation_conflict",
-			Title:  "Operation conflict. Bucket is read only.",
-			Detail: ptr.To(
-				"The bucket is archived. Only read operations can be issued against it.",
-			),
-		}, nil
+		return UpdateBucket409JSONResponse(bucketArchived()), nil
 	}
 
 	if request.Body.Description != nil {
@@ -317,13 +325,8 @@ func (s *Handlers) ArchiveBucket(
 ) (ArchiveBucketResponseObject, error) {
 	b, err := s.bucketStore.OneByID(ctx, request.Id)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return ArchiveBucket404JSONResponse{
-				Status: 404,
-				Type:   "not_found",
-				Title:  "Bucket not found",
-				Detail: ptr.To(fmt.Sprintf("No bucket exists with ID %d", request.Id)),
-			}, nil
+		if errors.Is(err, namemyserver.ErrBucketNotFound) {
+			return ArchiveBucket404JSONResponse(bucketNotFound()), nil
 		}
 		return nil, fmt.Errorf("failed to retrieve bucket by id: %w", err)
 	}
@@ -365,13 +368,8 @@ func (s *Handlers) RecoverBucket(
 ) (RecoverBucketResponseObject, error) {
 	b, err := s.bucketStore.OneByID(ctx, request.Id)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return RecoverBucket404JSONResponse{
-				Status: 404,
-				Type:   "not_found",
-				Title:  "Bucket not found",
-				Detail: ptr.To(fmt.Sprintf("No bucket exists with ID %d", request.Id)),
-			}, nil
+		if errors.Is(err, namemyserver.ErrBucketNotFound) {
+			return RecoverBucket404JSONResponse(bucketNotFound()), nil
 		}
 		return nil, fmt.Errorf("failed to retrieve bucket by id: %w", err)
 	}
