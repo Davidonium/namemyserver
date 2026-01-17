@@ -66,7 +66,6 @@ func bucketCreateSubmitHandler(bucketStore namemyserver.BucketStore) appHandlerF
 			return err
 		}
 
-		// Use the bucket's configured filters
 		if err := bucketStore.FillBucketValues(ctx, b, b.Filters()); err != nil {
 			return err
 		}
