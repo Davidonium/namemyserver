@@ -22,9 +22,6 @@ func generateHandler(generator *namemyserver.Generator) appHandlerFunc {
 			LengthValue:   lengthValue,
 		})
 		if err != nil {
-			if componentType == "bucket-input" {
-				return component(w, r, http.StatusOK, templates.BucketNameInput(""))
-			}
 			return err
 		}
 
