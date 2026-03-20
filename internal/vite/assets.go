@@ -48,7 +48,7 @@ type Assets struct {
 	useManifest      bool
 	manifestLocation string
 	watchEnabled     bool
-	assetsFS         fs.FS
+	FS               fs.FS
 
 	manifest     map[string]ManifestEntry
 	manifestLock *sync.RWMutex
@@ -72,7 +72,7 @@ func NewAssets(logger Logger, config AssetsConfig) *Assets {
 		useManifest:      config.UseManifest,
 		watchEnabled:     config.WatchForChanges,
 		manifestLocation: config.ManifestLocation,
-		assetsFS:         config.AssetsFS,
+		FS:               config.AssetsFS,
 		logger:           logger,
 
 		manifestLock: &sync.RWMutex{},
@@ -89,7 +89,7 @@ func (v *Assets) LoadManifestFromReader(r io.Reader) error {
 }
 
 func (v *Assets) LoadManifest() error {
-	return v.LoadManifestFromFS(v.assetsFS, v.manifestLocation)
+	return v.LoadManifestFromFS(v.FS, v.manifestLocation)
 }
 
 func (v *Assets) LoadManifestFromFS(fs fs.FS, location string) error {
@@ -134,7 +134,7 @@ func (v *Assets) watchManifestFile(ctx context.Context) {
 			return
 		case <-ticker.C:
 
-			if stat, err := fs.Stat(v.assetsFS, v.manifestLocation); err == nil {
+			if stat, err := fs.Stat(v.FS, v.manifestLocation); err == nil {
 				if stat.ModTime().After(v.lastModTime) {
 					v.logger.Info(
 						"detected change in assets manifest, reloading",
