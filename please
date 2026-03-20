@@ -66,7 +66,7 @@ lint() { ## detects flaws in the code and checks for style
 
 format() { ## formats the codebase using golangci-lint linters
     golangci-lint run --fix
-    go tool templ fmt ./internal/templates
+    templ fmt ./internal/templates
 }
 
 docker() { ## builds the application's docker image
@@ -89,7 +89,7 @@ db:seed() {
 }
 
 dev() { ## launches the app with support for live reload of the server on file change
-    go tool air
+    air
 }
 
 dev:frontend() {
