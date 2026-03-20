@@ -1,0 +1,7 @@
+[tools]
+air = "1.64.5"
+"aqua:a-h/templ" = "0.3.1001"
+dbmate = "2.31.0"
+go = "1.26.0"
+golangci-lint = "2.11.3"
+oapi-codegen = "2.4.1"
