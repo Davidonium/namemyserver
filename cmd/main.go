@@ -94,7 +94,7 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 		ManifestLocation: cfg.AssetsManifestLocation,
 		WatchForChanges:  cfg.AssetsWatch,
 	}
-	if cfg.AssetsManifestFS == vite.AssetManifestFSEmbed {
+	if cfg.AssetsManifestFS == "embed" {
 		assetsCfg.AssetsFS = embed.FrontendFS
 	}
 

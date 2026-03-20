@@ -12,11 +12,6 @@ import (
 	"time"
 )
 
-const (
-	AssetManifestFSOS    = "os"
-	AssetManifestFSEmbed = "embed"
-)
-
 type ManifestEntry struct {
 	File           string   `json:"file"`
 	Src            string   `json:"src"`
@@ -133,7 +128,6 @@ func (v *Assets) watchManifestFile(ctx context.Context) {
 		case <-ctx.Done():
 			return
 		case <-ticker.C:
-
 			if stat, err := fs.Stat(v.FS, v.manifestLocation); err == nil {
 				if stat.ModTime().After(v.lastModTime) {
 					v.logger.Info(
