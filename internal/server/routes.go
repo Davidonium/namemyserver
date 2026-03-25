@@ -67,7 +67,6 @@ func WebErrorHandler(logger *slog.Logger, debug bool) ErrorHandler {
 				)
 			}
 		default:
-			// Not a known not-found error, return 500
 			c := templates.InternalErrorPage(templates.InternalErrorViewModel{
 				Err:      err,
 				PrintErr: debug,
