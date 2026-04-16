@@ -7,9 +7,10 @@ import { writeTextToClipboard } from "~/lib/clipboard";
 u(document).on("htmx:load", (ev) => {
   const el = u(ev.currentTarget);
   el.find(".js-copy").on("click", (ev) => {
+    console.log("lul")
     const target = ev.currentTarget;
     writeTextToClipboard(target.dataset.copyValue);
-    const checkmark = u(target).find(".js-checkmark");
+    const checkmark = u(target).parent().find(".js-checkmark");
     checkmark.removeClass("opacity-0");
     setTimeout(() => {
       checkmark.addClass("opacity-0");

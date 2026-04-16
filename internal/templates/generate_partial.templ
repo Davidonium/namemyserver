@@ -16,8 +16,8 @@ templ GeneratePartial(vm GenerateViewModel) {
 			<div class="js-copy cursor-pointer hover:opacity-65" data-copy-value={ vm.Name }>
 				@CopyIcon()
 			</div>
-			<span class="js-checkmark text-green-500 absolute top-0 right-0 opacity-0">
-				@CheckMarkIcon()
+			<span class="js-checkmark text-green-500 absolute top-0 right-0 opacity-0 pointer-events-none">
+				@CheckMarkIcon(WithClass("size-3"))
 			</span>
 		</div>
 	</div>

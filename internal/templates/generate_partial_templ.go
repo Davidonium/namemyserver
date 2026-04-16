@@ -75,11 +75,11 @@ func GeneratePartial(vm GenerateViewModel) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div><span class=\"js-checkmark text-green-500 absolute top-0 right-0 opacity-0\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div><span class=\"js-checkmark text-green-500 absolute top-0 right-0 opacity-0 pointer-events-none\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = CheckMarkIcon().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = CheckMarkIcon(WithClass("size-3")).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
