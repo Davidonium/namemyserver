@@ -16,18 +16,18 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/mattn/go-sqlite3"
 
-	embed "github.com/davidonium/namemyserver"
-	"github.com/davidonium/namemyserver/internal/bg"
-	"github.com/davidonium/namemyserver/internal/env"
-	"github.com/davidonium/namemyserver/internal/namemyserver"
-	"github.com/davidonium/namemyserver/internal/server"
-	"github.com/davidonium/namemyserver/internal/store/sqlitestore"
-	"github.com/davidonium/namemyserver/internal/vite"
+	embed "github.com/davidonium/serverplate"
+	"github.com/davidonium/serverplate/internal/bg"
+	"github.com/davidonium/serverplate/internal/env"
+	"github.com/davidonium/serverplate/internal/serverplate"
+	"github.com/davidonium/serverplate/internal/server"
+	"github.com/davidonium/serverplate/internal/store/sqlitestore"
+	"github.com/davidonium/serverplate/internal/vite"
 )
 
 func main() {
 	if err := run(os.Args); err != nil {
-		fmt.Fprintf(os.Stderr, "could not start namemyserver app.\nerror: %v\n", err)
+		fmt.Fprintf(os.Stderr, "could not start serverplate app.\nerror: %v\n", err)
 		os.Exit(1)
 	}
 }
@@ -114,7 +114,7 @@ func runServer(logger *slog.Logger, cfg env.Config) error {
 	pairStore := sqlitestore.NewPairStore(db)
 	bucketStore := sqlitestore.NewBucketStore(logger, db)
 
-	generator := namemyserver.NewGenerator(pairStore)
+	generator := serverplate.NewGenerator(pairStore)
 
 	runner := bg.NewRunner(logger, bucketStore)
 	runner.Start()

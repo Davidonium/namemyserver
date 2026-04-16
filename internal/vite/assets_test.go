@@ -9,7 +9,7 @@ import (
 	"testing"
 	"testing/fstest"
 
-	"github.com/davidonium/namemyserver/internal/vite"
+	"github.com/davidonium/serverplate/internal/vite"
 	"github.com/stretchr/testify/assert"
 )
 

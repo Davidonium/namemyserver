@@ -1,4 +1,4 @@
-module github.com/davidonium/namemyserver
+module github.com/davidonium/serverplate
 
 go 1.26
 

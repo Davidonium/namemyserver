@@ -6,7 +6,7 @@ set -euo pipefail
 GO="go"
 LDFLAGS='-w -s'
 BUILD_DIR="./build"
-APP_BIN="$BUILD_DIR/namemyserver"
+APP_BIN="$BUILD_DIR/serverplate"
 APP_VERSION="0.1.0"
 COVERAGE_FILE="$BUILD_DIR/coverage.out"
 
@@ -32,7 +32,7 @@ bootstrap() {
     mise install
 }
 
-build() { ## builds namemyserver's binary for production use in the current machine's architecture
+build() { ## builds serverplate's binary for production use in the current machine's architecture
     mkdir -p "$BUILD_DIR"
     $GO build -ldflags="$LDFLAGS" -v -o "$APP_BIN" ./cmd
 }
@@ -42,11 +42,11 @@ generate() { ## runs all code generation targets
     oapi-codegen -config oapicodegen.config.yaml openapi.yaml
 }
 
-test() { ## runs all namemyserver tests
+test() { ## runs all serverplate tests
     $GO test ./...
 }
 
-coverage() { ## tests namemyserver codebase and generates a coverage file
+coverage() { ## tests serverplate codebase and generates a coverage file
     mkdir -p "$BUILD_DIR"
     $GO test -coverprofile="$COVERAGE_FILE" ./...
 }
@@ -70,8 +70,8 @@ format() { ## formats the codebase using golangci-lint linters
 }
 
 docker() { ## builds the application's docker image
-    docker build --no-cache --progress=plain -t "davidonium/namemyserver:$APP_VERSION" .
-    docker tag "davidonium/namemyserver:$APP_VERSION" "davidonium/namemyserver:latest"
+    docker build --no-cache --progress=plain -t "davidonium/serverplate:$APP_VERSION" .
+    docker tag "davidonium/serverplate:$APP_VERSION" "davidonium/serverplate:latest"
 }
 
 db:migrate() { ## applies database migrations

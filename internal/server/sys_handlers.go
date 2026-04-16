@@ -5,8 +5,8 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/davidonium/namemyserver/internal/server/api"
-	"github.com/davidonium/namemyserver/internal/templates"
+	"github.com/davidonium/serverplate/internal/server/api"
+	"github.com/davidonium/serverplate/internal/templates"
 )
 
 func healthHandler() http.Handler {

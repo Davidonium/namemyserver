@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	"github.com/davidonium/namemyserver/internal/templates"
+	"github.com/davidonium/serverplate/internal/templates"
 )
 
 func apiDocsHandler() appHandlerFunc {

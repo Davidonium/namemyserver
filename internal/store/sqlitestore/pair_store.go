@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/davidonium/namemyserver/internal/namemyserver"
+	"github.com/davidonium/serverplate/internal/serverplate"
 )
 
 type PairStore struct {
@@ -36,14 +36,14 @@ LIMIT 1`
 
 func (s *PairStore) OneRandom(
 	ctx context.Context,
-	f namemyserver.RandomPairFilters,
-) (namemyserver.Pair, error) {
+	f serverplate.RandomPairFilters,
+) (serverplate.Pair, error) {
 	whereSQL, args := buildPairFilterWhereSQL(f)
 	query := fmt.Sprintf(singlePairSQLTpl, whereSQL)
 
 	stmt, err := s.db.Read().PrepareNamedContext(ctx, query)
 	if err != nil {
-		return namemyserver.Pair{}, err
+		return serverplate.Pair{}, err
 	}
 
 	var row struct {
@@ -52,12 +52,12 @@ func (s *PairStore) OneRandom(
 	}
 	if err := stmt.GetContext(ctx, &row, args); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return namemyserver.Pair{}, namemyserver.ErrNoMatchingPairs
+			return serverplate.Pair{}, serverplate.ErrNoMatchingPairs
 		}
-		return namemyserver.Pair{}, err
+		return serverplate.Pair{}, err
 	}
 
-	return namemyserver.Pair{
+	return serverplate.Pair{
 		Adjective: row.Adjective,
 		Noun:      row.Noun,
 	}, nil
@@ -75,8 +75,8 @@ FROM pragma_page_count(), pragma_page_size()`
 
 func (s *PairStore) Stats(
 	ctx context.Context,
-	f namemyserver.RandomPairFilters,
-) (namemyserver.Stats, error) {
+	f serverplate.RandomPairFilters,
+) (serverplate.Stats, error) {
 	whereSQL, args := buildPairFilterWhereSQL(f)
 	sql := fmt.Sprintf(statsSQLTpl, whereSQL)
 	var row struct {
@@ -86,11 +86,11 @@ func (s *PairStore) Stats(
 	}
 	stmt, err := s.db.Read().PrepareNamedContext(ctx, sql)
 	if err != nil {
-		return namemyserver.Stats{}, err
+		return serverplate.Stats{}, err
 	}
 
 	if err := stmt.GetContext(ctx, &row, args); err != nil {
-		return namemyserver.Stats{}, err
+		return serverplate.Stats{}, err
 	}
 
 	// Query database size
@@ -98,10 +98,10 @@ func (s *PairStore) Stats(
 		Size int64 `db:"size"`
 	}
 	if err := s.db.Read().QueryRowContext(ctx, dbSizeSQL).Scan(&dbSizeRow.Size); err != nil {
-		return namemyserver.Stats{}, err
+		return serverplate.Stats{}, err
 	}
 
-	return namemyserver.Stats{
+	return serverplate.Stats{
 		DatabaseSizeBytes: dbSizeRow.Size,
 		PairCount:         row.PairCount,
 		AdjectiveCount:    row.AdjectiveCount,
@@ -109,19 +109,19 @@ func (s *PairStore) Stats(
 	}, nil
 }
 
-// buildPairFilterWhereSQL returns the sql based on the namemyserver.RandomPairFilters. Assumes the query using the
+// buildPairFilterWhereSQL returns the sql based on the serverplate.RandomPairFilters. Assumes the query using the
 // resulting sql sets up aliases 'a' for adjectives table and 'n' for nouns table, these should potentially
 // be passed as function arguments instead of making this assumption but it works for now.
-func buildPairFilterWhereSQL(f namemyserver.RandomPairFilters) (string, map[string]any) {
+func buildPairFilterWhereSQL(f serverplate.RandomPairFilters) (string, map[string]any) {
 	wheres := []string{"1=1"}
 	args := map[string]any{}
 
 	if f.Length > 0 {
 		args["length"] = f.Length
 		switch f.LengthMode {
-		case namemyserver.LengthModeExactly:
+		case serverplate.LengthModeExactly:
 			wheres = append(wheres, "(LENGTH(a.value) + LENGTH(n.value) + 1) = :length")
-		case namemyserver.LengthModeUpto:
+		case serverplate.LengthModeUpto:
 			wheres = append(wheres, "(LENGTH(a.value) + LENGTH(n.value) + 1) <= :length")
 		}
 	}

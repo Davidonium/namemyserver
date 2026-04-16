@@ -5,18 +5,18 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/davidonium/namemyserver/internal/namemyserver"
-	"github.com/davidonium/namemyserver/internal/ptr"
+	"github.com/davidonium/serverplate/internal/serverplate"
+	"github.com/davidonium/serverplate/internal/ptr"
 )
 
 var ErrArchived = errors.New("the bucket is archived")
 
 type Handlers struct {
-	generator   *namemyserver.Generator
-	bucketStore namemyserver.BucketStore
+	generator   *serverplate.Generator
+	bucketStore serverplate.BucketStore
 }
 
-func New(generator *namemyserver.Generator, bucketStore namemyserver.BucketStore) *Handlers {
+func New(generator *serverplate.Generator, bucketStore serverplate.BucketStore) *Handlers {
 	return &Handlers{
 		generator:   generator,
 		bucketStore: bucketStore,
@@ -49,7 +49,7 @@ func (s *Handlers) GenerateName(
 	ctx context.Context,
 	request GenerateNameRequestObject,
 ) (GenerateNameResponseObject, error) {
-	opts := namemyserver.GenerateOptions{}
+	opts := serverplate.GenerateOptions{}
 
 	if request.Body != nil && request.Body.Filters != nil {
 		filters := request.Body.Filters
@@ -69,16 +69,16 @@ func (s *Handlers) GenerateName(
 			opts.LengthValue = *filters.Length
 
 			if filters.LengthMode != nil {
-				opts.LengthMode = namemyserver.LengthMode(*filters.LengthMode)
+				opts.LengthMode = serverplate.LengthMode(*filters.LengthMode)
 			} else {
-				opts.LengthMode = namemyserver.LengthModeUpto
+				opts.LengthMode = serverplate.LengthModeUpto
 			}
 		}
 	}
 
 	res, err := s.generator.Generate(ctx, opts)
 	if err != nil {
-		if errors.Is(err, namemyserver.ErrNoMatchingPairs) {
+		if errors.Is(err, serverplate.ErrNoMatchingPairs) {
 			return GenerateName400JSONResponse{
 				Status: 400,
 				Type:   "no_matches",
@@ -104,7 +104,7 @@ func (s *Handlers) CreateBucket(
 		return nil, fmt.Errorf("request body is required")
 	}
 
-	b := namemyserver.Bucket{
+	b := serverplate.Bucket{
 		Name: request.Body.Name,
 	}
 
@@ -122,9 +122,9 @@ func (s *Handlers) CreateBucket(
 				b.FilterLengthValue = *request.Body.Filters.Length
 			}
 			if request.Body.Filters.LengthMode != nil {
-				b.FilterLengthMode = namemyserver.LengthMode(*request.Body.Filters.LengthMode)
+				b.FilterLengthMode = serverplate.LengthMode(*request.Body.Filters.LengthMode)
 			} else {
-				b.FilterLengthMode = namemyserver.LengthModeUpto
+				b.FilterLengthMode = serverplate.LengthModeUpto
 			}
 		}
 	}
@@ -168,7 +168,7 @@ func (s *Handlers) ListBuckets(
 ) (ListBucketsResponseObject, error) {
 	archived := request.Params.Archived != nil
 
-	buckets, err := s.bucketStore.List(ctx, namemyserver.ListOptions{
+	buckets, err := s.bucketStore.List(ctx, serverplate.ListOptions{
 		ArchivedOnly: archived,
 	})
 	if err != nil {
@@ -198,7 +198,7 @@ func (s *Handlers) GetBucketDetails(
 ) (GetBucketDetailsResponseObject, error) {
 	b, err := s.bucketStore.OneByID(ctx, request.Id)
 	if err != nil {
-		if errors.Is(err, namemyserver.ErrBucketNotFound) {
+		if errors.Is(err, serverplate.ErrBucketNotFound) {
 			return GetBucketDetails404JSONResponse(bucketNotFound()), nil
 		}
 		return nil, err
@@ -235,7 +235,7 @@ func (s *Handlers) PopBucketName(
 ) (PopBucketNameResponseObject, error) {
 	b, err := s.bucketStore.OneByID(ctx, request.Id)
 	if err != nil {
-		if errors.Is(err, namemyserver.ErrBucketNotFound) {
+		if errors.Is(err, serverplate.ErrBucketNotFound) {
 			return PopBucketName404JSONResponse(bucketNotFound()), nil
 		}
 		return nil, fmt.Errorf("failed to retrieve bucket by id: %w", err)
@@ -265,7 +265,7 @@ func (s *Handlers) UpdateBucket(
 
 	b, err := s.bucketStore.OneByID(ctx, request.Id)
 	if err != nil {
-		if errors.Is(err, namemyserver.ErrBucketNotFound) {
+		if errors.Is(err, serverplate.ErrBucketNotFound) {
 			return UpdateBucket404JSONResponse(bucketNotFound()), nil
 		}
 		return nil, fmt.Errorf("failed to retrieve bucket by id: %w", err)
@@ -325,7 +325,7 @@ func (s *Handlers) ArchiveBucket(
 ) (ArchiveBucketResponseObject, error) {
 	b, err := s.bucketStore.OneByID(ctx, request.Id)
 	if err != nil {
-		if errors.Is(err, namemyserver.ErrBucketNotFound) {
+		if errors.Is(err, serverplate.ErrBucketNotFound) {
 			return ArchiveBucket404JSONResponse(bucketNotFound()), nil
 		}
 		return nil, fmt.Errorf("failed to retrieve bucket by id: %w", err)
@@ -368,7 +368,7 @@ func (s *Handlers) RecoverBucket(
 ) (RecoverBucketResponseObject, error) {
 	b, err := s.bucketStore.OneByID(ctx, request.Id)
 	if err != nil {
-		if errors.Is(err, namemyserver.ErrBucketNotFound) {
+		if errors.Is(err, serverplate.ErrBucketNotFound) {
 			return RecoverBucket404JSONResponse(bucketNotFound()), nil
 		}
 		return nil, fmt.Errorf("failed to retrieve bucket by id: %w", err)

@@ -1,4 +1,4 @@
-package namemyserver
+package serverplate
 
 type Stats struct {
 	DatabaseSizeBytes int64

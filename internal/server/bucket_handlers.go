@@ -5,16 +5,16 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/davidonium/namemyserver/internal/namemyserver"
-	"github.com/davidonium/namemyserver/internal/templates"
+	"github.com/davidonium/serverplate/internal/serverplate"
+	"github.com/davidonium/serverplate/internal/templates"
 )
 
-func bucketListHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
+func bucketListHandler(bucketStore serverplate.BucketStore) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 		_, archived := r.URL.Query()["archived"]
 
-		buckets, err := bucketStore.List(ctx, namemyserver.ListOptions{
+		buckets, err := bucketStore.List(ctx, serverplate.ListOptions{
 			ArchivedOnly: archived,
 		})
 		if err != nil {
@@ -37,16 +37,16 @@ func bucketCreateHandler() appHandlerFunc {
 	}
 }
 
-func bucketCreateSubmitHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
+func bucketCreateSubmitHandler(bucketStore serverplate.BucketStore) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 		name := r.FormValue("name")
 		description := r.FormValue("description")
 
 		lengthEnabled := r.FormValue("filter_length_enabled") == "on"
-		lengthMode := namemyserver.LengthModeUpto
+		lengthMode := serverplate.LengthModeUpto
 		if r.FormValue("filter_length_mode") != "" {
-			lengthMode = namemyserver.LengthMode(r.FormValue("filter_length_mode"))
+			lengthMode = serverplate.LengthMode(r.FormValue("filter_length_mode"))
 		}
 		lengthValue := 14 // default
 		if val := r.FormValue("filter_length_value"); val != "" {
@@ -55,7 +55,7 @@ func bucketCreateSubmitHandler(bucketStore namemyserver.BucketStore) appHandlerF
 			}
 		}
 
-		b := namemyserver.Bucket{
+		b := serverplate.Bucket{
 			Name:                name,
 			Description:         description,
 			FilterLengthEnabled: lengthEnabled,
@@ -74,7 +74,7 @@ func bucketCreateSubmitHandler(bucketStore namemyserver.BucketStore) appHandlerF
 	}
 }
 
-func bucketDetailsHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
+func bucketDetailsHandler(bucketStore serverplate.BucketStore) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 		rawID := r.PathValue("id")
@@ -96,7 +96,7 @@ func bucketDetailsHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 	}
 }
 
-func bucketArchiveHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
+func bucketArchiveHandler(bucketStore serverplate.BucketStore) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 		rawID := r.PathValue("id")
@@ -117,7 +117,7 @@ func bucketArchiveHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
 	}
 }
 
-func bucketRecoverHandler(bucketStore namemyserver.BucketStore) appHandlerFunc {
+func bucketRecoverHandler(bucketStore serverplate.BucketStore) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 		rawID := r.PathValue("id")

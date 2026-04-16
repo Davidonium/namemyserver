@@ -4,8 +4,8 @@ tmp_dir = "build"
 
 [build]
 args_bin = ["server"]
-bin = "./build/namemyserver-dev"
-cmd = "templ generate; go build -o ./build/namemyserver-dev -v ./cmd"
+bin = "./build/serverplate-dev"
+cmd = "templ generate; go build -o ./build/serverplate-dev -v ./cmd"
 delay = 1000
 exclude_dir = ["frontend", "build", "var"]
 exclude_file = []

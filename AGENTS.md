@@ -1,10 +1,10 @@
-# AGENTS.md - NameMyServer Development Guide
+# AGENTS.md - serverplate Development Guide
 
-This document provides essential context for agents working on the namemyserver project. Use this as your reference for architecture, conventions, and development workflows.
+This document provides essential context for agents working on the serverplate project. Use this as your reference for architecture, conventions, and development workflows.
 
 ## 1. Project Overview
 
-**namemyserver** is a Go-based web application that generates memorable, human-friendly server names through a web UI and REST API.
+**serverplate** is a Go-based web application that generates memorable, human-friendly server names through a web UI and REST API.
 
 ### Purpose
 Provides easily memorizable server names (e.g., "brave-mountain") for manual server naming tasks. Not intended for automated system provisioning.
@@ -30,7 +30,7 @@ Provides easily memorizable server names (e.g., "brave-mountain") for manual ser
 ```
 cmd/                         - Entry point (server, seed commands)
 internal/
-  ├── namemyserver/          - Core domain logic, types, business rules
+  ├── serverplate/          - Core domain logic, types, business rules
   ├── server/                - HTTP handlers, routes, middleware, API layer
   │   └── api/               - Generated API code (oapi-codegen)
   ├── store/sqlitestore/     - Data access layer (SQLite implementation)
@@ -197,7 +197,7 @@ bucket_values
 The `please` script is the primary build tool. Key commands:
 
 ```bash
-./please build              # Production binary (build/namemyserver)
+./please build              # Production binary (build/serverplate)
 ./please generate           # Run templ + oapi-codegen
 ./please test               # Run all tests
 ./please coverage           # Generate coverage report
@@ -226,7 +226,7 @@ go tool templ generate
 go tool oapi-codegen -config oapicodegen.config.yaml openapi.yaml
 ```
 - Input: `openapi.yaml` (source of truth)
-- Output: `internal/server/api/namemyserver_api.gen.go`
+- Output: `internal/server/api/serverplate_api.gen.go`
 - Generates: data models, HTTP server interface, embedded spec
 - Config: `oapicodegen.config.yaml` enables std-http-server, models, strict-server
 
@@ -237,7 +237,7 @@ go tool oapi-codegen -config oapicodegen.config.yaml openapi.yaml
 - **Watches**: `.go`, `.templ`, `.html` files
 - **Excludes**: `*_templ.go`, `*_test.go`
 - **Run**: `./please dev`
-- **Output**: `build/namemyserver-dev`
+- **Output**: `build/serverplate-dev`
 
 #### Frontend
 - **Tool**: Vite
@@ -338,7 +338,7 @@ ASSETS_MANIFEST_FS       - "os" (filesystem) or "embed" (embedded)
 ```go
 func removeArchivedBucketsTask(
     logger *slog.Logger,
-    bucketStore namemyserver.BucketStore,
+    bucketStore serverplate.BucketStore,
 ) func(context.Context) error {
     return func(ctx context.Context) error {
         // task logic
@@ -370,7 +370,7 @@ func removeArchivedBucketsTask(
 ```
 LISTEN_ADDR              - Server listen address (default: :8080)
 DATABASE_URL             - SQLite connection string (required)
-                           Format: sqlite:./var/namemyserver.db
+                           Format: sqlite:./var/serverplate.db
 DEBUG                    - Enable debug mode, expose error details (default: false)
 LOG_FORMAT               - "text" or "json" (default: text)
 LOG_LEVEL                - slog level: debug, info, warn, error (default: info)
@@ -392,7 +392,7 @@ ASSETS_MANIFEST_FS       - "os" (filesystem) or "embed" (embedded) (default: os)
 
 ```bash
 LISTEN_ADDR=:8080
-DATABASE_URL=sqlite:./var/namemyserver.db
+DATABASE_URL=sqlite:./var/serverplate.db
 DEBUG=true
 LOG_FORMAT=text
 LOG_LEVEL=info
@@ -408,7 +408,7 @@ ASSETS_MANIFEST_FS=os
 
 | Package | Purpose |
 |---------|---------|
-| `internal/namemyserver` | Domain types, interfaces, business logic |
+| `internal/serverplate` | Domain types, interfaces, business logic |
 | `internal/server` | HTTP handlers, routes, middleware |
 | `internal/server/api` | Generated API types (from openapi.yaml) |
 | `internal/store/sqlitestore` | SQLite implementation of domain interfaces |
@@ -429,7 +429,7 @@ ASSETS_MANIFEST_FS=os
 - **Signature**: `func(...) func(http.ResponseWriter, *http.Request) error`
 
 #### Stores
-- **Interface**: Defined in domain package (`internal/namemyserver`)
+- **Interface**: Defined in domain package (`internal/serverplate`)
 - **Examples**: `BucketStore`, `PairStore`
 - **Implementation**: In `internal/store/sqlitestore/`
 
@@ -552,7 +552,7 @@ FROM node:24-slim AS frontend
 #### Stage 2: Builder
 ```dockerfile
 FROM golang:1.25 AS builder
-# Compile Go binary → build/namemyserver
+# Compile Go binary → build/serverplate
 # Embed frontend dist + migrations
 ```
 
@@ -566,14 +566,14 @@ FROM gcr.io/distroless/static-debian13:nonroot
 - Frontend assets embedded in binary via `embed.go`
 - Database migrations included in binary
 - Binary runs as non-root user (distroless requirement)
-- Entrypoint: `/app/namemyserver server`
+- Entrypoint: `/app/serverplate server`
 - No shell, no package manager (security)
 
 ### Building Image
 ```bash
 ./please docker
-# Creates: davidonium/namemyserver:0.1.0
-# Tags: davidonium/namemyserver:latest
+# Creates: davidonium/serverplate:0.1.0
+# Tags: davidonium/serverplate:latest
 ```
 
 ## 13. Important Files Reference
@@ -803,7 +803,7 @@ DEBUG=true ./please dev
 
 ### Check Database State
 ```bash
-sqlite3 var/namemyserver.db
+sqlite3 var/serverplate.db
 sqlite> SELECT * FROM buckets;
 sqlite> SELECT COUNT(*) FROM bucket_values WHERE bucket_id=1;
 ```
@@ -813,7 +813,7 @@ sqlite> SELECT COUNT(*) FROM bucket_values WHERE bucket_id=1;
 - Set `LOG_FORMAT=json` for structured logging to parse
 
 ### Check Generated Code
-- `internal/server/api/namemyserver_api.gen.go` - API types
+- `internal/server/api/serverplate_api.gen.go` - API types
 - `internal/templates/*_templ.go` - Template code
 - These are safe to inspect but DON'T EDIT (regenerate instead)
 

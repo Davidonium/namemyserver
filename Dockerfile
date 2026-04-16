@@ -32,6 +32,6 @@ RUN ./please build
 FROM gcr.io/distroless/static-debian13:nonroot
 
 WORKDIR /app
-COPY --from=builder /app/build/namemyserver /app/namemyserver
+COPY --from=builder /app/build/serverplate /app/serverplate
 
-ENTRYPOINT ["/app/namemyserver", "server"]
+ENTRYPOINT ["/app/serverplate", "server"]

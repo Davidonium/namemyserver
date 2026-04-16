@@ -11,12 +11,12 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"fmt"
 
-	"github.com/davidonium/namemyserver/internal/namemyserver"
+	"github.com/davidonium/serverplate/internal/serverplate"
 	"github.com/dustin/go-humanize"
 )
 
 type BucketDetailsPageViewModel struct {
-	Bucket         namemyserver.Bucket
+	Bucket         serverplate.Bucket
 	RemainingPairs int64
 }
 

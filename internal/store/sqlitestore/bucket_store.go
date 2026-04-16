@@ -11,7 +11,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"github.com/davidonium/namemyserver/internal/namemyserver"
+	"github.com/davidonium/serverplate/internal/serverplate"
 )
 
 type NamedExecContexter interface {
@@ -46,7 +46,7 @@ INSERT INTO buckets
 VALUES
 	(:name, :description, :filter_length_enabled, :filter_length_mode, :filter_length_value)`
 
-func (s *BucketStore) Create(ctx context.Context, b *namemyserver.Bucket) error {
+func (s *BucketStore) Create(ctx context.Context, b *serverplate.Bucket) error {
 	args := map[string]any{
 		"name":                  b.Name,
 		"description":           b.Description,
@@ -84,8 +84,8 @@ WHERE
 
 func (s *BucketStore) FillBucketValues(
 	ctx context.Context,
-	b namemyserver.Bucket,
-	f namemyserver.RandomPairFilters,
+	b serverplate.Bucket,
+	f serverplate.RandomPairFilters,
 ) error {
 	return s.db.Write().WithTx(ctx, &sql.TxOptions{}, func(ctx context.Context, tx *sqlx.Tx) error {
 		whereSQL, args := buildPairFilterWhereSQL(f)
@@ -164,7 +164,7 @@ SET
 WHERE
 	id = :bucket_id`
 
-func (s *BucketStore) PopName(ctx context.Context, b namemyserver.Bucket) (string, error) {
+func (s *BucketStore) PopName(ctx context.Context, b serverplate.Bucket) (string, error) {
 	var row struct {
 		Name string `db:"value"`
 	}
@@ -184,7 +184,7 @@ func (s *BucketStore) PopName(ctx context.Context, b namemyserver.Bucket) (strin
 			}
 			if err := stmt.GetContext(ctx, &row, args); err != nil {
 				if errors.Is(err, sql.ErrNoRows) {
-					return namemyserver.ErrBucketNotFound
+					return serverplate.ErrBucketNotFound
 				}
 				return fmt.Errorf("failed to retrieve name from the cursor: %w", err)
 			}
@@ -223,18 +223,18 @@ FROM
 WHERE
 	name = :name`
 
-func (s *BucketStore) OneByName(ctx context.Context, name string) (namemyserver.Bucket, error) {
+func (s *BucketStore) OneByName(ctx context.Context, name string) (serverplate.Bucket, error) {
 	stmt, err := s.db.Read().PrepareNamedContext(ctx, oneByNameSQL)
 	if err != nil {
-		return namemyserver.Bucket{}, err
+		return serverplate.Bucket{}, err
 	}
 
 	var row bucketRow
 	if err := stmt.GetContext(ctx, &row, map[string]any{"name": name}); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return namemyserver.Bucket{}, namemyserver.ErrBucketNotFound
+			return serverplate.Bucket{}, serverplate.ErrBucketNotFound
 		}
-		return namemyserver.Bucket{}, err
+		return serverplate.Bucket{}, err
 	}
 
 	return rowToBucket(row), nil
@@ -257,18 +257,18 @@ FROM
 WHERE
 	id = :id`
 
-func (s *BucketStore) OneByID(ctx context.Context, id int32) (namemyserver.Bucket, error) {
+func (s *BucketStore) OneByID(ctx context.Context, id int32) (serverplate.Bucket, error) {
 	stmt, err := s.db.Read().PrepareNamedContext(ctx, oneByIDSQL)
 	if err != nil {
-		return namemyserver.Bucket{}, err
+		return serverplate.Bucket{}, err
 	}
 
 	var row bucketRow
 	if err := stmt.GetContext(ctx, &row, map[string]any{"id": id}); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return namemyserver.Bucket{}, namemyserver.ErrBucketNotFound
+			return serverplate.Bucket{}, serverplate.ErrBucketNotFound
 		}
-		return namemyserver.Bucket{}, err
+		return serverplate.Bucket{}, err
 	}
 
 	return rowToBucket(row), nil
@@ -293,8 +293,8 @@ WHERE
 
 func (s *BucketStore) List(
 	ctx context.Context,
-	opts namemyserver.ListOptions,
-) ([]namemyserver.Bucket, error) {
+	opts serverplate.ListOptions,
+) ([]serverplate.Bucket, error) {
 	wheres := []string{"1=1"}
 
 	if opts.ArchivedOnly {
@@ -308,7 +308,7 @@ func (s *BucketStore) List(
 		return nil, err
 	}
 
-	buckets := make([]namemyserver.Bucket, 0, len(rows))
+	buckets := make([]serverplate.Bucket, 0, len(rows))
 	for _, r := range rows {
 		buckets = append(buckets, rowToBucket(r))
 	}
@@ -326,7 +326,7 @@ SET
 WHERE
 	id = :id`
 
-func (s *BucketStore) Save(ctx context.Context, b *namemyserver.Bucket) error {
+func (s *BucketStore) Save(ctx context.Context, b *serverplate.Bucket) error {
 	params := map[string]any{
 		"id":          b.ID,
 		"archived_at": b.ArchivedAt,
@@ -413,7 +413,7 @@ AND
 
 func (s *BucketStore) RemainingValuesTotal(
 	ctx context.Context,
-	b namemyserver.Bucket,
+	b serverplate.Bucket,
 ) (int64, error) {
 	stmt, err := s.db.Read().PrepareNamedContext(ctx, remainingValuesSQL)
 	if err != nil {
@@ -428,8 +428,8 @@ func (s *BucketStore) RemainingValuesTotal(
 	return count, nil
 }
 
-func rowToBucket(row bucketRow) namemyserver.Bucket {
-	return namemyserver.Bucket{
+func rowToBucket(row bucketRow) serverplate.Bucket {
+	return serverplate.Bucket{
 		ID:                  row.ID,
 		Name:                row.Name,
 		Description:         row.Description.String,
@@ -438,7 +438,7 @@ func rowToBucket(row bucketRow) namemyserver.Bucket {
 		UpdatedAt:           sqlTimeToPtr(row.UpdatedAt),
 		ArchivedAt:          sqlTimeToPtr(row.ArchivedAt),
 		FilterLengthEnabled: row.FilterLengthEnabled == 1,
-		FilterLengthMode:    namemyserver.LengthMode(row.FilterLengthMode.String),
+		FilterLengthMode:    serverplate.LengthMode(row.FilterLengthMode.String),
 		FilterLengthValue:   int(row.FilterLengthValue.Int32),
 	}
 }

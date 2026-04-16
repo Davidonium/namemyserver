@@ -9,16 +9,16 @@ import (
 
 	"github.com/robfig/cron/v3"
 
-	"github.com/davidonium/namemyserver/internal/namemyserver"
+	"github.com/davidonium/serverplate/internal/serverplate"
 )
 
 type Runner struct {
 	cron        *cron.Cron
 	logger      *slog.Logger
-	bucketStore namemyserver.BucketStore
+	bucketStore serverplate.BucketStore
 }
 
-func NewRunner(logger *slog.Logger, bucketStore namemyserver.BucketStore) *Runner {
+func NewRunner(logger *slog.Logger, bucketStore serverplate.BucketStore) *Runner {
 	r := &Runner{
 		cron: cron.New(
 			cron.WithLogger(&cronLogger{Logger: logger.With(slog.String("service", "cron"))}),

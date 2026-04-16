@@ -1,4 +1,4 @@
-package namemyserver
+package serverplate
 
 import "regexp"
 

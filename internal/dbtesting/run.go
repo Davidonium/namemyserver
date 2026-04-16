@@ -10,9 +10,9 @@ import (
 	// import sqlite specific driver for running migrations in integration testing.
 	_ "github.com/amacneil/dbmate/v2/pkg/driver/sqlite"
 
-	embed "github.com/davidonium/namemyserver"
+	embed "github.com/davidonium/serverplate"
 
-	"github.com/davidonium/namemyserver/internal/store/sqlitestore"
+	"github.com/davidonium/serverplate/internal/store/sqlitestore"
 )
 
 func Run(t *testing.T, f func(*testing.T, *sqlitestore.DBPool)) {
@@ -21,7 +21,7 @@ func Run(t *testing.T, f func(*testing.T, *sqlitestore.DBPool)) {
 		t.Skip("database tests are skipped for short testing")
 	}
 
-	fd, err := os.CreateTemp(t.TempDir(), "namemyserver-*.db")
+	fd, err := os.CreateTemp(t.TempDir(), "serverplate-*.db")
 	if err != nil {
 		t.Fatalf("failed to create temp file for the sqlite database, cause: %v", err)
 	}

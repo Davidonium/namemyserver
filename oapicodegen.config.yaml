@@ -5,4 +5,4 @@ generate:
   embedded-spec: true
   models: true
   strict-server: true
-output: internal/server/api/namemyserver_api.gen.go
+output: internal/server/api/serverplate_api.gen.go

@@ -1,4 +1,4 @@
-package namemyserver
+package serverplate
 
 type Pair struct {
 	Adjective string

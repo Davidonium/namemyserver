@@ -5,20 +5,20 @@ import (
 	"strconv"
 
 	"github.com/a-h/templ"
-	"github.com/davidonium/namemyserver/internal/namemyserver"
-	"github.com/davidonium/namemyserver/internal/templates"
+	"github.com/davidonium/serverplate/internal/serverplate"
+	"github.com/davidonium/serverplate/internal/templates"
 )
 
-func generateHandler(generator *namemyserver.Generator) appHandlerFunc {
+func generateHandler(generator *serverplate.Generator) appHandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		lengthEnabled := r.FormValue("length_enabled")
 		lengthMode := r.FormValue("length_mode")
 		lengthValue, _ := strconv.Atoi(r.FormValue("length_value"))
 		componentType := r.URL.Query().Get("component")
 
-		res, err := generator.Generate(r.Context(), namemyserver.GenerateOptions{
+		res, err := generator.Generate(r.Context(), serverplate.GenerateOptions{
 			LengthEnabled: lengthEnabled == "on",
-			LengthMode:    namemyserver.LengthMode(lengthMode),
+			LengthMode:    serverplate.LengthMode(lengthMode),
 			LengthValue:   lengthValue,
 		})
 		if err != nil {

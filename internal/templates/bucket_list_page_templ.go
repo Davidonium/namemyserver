@@ -10,11 +10,11 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
-	"github.com/davidonium/namemyserver/internal/namemyserver"
+	"github.com/davidonium/serverplate/internal/serverplate"
 )
 
 type BucketListPageViewModel struct {
-	Buckets  []namemyserver.Bucket
+	Buckets  []serverplate.Bucket
 	Archived bool
 }
 

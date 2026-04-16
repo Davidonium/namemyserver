@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/davidonium/namemyserver/internal/vite"
+	"github.com/davidonium/serverplate/internal/vite"
 )
 
 type MiddlewareFunc func(http.Handler) http.Handler

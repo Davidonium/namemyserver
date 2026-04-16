@@ -5,12 +5,12 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/davidonium/namemyserver/internal/namemyserver"
+	"github.com/davidonium/serverplate/internal/serverplate"
 )
 
 func removeArchivedBucketsTask(
 	logger *slog.Logger,
-	bucketStore namemyserver.BucketStore,
+	bucketStore serverplate.BucketStore,
 ) func(context.Context) error {
 	return func(ctx context.Context) error {
 		removedCount, err := bucketStore.RemoveBucketsArchivedForMoreThan(ctx, 3*24*time.Hour)

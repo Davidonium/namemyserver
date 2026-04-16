@@ -7,19 +7,19 @@ import (
 
 	"github.com/a-h/templ"
 
-	"github.com/davidonium/namemyserver/internal/env"
-	"github.com/davidonium/namemyserver/internal/namemyserver"
-	"github.com/davidonium/namemyserver/internal/server/api"
-	"github.com/davidonium/namemyserver/internal/vite"
+	"github.com/davidonium/serverplate/internal/env"
+	"github.com/davidonium/serverplate/internal/serverplate"
+	"github.com/davidonium/serverplate/internal/server/api"
+	"github.com/davidonium/serverplate/internal/vite"
 )
 
 type Services struct {
 	Logger      *slog.Logger
 	Config      env.Config
 	Assets      *vite.Assets
-	Generator   *namemyserver.Generator
-	PairStore   namemyserver.PairStore
-	BucketStore namemyserver.BucketStore
+	Generator   *serverplate.Generator
+	PairStore   serverplate.PairStore
+	BucketStore serverplate.BucketStore
 }
 
 func New(svcs *Services) *http.Server {
