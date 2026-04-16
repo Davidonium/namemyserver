@@ -33,15 +33,15 @@ func GeneratePartial(vm GenerateViewModel) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"flex items-baseline border-2 rounded bg-white shadow-md h-96\"><div class=\"bg-primary rounded-l w-12 flex items-center justify-center text-white\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"flex items-center border-2 border-slate-600 rounded bg-white shadow-md overflow-hidden\"><div class=\"bg-primary w-6 flex self-stretch items-center justify-center text-white\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = ServerIcon().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = ServerIcon(WithClass("size-3")).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><span class=\"font-mono font-black text-xl tracking-[0.2em] text-black px-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><span class=\"font-mono font-black text-lg text-black px-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -54,7 +54,7 @@ func GeneratePartial(vm GenerateViewModel) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</span><div class=\"relative\"><div class=\"js-copy cursor-pointer hover:opacity-65\" data-copy-value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</span><div class=\"relative mr-1\"><div class=\"js-copy cursor-pointer hover:opacity-65\" data-copy-value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

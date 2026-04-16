@@ -5,14 +5,14 @@ type GenerateViewModel struct {
 }
 
 templ GeneratePartial(vm GenerateViewModel) {
-	<div class="flex items-baseline border-2 rounded bg-white shadow-md h-96">
-		<div class="bg-primary rounded-l w-12 flex items-center justify-center text-white">
-			@ServerIcon()
+	<div class="flex items-center border-2 border-slate-600 rounded bg-white shadow-md overflow-hidden">
+		<div class="bg-primary w-6 flex self-stretch items-center justify-center text-white">
+			@ServerIcon(WithClass("size-3"))
 		</div>
-		<span class="font-mono font-black text-xl tracking-[0.2em] text-black px-4">
+		<span class="font-mono font-black text-lg text-black px-4">
 			{ vm.Name }
 		</span>
-		<div class="relative">
+		<div class="relative mr-1">
 			<div class="js-copy cursor-pointer hover:opacity-65" data-copy-value={ vm.Name }>
 				@CopyIcon()
 			</div>
