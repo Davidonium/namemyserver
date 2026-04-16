@@ -57,7 +57,7 @@ func DocsPage() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><title>API Documentation - Name my Server</title></head><body><rapi-doc spec-url=\"/api/openapi.json\" theme=\"dark\" primary-color=\"#7c3aed\" nav-hover-text-color=\"#a78bfa\" nav-accent-color=\"#ea580c\" show-method-in-nav-bar=\"as-colored-block\" schema-style=\"tree\" show-header=\"false\" allow-try=\"true\" allow-authentication=\"true\" allow-server-selection=\"true\"></rapi-doc><script type=\"module\" src=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><title>API Documentation - serverplate</title></head><body><rapi-doc spec-url=\"/api/openapi.json\" theme=\"dark\" primary-color=\"#7c3aed\" nav-hover-text-color=\"#a78bfa\" nav-accent-color=\"#ea580c\" show-method-in-nav-bar=\"as-colored-block\" schema-style=\"tree\" show-header=\"false\" allow-try=\"true\" allow-authentication=\"true\" allow-server-selection=\"true\"></rapi-doc><script type=\"module\" src=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

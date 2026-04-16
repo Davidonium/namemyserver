@@ -8,7 +8,7 @@ templ Layout() {
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<title>Name my Server</title>
+			<title>serverplate</title>
 			<link rel="apple-touch-icon" href={ vite.AssetURL(ctx, "apple-touch-icon.png") }/>
 			<link rel="icon" type="image/png" sizes="any" href={ vite.AssetURL(ctx, "favicon-64.png") }/>
 			@templ.Raw(vite.RenderTags(ctx, []string{"src/js/entries/app.js"}))
