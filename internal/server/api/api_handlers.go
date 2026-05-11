@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/davidonium/serverplate/internal/serverplate"
-	"github.com/davidonium/serverplate/internal/ptr"
 )
 
 var ErrArchived = errors.New("the bucket is archived")
@@ -30,7 +29,7 @@ func bucketNotFound() ProblemDetail {
 		Status: 404,
 		Type:   "not_found",
 		Title:  "Bucket not found",
-		Detail: ptr.To("The requested bucket does not exist"),
+		Detail: new("The requested bucket does not exist"),
 	}
 }
 
@@ -41,7 +40,7 @@ func bucketArchived() ProblemDetail {
 		Status: 409,
 		Type:   "operation_conflict",
 		Title:  "Operation conflict. Bucket is read only.",
-		Detail: ptr.To("The bucket is archived. Only read operations can be issued against it."),
+		Detail: new("The bucket is archived. Only read operations can be issued against it."),
 	}
 }
 
@@ -62,7 +61,7 @@ func (s *Handlers) GenerateName(
 					Status: 400,
 					Type:   "validation_error",
 					Title:  "Validation failed",
-					Detail: ptr.To("length is required when length_enabled is true"),
+					Detail: new("length is required when length_enabled is true"),
 				}, nil
 			}
 
@@ -83,7 +82,7 @@ func (s *Handlers) GenerateName(
 				Status: 400,
 				Type:   "no_matches",
 				Title:  "No names match the specified filters",
-				Detail: ptr.To(
+				Detail: new(
 					"The length constraints are too restrictive. No adjective-noun combinations match the criteria.",
 				),
 			}, nil
@@ -154,7 +153,7 @@ func (s *Handlers) CreateBucket(
 
 	response.Filters.LengthEnabled = b.FilterLengthEnabled
 	if b.FilterLengthEnabled {
-		response.Filters.Length = ptr.To(b.FilterLengthValue)
+		response.Filters.Length = &b.FilterLengthValue
 		lengthMode := BucketDetailsFiltersLengthMode(b.FilterLengthMode)
 		response.Filters.LengthMode = &lengthMode
 	}
@@ -221,7 +220,7 @@ func (s *Handlers) GetBucketDetails(
 
 	response.Filters.LengthEnabled = b.FilterLengthEnabled
 	if b.FilterLengthEnabled {
-		response.Filters.Length = ptr.To(b.FilterLengthValue)
+		response.Filters.Length = &b.FilterLengthValue
 		lengthMode := BucketDetailsFiltersLengthMode(b.FilterLengthMode)
 		response.Filters.LengthMode = &lengthMode
 	}
@@ -283,7 +282,7 @@ func (s *Handlers) UpdateBucket(
 				Status: 400,
 				Type:   "validation_error",
 				Title:  "Validation failed",
-				Detail: ptr.To("Description must not exceed 2048 characters"),
+				Detail: new("Description must not exceed 2048 characters"),
 			}, nil
 		}
 
@@ -311,7 +310,7 @@ func (s *Handlers) UpdateBucket(
 
 	response.Filters.LengthEnabled = b.FilterLengthEnabled
 	if b.FilterLengthEnabled {
-		response.Filters.Length = ptr.To(b.FilterLengthValue)
+		response.Filters.Length = &b.FilterLengthValue
 		lengthMode := BucketDetailsFiltersLengthMode(b.FilterLengthMode)
 		response.Filters.LengthMode = &lengthMode
 	}
@@ -354,7 +353,7 @@ func (s *Handlers) ArchiveBucket(
 
 	response.Filters.LengthEnabled = b.FilterLengthEnabled
 	if b.FilterLengthEnabled {
-		response.Filters.Length = ptr.To(b.FilterLengthValue)
+		response.Filters.Length = &b.FilterLengthValue
 		lengthMode := BucketDetailsFiltersLengthMode(b.FilterLengthMode)
 		response.Filters.LengthMode = &lengthMode
 	}
@@ -397,7 +396,7 @@ func (s *Handlers) RecoverBucket(
 
 	response.Filters.LengthEnabled = b.FilterLengthEnabled
 	if b.FilterLengthEnabled {
-		response.Filters.Length = ptr.To(b.FilterLengthValue)
+		response.Filters.Length = &b.FilterLengthValue
 		lengthMode := BucketDetailsFiltersLengthMode(b.FilterLengthMode)
 		response.Filters.LengthMode = &lengthMode
 	}

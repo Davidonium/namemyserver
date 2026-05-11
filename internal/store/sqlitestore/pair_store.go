@@ -70,7 +70,7 @@ SELECT
     (SELECT count(*) FROM adjectives a CROSS JOIN nouns n WHERE %s) AS pair_count`
 
 const dbSizeSQL = `
-SELECT page_count * page_size as size 
+SELECT page_count * page_size as size
 FROM pragma_page_count(), pragma_page_size()`
 
 func (s *PairStore) Stats(
